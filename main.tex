@@ -1,0 +1,60 @@
+\documentclass[a4paper, twoside]{report}
+
+%% Language and font encodings
+\usepackage[english]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+
+%% Sets page size and margins
+\usepackage[a4paper,top=3cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+
+%% Useful packages
+\usepackage{amsmath}
+\usepackage{graphicx}
+\setlength {\marginparwidth }{2cm}
+\usepackage[colorinlistoftodos]{todonotes}
+% \usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{hyperref}
+\usepackage[numbers]{natbib}
+
+\title{SLAM Using A Neuromorphic Camera to Estimate the Trajectory of a Randomly Moving Robot and to Localise Objects of Interest in the Surrounding Environment.}
+\author{Tejas Dandawate}
+% Update supervisor and other title stuff in title/title.tex
+
+\begin{document}
+\input{title/title.tex}
+
+\begin{abstract}
+Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
+
+Simultaneous localisation and mapping (SLAM) is a popular application of robotics and computer vision, in which a robot moves autonomously along an unknown trajectory. A useful application of this would be in cases such as  finding the location of natural fires, in which it is important to know both the mapping of the surrounding environment as well as the locations of both the robot and the objects of interest. 
+
+The main aim of the project is to utilise a neuromorphic camera to carry out SLAM (moving in an unknown trajectory), mapping out the environment around the robot and finding the location it is in. \textcolor{red}{This could possibly leverage spiking neural networks to further emulate biological responses to the stimuli the camera would receive. 
+Then, if time permits, the next step would be to carry out some object recognition to localise objects or points of interest in the local environment.}
+\end{abstract}
+
+\renewcommand{\abstractname}{Acknowledgements}
+\begin{abstract}
+Thanks mum!
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\input{introduction/introduction.tex}
+\input{background/background.tex}
+\input{requirements/requirements}
+% \input{project/project.tex}
+\input{analysisanddesign/analysisanddesign}
+\input{impementation/implementation}
+\input{testing/testing}
+\input{results/results}
+\input{evaluation/evaluation.tex}
+\input{conclusion/conclusion.tex}
+\input{appendix/appendix.tex}
+
+\bibliographystyle{IEEEtranN}
+\bibliography{bibs/bibliography}
+
+\end{document}
