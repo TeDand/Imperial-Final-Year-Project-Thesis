@@ -80,7 +80,7 @@ The above approximation, however, is only true under the assumption that $ \Delt
 
 \begin{figure}[htb]
       \centering
-      \includegraphics[width=0.7\textwidth]{background/images/davis_camera.png}
+      \includegraphics[width=0.6\textwidth]{background/images/davis_camera.png}
       \caption{Summary of DAVIS event based camera\cite{EventBasedVisionASurvery}}
       \label{fig:davis_camera}
 \end{figure}
@@ -93,9 +93,22 @@ More classic computer vision techniques using optic-flow constraints can now be 
 
 $$ \Delta L \approx -\nabla L \cdot v \Delta t_k $$
 
-\section{Neural Heterogeneity}
+\section{Spiking Neural Networks and Neural Heterogeneity}
 
-Above are very persuasive reasons for utilising neuromorphic systems, but there still many challenges posed when attempting to do so. For example, each pixel only responds to brightness change, but the problem is that such a change could be a result of not only scene changes, but also the position of the camera within the scene. For this reason most neuromorphic systems have currently been limited to stationary cameras. As well as this the system is especially prone to stochastic noise, due to inherent shot noise in photons and from transistor circuit noise \cite{EventBasedVisionASurvery}. In order to tackle such issues, it is useful to look at existing examples of spiking neural systems, such as biological brain with neurons working based on a spiking function. It is known that the brain is heterogeneous on every scale, in the past this was though to be simply a by-product of noisy processes, but more recently it can be shown that by evolving our largely homogeneous spiking neural networks (SNNs), we can create more stable and robust systems \cite{NeuralHetroPromRobLearn}.
+Above are very persuasive reasons for utilising neuromorphic systems, but there still many challenges posed when attempting to do so. For example, each pixel only responds to brightness change, but the problem is that such a change could be a result of not only scene changes, but also the position of the camera within the scene. For this reason most neuromorphic systems have currently been limited to stationary cameras. As well as this the system is especially prone to stochastic noise, due to inherent shot noise in photons and from transistor circuit noise \cite{EventBasedVisionASurvery}. In order to tackle such issues, it is useful to look at existing examples of spiking neural systems, such as biological brain with neurons working based on a spiking function. It is known that the brain is heterogeneous on every scale, in the past this was though to be simply a by-product of noisy processes, but more recently it can be shown that by evolving our largely homogeneous Spiking Neural Networks (SNNs), we can create more stable and robust systems \cite{NeuralHetroPromRobLearn}.
+
+The foundations of SNNs are in computational neuroscience. The mechanisms of neurons in the brain are the inspiration behind creating artificial neural networks with neurons that spike in the same way. Neurons in an a typical Artificial Neural Network (ANN) have a weight, bias and activation function. this means the output of the neuron can be specified as:
+
+$$ y = \theta(\sum^n_{j=1}w_jx_j-u_j) $$
+
+This model was inspired by the biological neuron model shown in \autoref{fig:biological_neuron}. The function of the neuron is similar in that it produces an output based on a function of the input stream, but he form of this output is in the form of a `spike' rather than a continuous function. The $ \Sigma $ shown in the diagram is actually the integration of all excitory and inhibitory input signals to the dendrites within the soma of the neuron. We can see that the electric potential of the neuron needs to exceed a certain threshold in order for the output of the neuron to be a spike. Spiking neural networks use a similar model of neurons in order to leverage the aforementioned benefits of neural heterogeneity.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.5\textwidth]{background/images/biological_neuron.png}
+      \caption{Diagram of structure and function of a biological neuron \cite{BiologicalNeuronModel}}
+      \label{fig:biological_neuron}
+\end{figure}
 
 \color{red} NEED TO READ EVENT PAPER TO SEE THEIR APPROACH TO STOCHASTIC NOISE \cite{EventBasedVisionASurvery}. ALSO READ PAPER\cite{NeuralHetroPromRobLearn} TO INCLUDE IMAGE OF AND EXPLANATION OF BRAIN NEURONS \color{black}
 
@@ -152,21 +165,14 @@ This algorithm, however, is classical and has therefore been mostly superseded b
 
 \color{red} NEED TO FIND CLASSICAL EXAMPLE OF SLAM ALGORITHM TO REFERENCE AS WELL AS IN DEPTH EXPLANATION OF LOOP CLOSURE ETC. \color{black}
 
-\section{Computational Neuroscience}
-
-The foundations of Spiking Neural Networks (SNNs) are in computational neuroscience. The mechanisms of neurons in the brain are the inspiration behind creating artificial neural networks with neurons that spike in the same way. Neurons in an a typical Artificial Neural Network (ANN) have a weight, bias and activation function. this means the output of the neuron can be specified as:
-
-$$ y = \theta(\sum^n_{j=1}w_jx_j-u_j) $$
-
-\color{red} WRITE SOME STUFF FROM COURSERA COURSE\cite{RaoCoursera} \color{black}
 
 \section{Existing Datasets}
 
-There already exists many repositories of recorded neuromorphic data to get familiar with spiking data.
+There already exists many repositories of recorded neuromorphic data to get familiar with spiking data. In this section there are some examples of such datasets and a quick overview of their contents.
 
-\subsection{Neuromorphic MNIST}
+\subsection{Neuromorphic-MNIST and Other Neuromorphic Datasets}
 
-This data-set is a spiking version of the original frame-based MNIST dataset \cite{NMNIST}. The dataset is identical to the original MNIST dataset in all ways (including scale, size and sample split) bar one - it was captured using an ATIS sensor mounted on a motorised pan-tilt unit. This sensor moved while viewing the MNIST examples on an external monitor.
+This data-set is a spiking version of the original frame-based MNIST dataset \cite{MNIST}\cite{NMNIST}. The dataset is identical to the original MNIST dataset, which is a set of handwritten digits, in all ways (including scale, size and sample split) bar one - it was captured using an ATIS sensor mounted on a motorised pan-tilt unit. This sensor moved while viewing the MNIST examples on an external monitor.
 
 For each item in the dataset there is a binary file which has a list of events. Each event is characterised by a 40 bit unsigned integer. The integer gives the following information of a particular event:
 
@@ -177,13 +183,31 @@ For each item in the dataset there is a binary file which has a list of events. 
       \item bit 22 - 0: Timestamp (in microseconds)
 \end{itemize}
 
-More datasets include"
+An example of a visualisation of this data is shown in \autoref{fig:nmnist_spikes_visualisation}, where the image used from the MNIST dataset is on the right in part \textbf{(b)} and the resulting spikes from the event-based camera are shown on the left in \textbf{(a)}. Here `on events' are events where the intensity of a the particular pixel increased by an increment greater than a threshold and the `off events' are when the intensities decrease by a increment less than a threshold. The representation is clearly very different to the one given by a classical camera, and therefore the use of such data has to have a different approach to classical techniques.
+
+\begin{figure}[htb]%
+      \centering
+      \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{background/images/nmnist_spikes_visualisation.png}}}%
+      \qquad
+      \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{background/images/mnist_matching_nmnist.png}}}%
+      \caption{Visualisation of events from a single training sample from the NMNIST dataset}%
+      \label{fig:nmnist_spikes_visualisation}%
+\end{figure}
+
+More examples of neuromorphic datasets include:
 
 \begin{itemize}
       \item DVS128
-      \item Other data-sets such as fashion MNIST could also be converted to spiking times by treating image intensities as input currents to model neurons, so that higher intensity pixels would lead to earlier spikes, and lower intensity to later spikes
-      \item Heridelberg Spiking data-sets (SHD and SSC)
+
+            This dataset is a set of 11 hand gestures from 29 subjects under 3 illumination conditions. It was created to help create a real-time gesture recognition system that utilises the low power capabilities of frame-based cameras\cite{DVS128}.
+      \item Heridelberg Spiking data-sets
+
+            The Spiking Heidelberg datasets for spiking neural networks\cite{SpikingHeidelberg} are useful for realising that spiking data is useful for so many more applications than computer vision. This dataset is split into two; The Spiking Heidelberg Digits (SHD) dataset and the Spiking Speech Command (SSC) dataset. Both of these datasets are audio-based classification datasets for which input spikes and output labels are provided.
 \end{itemize}
+
+\subsection{Non-neuromorphic Datasets}
+
+Other data-sets such as fashion MNIST could also be converted to spiking times by treating image intensities as input currents to model neurons, so that higher intensity pixels would lead to earlier spikes, and lower intensity to later spikes.
 
 \section{Image Reconstruction Algorithms}
 
@@ -204,3 +228,5 @@ A naive approach would be take take each would be to take each event $ e_k = (\b
       \caption{Overview of RNN used to generate video from sets of events\cite{spikingToVideo}}
       \label{fig:spikes_to_video_rnn}
 \end{figure}
+
+\color{red} NEED TO EXPLAIN ARCHITECTURE PROPERLY\cite{spikingToVideo} \color{black}
