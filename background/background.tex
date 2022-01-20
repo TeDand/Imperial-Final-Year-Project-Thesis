@@ -80,7 +80,7 @@ The above approximation, however, is only true under the assumption that $ \Delt
 
 \begin{figure}[htb]
       \centering
-      \includegraphics[width=0.6\textwidth]{background/images/davis_camera.png}
+      \includegraphics[width=0.5\textwidth]{background/images/davis_camera.png}
       \caption{Summary of DAVIS event based camera\cite{EventBasedVisionASurvery}}
       \label{fig:davis_camera}
 \end{figure}
@@ -105,7 +105,7 @@ This model was inspired by the biological neuron model shown in \autoref{fig:bio
 
 \begin{figure}[htb]
       \centering
-      \includegraphics[width=0.5\textwidth]{background/images/biological_neuron.png}
+      \includegraphics[width=0.4\textwidth]{background/images/biological_neuron.png}
       \caption{Diagram of structure and function of a biological neuron \cite{BiologicalNeuronModel}}
       \label{fig:biological_neuron}
 \end{figure}
@@ -159,12 +159,31 @@ Now we can use the above simplification to carry out the following steps:
       \label{fig:monte_carlo}
 \end{figure}
 
-\autoref{fig:monte_carlo} shows a typical example of the algorithm. The leftmost panel shows the random initialisation (or previous particle distribution), which then becomes the centrally shown distribution after one iteration. Since only one measurement is taken and the room is symmetrical it is possible that it could be in one of two location (hence the two dense clusters). After one more reading in the next iteration the algorithm is quickly able to narrow down the location of the robot.
+\autoref{fig:monte_carlo} shows a typical example of the algorithm. The leftmost panel shows the random initialisation (or previous particle distribution), which then becomes the centrally shown distribution after one iteration. Since only one measurement is taken and the room is symmetrical it is possible that it could be in one of two location (hence the two dense clusters). After one more reading in the next iteration the algorithm is quickly able to narrow down the location of the robot. We can also see that any movement of the robot causes some noise to be added to the known robot location as we are estimating the location based on simple odometry using hardware such as wheel encoders to estimate the robots motion.
 
 This algorithm, however, is classical and has therefore been mostly superseded by deep neural networks in most modern day applications. As well as this it is only applicable to localising the robot, whereas we want to be able to simultaneously map it. SLAM can be achieved using similar methods by identifying and moving around located points of interest and estimating their positions as well as the robots. These tasks have been efficiently solved by neural networks for classical frame based data, but there is still much ongoing research on how to do the same with spiking data.
 
-\color{red} NEED TO FIND CLASSICAL EXAMPLE OF SLAM ALGORITHM TO REFERENCE AS WELL AS IN DEPTH EXPLANATION OF LOOP CLOSURE ETC. \color{black}
+\subsection{SLAM Algorithm}
 
+The Monte-Carlo localisation technique is useful for estimating a vehicles position (i.e, its location and orientation) given a model (or map) of the environment surrounding it. Now we must do the pose estimation of a robot while simultaneously generating a map of its surroundings (as shown in \autoref{fig:slam_diagram}). It is clear from the diagram that the equipment is not perfect and in an idealised environment. There us uncertainty in both the robot position (since there is uncertainty in the robots odometry), and there is also uncertainty in the measurements the robot takes.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.4\textwidth]{background/images/slam_diagram.png}
+      \caption{Diagram showing the fundamentals of the SLAM problem\cite{BasicSlam}}
+      \label{fig:slam_diagram}
+\end{figure}
+
+There are two main branches of SLAM algorithms; filtering methods and smoothing methods. The former includes methods such as the Extended Kalman Filter (EKF) and particle filtering (similar to the Monte-Carlo filtering explained earlier). With these methods the state is estimated iteratively on the job as latest measurements are input into the system. The latter uses the set of complete measurements to estimate the full trajectory of a robot. Pose (or factor) graph optimisation is one such smoothing method that has become exceedingly popular in modern-day SLAM solutions.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.4\textwidth]{background/images/slam_graph_optimisation.png}
+      \caption{Diagram showing loop closer and optimisation steps of SLAM pose graph optimisation technique\cite{PoseGraphOptimisation}}
+      \label{fig:slam_graph_optimisation}
+\end{figure}
+
+The pose graph optimisation technique relies on memorising the robots relative position and the readings it took in that position. For example we can see a possible robot trajectory in \ref{fig:slam_diagram}. The robot and its new relative positions are all nodes of the graph and are connected by edges. Whenever a new node is created in the graph, a reading is also taken and stored. Then whenever a new node is visited it is compared with previously stored readings, and if there is a reading that is similar to a very high degree, `loop closure' can take place. In essence this means that the robot is now visiting a location it has already visited, and so the nodes can be joined together. Then once each the loop has been established we need to optimise the graph so that each edge (and therefore node) is at its most likely position relative to the other edges. The way this is done is that each edge of the graph has a relative certainty associated with it, and this certainty dictates how flexible that particular edge is in the optimisation process. Once the loop has been closed the edges are moved such that the overall certainty of the graph is maximised. Once this is complete the readings can be stitched together to form a map of the environment, and the location of the robot within it is very well defined. This process can be seen clearly in \autoref{fig:slam_graph_optimisation}, where in \textbf{(a)} loop closure takes places, and \textbf{(b)} shows the map created after the subsequent optimisation phase. The maps are created using `binary occupancy grids' or `probabilistic grids'. The former simply stores binary 1's and 0's on whether a particular section of the grid is occupied or not. The latter adapts this by having probabilities of occupancy for each section rather than just binary values.
 
 \section{Existing Datasets}
 
@@ -187,9 +206,9 @@ An example of a visualisation of this data is shown in \autoref{fig:nmnist_spike
 
 \begin{figure}[htb]%
       \centering
-      \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{background/images/nmnist_spikes_visualisation.png}}}%
+      \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{background/images/nmnist_spikes_visualisation.png}}}%
       \qquad
-      \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{background/images/mnist_matching_nmnist.png}}}%
+      \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{background/images/mnist_matching_nmnist.png}}}%
       \caption{Visualisation of events from a single training sample from the NMNIST dataset}%
       \label{fig:nmnist_spikes_visualisation}%
 \end{figure}
@@ -197,10 +216,10 @@ An example of a visualisation of this data is shown in \autoref{fig:nmnist_spike
 More examples of neuromorphic datasets include:
 
 \begin{itemize}
-      \item DVS128
+      \item \textbf{DVS128}
 
             This dataset is a set of 11 hand gestures from 29 subjects under 3 illumination conditions. It was created to help create a real-time gesture recognition system that utilises the low power capabilities of frame-based cameras\cite{DVS128}.
-      \item Heridelberg Spiking data-sets
+      \item \textbf{Heridelberg Spiking Datasets}
 
             The Spiking Heidelberg datasets for spiking neural networks\cite{SpikingHeidelberg} are useful for realising that spiking data is useful for so many more applications than computer vision. This dataset is split into two; The Spiking Heidelberg Digits (SHD) dataset and the Spiking Speech Command (SSC) dataset. Both of these datasets are audio-based classification datasets for which input spikes and output labels are provided.
 \end{itemize}
@@ -215,7 +234,7 @@ Image reconstruction has been implemented for event data using on the direct opt
 
 \begin{figure}[htb]
       \centering
-      \includegraphics[width=\textwidth]{background/images/spikes_to_video.png}
+      \includegraphics[width=0.7\textwidth]{background/images/spikes_to_video.png}
       \caption{Illustration of mapping of spiking data to video stream to apply off-the-shelf algorithms to\cite{spikingToVideo}}
       \label{fig:spikes_to_video}
 \end{figure}
@@ -224,7 +243,7 @@ A naive approach would be take take each would be to take each event $ e_k = (\b
 
 \begin{figure}[htb]
       \centering
-      \includegraphics[width=\textwidth]{background/images/spikes_to_video_rnn.png}
+      \includegraphics[width=0.6\textwidth]{background/images/spikes_to_video_rnn.png}
       \caption{Overview of RNN used to generate video from sets of events\cite{spikingToVideo}}
       \label{fig:spikes_to_video_rnn}
 \end{figure}
