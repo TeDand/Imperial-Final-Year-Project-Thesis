@@ -85,14 +85,6 @@ The above approximation, however, is only true under the assumption that $ \Delt
       \label{fig:davis_camera}
 \end{figure}
 
-\subsection{Optic-flow Methods}
-
-More classic computer vision techniques using optic-flow constraints can now be utilised to characterise the events detected by pixels. In frame-based systems, optic flow methods create a flow-field that describe the displacement vector (signifying direction and magnitude of movement) for each pixel in the frame. A core constraint in this derivation is that the intensity of a local time-varying image region is constant under motion (for at least a short amount of time)\cite{GenerativeEventModel}.
-
-\color{red} NEED TO READ AND UNDERSTAND WHY THE FOLLOWING IS TRUE \cite{GenerativeEventModel} \cite{EventBasedVisionASurvery} \color{black}
-
-$$ \Delta L \approx -\nabla L \cdot v \Delta t_k $$
-
 \section{Spiking Neural Networks and Neural Heterogeneity}
 
 Above are very persuasive reasons for utilising neuromorphic systems, but there still many challenges posed when attempting to do so. For example, each pixel only responds to brightness change, but the problem is that such a change could be a result of not only scene changes, but also the position of the camera within the scene. For this reason most neuromorphic systems have currently been limited to stationary cameras. As well as this the system is especially prone to stochastic noise, due to inherent shot noise in photons and from transistor circuit noise \cite{EventBasedVisionASurvery}. In order to tackle such issues, it is useful to look at existing examples of spiking neural systems, such as biological brain with neurons working based on a spiking function. It is known that the brain is heterogeneous on every scale, in the past this was though to be simply a by-product of noisy processes, but more recently it can be shown that by evolving our largely homogeneous Spiking Neural Networks (SNNs), we can create more stable and robust systems \cite{NeuralHetroPromRobLearn}.
@@ -116,7 +108,15 @@ This model was inspired by the biological neuron model shown in \autoref{fig:bio
 
 For SLAM and pose estimation the problem again is that classical systems heavily rely on the structure of conventional cameras, and so there needs to be a radical paradigm shift in order to take events as inputs instead. The reason for this is that their function depends on iterative changes to the location probabilities using inputs, for which spiking inputs are ideal.
 
-\subsection{Probabilistic Filters}
+\subsection{Optic-flow Methods}
+
+More classic computer vision techniques using optic-flow constraints can now be utilised to characterise the events detected by pixels. In frame-based systems, optic flow methods create a flow-field that describe the displacement vector (signifying direction and magnitude of movement) for each pixel in the frame. A core constraint in this derivation is that the intensity of a local time-varying image region is constant under motion (for at least a short amount of time)\cite{GenerativeEventModel}.
+
+\color{red} NEED TO READ AND UNDERSTAND WHY THE FOLLOWING IS TRUE \cite{GenerativeEventModel} \cite{EventBasedVisionASurvery} \color{black}
+
+$$ \Delta L \approx -\nabla L \cdot v \Delta t_k $$
+
+\subsection{Localisation using Probabilistic Filters}
 
 \subsubsection{Bayesian Inference}
 
@@ -185,6 +185,28 @@ There are two main branches of SLAM algorithms; filtering methods and smoothing 
 
 The pose graph optimisation technique relies on memorising the robots relative position and the readings it took in that position. For example we can see a possible robot trajectory in \ref{fig:slam_diagram}. The robot and its new relative positions are all nodes of the graph and are connected by edges. Whenever a new node is created in the graph, a reading is also taken and stored. Then whenever a new node is visited it is compared with previously stored readings, and if there is a reading that is similar to a very high degree, `loop closure' can take place. In essence this means that the robot is now visiting a location it has already visited, and so the nodes can be joined together. Then once each the loop has been established we need to optimise the graph so that each edge (and therefore node) is at its most likely position relative to the other edges. The way this is done is that each edge of the graph has a relative certainty associated with it, and this certainty dictates how flexible that particular edge is in the optimisation process. Once the loop has been closed the edges are moved such that the overall certainty of the graph is maximised. Once this is complete the readings can be stitched together to form a map of the environment, and the location of the robot within it is very well defined. This process can be seen clearly in \autoref{fig:slam_graph_optimisation}, where in \textbf{(a)} loop closure takes places, and \textbf{(b)} shows the map created after the subsequent optimisation phase. The maps are created using `binary occupancy grids' or `probabilistic grids'. The former simply stores binary 1's and 0's on whether a particular section of the grid is occupied or not. The latter adapts this by having probabilities of occupancy for each section rather than just binary values.
 
+\section{Image Reconstruction Algorithms}
+
+Image reconstruction has been implemented for event data using on the direct optimised versions of Convolutional Neural Networks (CNNs). An example of this is the network named 'U-net'\cite{UNET} which managed to reconstruct a video using 10M parameters to analyse events from an AER camera protocol. Recent work by Rebecq \textit{et al.} illustrates a novel network architecture that reconstructs a video from a stream of events \cite{spikingToVideo}. These methods are purported to allow the introduction of mainstream computer vision research to event cameras. \autoref{fig:spikes_to_video} shows an example of how converting spiking data to a video stream allows for use of classical computer vision algorithms.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.7\textwidth]{background/images/spikes_to_video.png}
+      \caption{Illustration of mapping of spiking data to video stream to apply off-the-shelf algorithms to\cite{spikingToVideo}}
+      \label{fig:spikes_to_video}
+\end{figure}
+
+A naive approach would be take take each would be to take each event $ e_k = (\boldsymbol{\mathbf{x}}_k, t_l, p_k ) $ and assuming that the firing was due to the brightness change was due to a brightness change above a threshold $ \pm C $ which is a constant that could be set by the user. If this was the case events could be directly integrated to recover the intensity map of images. however, the value $ C $ in reality does not remain constant and is heavily dependent on other factors such as event rate, temperature, and sign of brightness change. The implementation outlined instead makes use of a Recurrent Neural Network (RNN), that takes as input sets of events within a spatio-temporal window. For example, a stream of events will be broken down into sequences given by $ \epsilon_i \: \forall i \in [0, N-1] $. Since each sequence is of fixed length $ N $ the framerate of the output video from the RNN is proportional to the event rate. \autoref{fig:spikes_to_video_rnn} shows demonstrates the functionality of such a network. Each event window $ \epsilon_k $ is converted to a 3D event tensor and passed into the network along with the last $ K $ constructed images to generate the latest iteration of the image. It is clear from this that each new image is constructed by fusing the previous K images with the new stream of events.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.6\textwidth]{background/images/spikes_to_video_rnn.png}
+      \caption{Overview of RNN used to generate video from sets of events\cite{spikingToVideo}}
+      \label{fig:spikes_to_video_rnn}
+\end{figure}
+
+\color{red} NEED TO EXPLAIN ARCHITECTURE PROPERLY\cite{spikingToVideo} \color{black}
+
 \section{Existing Datasets}
 
 There already exists many repositories of recorded neuromorphic data to get familiar with spiking data. In this section there are some examples of such datasets and a quick overview of their contents.
@@ -227,25 +249,3 @@ More examples of neuromorphic datasets include:
 \subsection{Non-neuromorphic Datasets}
 
 Other data-sets such as fashion MNIST could also be converted to spiking times by treating image intensities as input currents to model neurons, so that higher intensity pixels would lead to earlier spikes, and lower intensity to later spikes.
-
-\section{Image Reconstruction Algorithms}
-
-Image reconstruction has been implemented for event data using on the direct optimised versions of Convolutional Neural Networks (CNNs). An example of this is the network named 'U-net'\cite{UNET} which managed to reconstruct a video using 10M parameters to analyse events from an AER camera protocol. Recent work by Rebecq \textit{et al.} illustrates a novel network architecture that reconstructs a video from a stream of events \cite{spikingToVideo}. These methods are purported to allow the introduction of mainstream computer vision research to event cameras. \autoref{fig:spikes_to_video} shows an example of how converting spiking data to a video stream allows for use of classical computer vision algorithms.
-
-\begin{figure}[htb]
-      \centering
-      \includegraphics[width=0.7\textwidth]{background/images/spikes_to_video.png}
-      \caption{Illustration of mapping of spiking data to video stream to apply off-the-shelf algorithms to\cite{spikingToVideo}}
-      \label{fig:spikes_to_video}
-\end{figure}
-
-A naive approach would be take take each would be to take each event $ e_k = (\boldsymbol{\mathbf{x}}_k, t_l, p_k ) $ and assuming that the firing was due to the brightness change was due to a brightness change above a threshold $ \pm C $ which is a constant that could be set by the user. If this was the case events could be directly integrated to recover the intensity map of images. however, the value $ C $ in reality does not remain constant and is heavily dependent on other factors such as event rate, temperature, and sign of brightness change. The implementation outlined instead makes use of a Recurrent Neural Network (RNN), that takes as input sets of events within a spatio-temporal window. For example, a stream of events will be broken down into sequences given by $ \epsilon_i \: \forall i \in [0, N-1] $. Since each sequence is of fixed length $ N $ the framerate of the output video from the RNN is proportional to the event rate. \autoref{fig:spikes_to_video_rnn} shows demonstrates the functionality of such a network. Each event window $ \epsilon_k $ is converted to a 3D event tensor and passed into the network along with the last $ K $ constructed images to generate the latest iteration of the image. It is clear from this that each new image is constructed by fusing the previous K images with the new stream of events.
-
-\begin{figure}[htb]
-      \centering
-      \includegraphics[width=0.6\textwidth]{background/images/spikes_to_video_rnn.png}
-      \caption{Overview of RNN used to generate video from sets of events\cite{spikingToVideo}}
-      \label{fig:spikes_to_video_rnn}
-\end{figure}
-
-\color{red} NEED TO EXPLAIN ARCHITECTURE PROPERLY\cite{spikingToVideo} \color{black}

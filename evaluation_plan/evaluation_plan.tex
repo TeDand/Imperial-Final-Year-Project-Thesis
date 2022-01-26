@@ -1,0 +1,109 @@
+\chapter{Evaluation Plan}
+
+The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}.
+
+\section{Dataset Preparations}
+
+\subsection{Dataset Splitting}
+
+It is commonplace to split the shuffled dataset into  three segments; training, validation and testing. The training data is what is used during each iteration of the back-propagation process. The validation data is what is unseen during this process and is instead used during the process to give an estimation of a models performance while training hyper-parameters. Finally, the testing data is withheld until it is needed to compare different final implementations with each other. It is vital the the training and validation data are withheld while training since otherwise they would not serve as a simulation of unknown data to measure the performance of the system in an unbiased manner. COmmon splits for training, validation and testing datasets are 60\%/20\%/20\% and 80\%/10\%/10\%  respectively.
+
+\subsection{Dataset Cross-validation}
+
+With smaller datasets the splitting of data may mean that there is too little left to train with. This problem can be alleviated by using cross-validation. This method entails dividing hte dataset into a certain number of segments. Then in the first iteration of the learning process the first segment is used as testing data while the rest is used as training and validation. Then in the next iteration the process can be repeated by using the second segment as the testing, and so on until each segment has been used as testing data. Finally we can use the average of the errors for each testing dataset as the `global error estimate'. It can be noted that the same segmentation and iteration process can be used for the training and validation datasets.
+
+\section{Evaluation Metrics}
+
+For a classification task, when we obtain the results from the test dataset (as shown in \autoref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c  | c ||}
+        \hline
+        Labels     & Predictions \\
+        \hline \hline
+        1          & 1           \\
+        \hline
+        1          & 2           \\
+        \hline
+        3          & 8           \\
+        \hline
+        9          & 9           \\
+        \hline
+        6          & 9           \\
+        \hline
+        $ \vdots $ & $ \vdots $  \\
+    \end{tabular}
+    \caption{Example of results when inputting test data from NMNIST dataset\cite{NMNIST} into the final model}
+    \label{tab:possible_results}
+\end{table}
+
+\subsection{Confusion matrix}
+
+Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \autoref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. It should be noted that a similar confusion matrix should be created taking each class as positive, then each metric can be calculated by taking the averages (as shown in \Cref{ssec:eval_metric_averaging}). For each of the cells the number of matching records are stored to calculate each of the evaluation metrics. The table includes True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c c | c | c | c | c ||}
+        \hline
+                                                                         &                                    & \multicolumn{4}{ c ||}{\textbf{Predicted Class}}                                        \\
+        \cline{3-6}
+                                                                         &                                    & 1                                                & 2          & 3          & $ \hdots $ \\
+        \hline
+        \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Actual Class}}} & \multicolumn{1}{| c |}{1}          & TP                                               & FN         & FN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{2}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{3}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{4}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{5}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{$ \vdots $} & $ \vdots $                                       & $ \vdots $ & $ \vdots $ & $ \ddots $ \\
+    \end{tabular}
+    \caption{One particular confusion matrix for NMNIST dataset\cite{NMNIST} for class 1 as the positive class }
+    \label{tab:confusion_matrix}
+\end{table}
+
+\subsection{Accuracy}
+
+The accuracy of the system is a proportion of samples correctly classified.
+
+$$ Accuracy = \frac{TP + TN}{TP + TN + FP + FN} $$
+
+Note: classification error can also be used and is defined as $ 1 - accuracy $.
+
+\subsection{Precision}
+
+Precision is the proportion of positively predicted samples identified correctly.
+
+$$ Precision = \frac{TP}{TP + FP} $$
+
+It should be noted that a high precision may mean that there are many false positives.
+
+\subsection{Recall}
+
+Recall is the proportion of actual positives correctly classified.
+
+$$ Recall = \frac{TP}{TP + FN} $$
+
+It should be noted that a high recall may mean a lot of positive samples may be missed.
+
+\subsection{F-measure/F-score}
+
+This is defined as the harmonic mean of precision and recall in order to get one number as an average measure of performance.
+
+$$ F_1 = \frac{2 \cdot precision \cdot recall}{precision + recall} $$
+
+\subsection{Micro and Macro Averaging} \label{ssec:eval_metric_averaging}
+
+Macro-averaging involves taking an average on the class level. Metrics are calculated for each class and then averaged at the end. Micro-averaging involves taking an average on the item level (i.e., taking the average of each of TP, FP, TN and FN to get the averages metrics).
+
+\section{Baselines for Comparison}
+
+\color{red}PUT OTHER PAPERS STUFF HERE.\color{black}
+
+\section{Additional Testing with Camera}
+
+If the model were to train using only the datasets available, there is a risk that the data would be unbalanced and the network is training on a very specific set of idealised readings. Testing with extraneous data generated by a camera under various different conditions would allow for evaluating the performance of the networks on data that is completely unseen and dissimilar.

@@ -1,0 +1,86 @@
+\chapter{Implementation Plan}
+
+\section{Timeline}
+
+% oct 22 - jun 6
+\begin{figure}[htb]
+    \centering
+    \begin{ganttchart}[x unit=0.5cm,
+            y unit title=0.5cm,
+            y unit chart=0.6cm]{1}{18}
+        % \gantttitle{Project Timeline}{18} \\
+        \gantttitlelist{1,...,18}{1} \\
+        \ganttgroup{Inception Report}{1}{2} \\
+        \ganttbar{Summary of Deliverables}{1}{1} \\
+        \ganttlinkedbar{Background Research Plan}{2}{2} \ganttnewline
+        \ganttgroup{Interim Report}{3}{8} \\
+        \ganttbar{Project Specification}{3}{3} \\
+        \ganttlinkedbar{Background Research}{4}{6} \\
+        \ganttlinkedbar{Implementation Plan}{7}{8} \\
+        \ganttbar{Evaluation Plan}{7}{8} \\
+        \ganttbar{Ethical, Legal, Safety Plan}{7}{8} \\
+        \ganttgroup{Final Report}{9}{16} \\
+        \ganttbar{Understanding Data}{9}{9} \\
+        \ganttlinkedbar{Create Sequantial NN System}{10}{10} \\
+        \ganttlinkedbar{Create Parallel NN System}{11}{11} \\
+        \ganttmilestone{Classification}{11} \ganttnewline
+        \ganttlink{elem12}{elem13}
+        \ganttbar{Set-up Camera}{12}{12} \\
+        \ganttlinkedbar{Test System on Camera Data}{13}{13} \\
+        \ganttmilestone{Experimental Setup}{13} \ganttnewline
+        \ganttlink{elem15}{elem16}
+        \ganttlinkedbar{Convert System for SLAM}{14}{16} \ganttnewline
+        \ganttbar{Evaluate Created Systems}{14}{16}  \\
+        \ganttgroup{Final Presentation}{17}{18} \\
+        \ganttbar{Prepare Presentation}{17}{18} \\
+        \ganttbar{Proof Reading}{17}{18}
+    \end{ganttchart}
+    \caption{Gantt chart showing fortnightly progress}
+    \label{fig:gantt_chart}
+\end{figure}
+
+\newpage
+\section{Objectives}
+
+\definecolor{Gray}{gray}{0.9}
+\newcolumntype{P}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}p{#1}}
+% \begin{figure}
+\begin{longtable}{|| P{0.2\textwidth} | P{.45\textwidth} | P{.15\textwidth} ||}
+    \hline
+    \rowcolor{Gray} \multicolumn{1}{|| c}{\textbf{Name}} & \multicolumn{1}{| c |}{\textbf{Description}}                                                                                                                                                                                                                                                                                                                                                                                      & \multicolumn{1}{c ||}{\textbf{Timeline} } \\
+    \hline \hline \endhead
+    Summary of Deliverables                              & Creating initial plan of deliverables to be present in final project. As well as this it is important to have some initial plans for fall-backs to ensure that a complete project can be achieved.                                                                                                                                                                                                                                & Timeline                                  \\
+    \hline
+    Background Research Plan                             & Create an initial list of relevant papers to kickstart project.                                                                                                                                                                                                                                                                                                                                                                   & Timeline                                  \\
+    \hline
+    Project Specification                                & Create a specification that precisely defines the goals of project as well as fall-backs for each case.                                                                                                                                                                                                                                                                                                                           & Timeline                                  \\
+    \hline
+    Background Research                                  & Use initial list of papers to conduct research behind the topic of the project. This involves looking at previous works and their respective gaps in knowledge. This is in order to give a basis on which to begin implementation, as it should provide all necessary tools and knowledge to begin initial preparations. It is also useful so give an  insight on the need for the project and what problems it aims to overcome. & Timeline                                  \\
+    \hline
+    Implementation Plan                                  & Using analysis from background reading create a structured implementation plan outlining objectives and milestones, including a deadline for each.                                                                                                                                                                                                                                                                                & Timeline                                  \\
+    \hline
+    Evaluation Plan                                      & Create a structure for the evaluation of any implemented material, including detailed explanations fo any formula and significance of any values when compared to baselines.                                                                                                                                                                                                                                                      & Timeline                                  \\
+    \hline
+    Ethical, Legal, Safety Plan                          & Critically evalutate any ethical, legal or safety concerns that many arise as a result of this project and outline various ways in which to mitigate any possible issues.                                                                                                                                                                                                                                                         & Timeline                                  \\
+    \hline
+    Understanding Data                                   & Load and evaluate the utility of various data-sources and pre-process them ready for use in future NNs.                                                                                                                                                                                                                                                                                                                           & Timeline                                  \\
+    \hline
+    Create Sequential NN System                          & Create model that first reconstructs frame based video from neuromorphic data to then pass into adaptations of existing networks that carry out classification on frame-based videos.                                                                                                                                                                                                                                             & Timeline                                  \\
+    \hline
+    Create Parallel NN System                            & Create a single NN that takes neuromorhpic data and directly creates the required output (classification or SLAM).                                                                                                                                                                                                                                                                                                                & Timeline                                  \\
+    \hline
+    Set-up Camera                                        & Create set-up to obtain real-world data from event-based camera. This also required to create a pipeline to process data to be used in created NNs.                                                                                                                                                                                                                                                                               & Timeline                                  \\
+    \hline
+    Test System on Camera Data                           & Since real world data may be less idealised than pre-existing datasets, it is important to test the functionality of the system with data obtained from camera. As well as this tests can be done under various more extreme circumstances to test robustness of system.                                                                                                                                                          & Timeline                                  \\
+    \hline
+    Convert System for SLAM                              & Change function of ststem and train for SLAM rather than classification.                                                                                                                                                                                                                                                                                                                                                          & Timeline                                  \\
+    \hline
+    Evaluate Created Systems                             & Use metrics listed in the evaltuation plan to check the performance of the system in order to compare each iteration in the project to each other as well as other existing solutions from other researchers.                                                                                                                                                                                                                     & Timeline                                  \\
+    \hline
+    Prepare Presentation                                 & Create slides and content to present final project results.                                                                                                                                                                                                                                                                                                                                                                       & Timeline                                  \\
+    \hline
+    Proof Reading                                        & Check through report and presentation to remove errors and make any last-minute changes,                                                                                                                                                                                                                                                                                                                                          & Timeline                                  \\
+    \hline
+    \caption{Explanations of objectives given in \autoref{fig:gantt_chart}}
+    \label{tab:objectives_table}
+\end{longtable}
