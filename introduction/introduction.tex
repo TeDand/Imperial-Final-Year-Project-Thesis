@@ -1,4 +1,4 @@
-\chapter{Introduction}
+\chapter{Introduction} \setcounter{page}{1}
 % The introduction should set the scene and give a high-level problem statement/specification, so that after 
 % reading the introduction the reader understands
 % roughly what the problem is and what you intend to 
@@ -17,61 +17,75 @@
 
 \section{Motivations}
 
-Neuromorphic data is a novel representation of data that has overarching benefits that are yet to be fully explored in a plethora of applications. The many purported benefits of event-based cameras have the potential to revolutionise efficient, low-power computer vision due to their efficient encoding of information. Since the cameras are asynchronous in nature they allow for low-latency feeds with very little motion blur and other similar visual artefacts. As well as this their pixel structure allows for a very high dynamic range making the uses of these cameras even more apparent.
+Neuromorphic data is obtained from event-based cameras that differ from traditional frame-based cameras in that they asynchronously record `events', which are categorised as large shifts in light intensity. This is a novel representation of data that has overarching benefits that are yet to be fully explored in a plethora of applications. The many purported benefits of event-based cameras have the potential to revolutionise efficient, low-power computer vision due to their efficient encoding of information. Since the cameras are asynchronous in nature they allow for low-latency feeds with very little motion blur and other similar visual artefacts. As well as this their pixel structure allows for a very high dynamic range, meaning they can be used even when bright sunlight and dark shadows are encompassed in the same scene.
 
-With the emergence of the IoT, sensors have become, or at the very least will become, ubiquitous in everyday life. These devices operate using power at a premium since they need to make full use of their limited batteries. This scarcity is further emphasised when attempting to do more power-intensive tasks. One such task is computer vision, which is becoming evermore prevalent as a means of human-computer interaction. Classical frame-based cameras are very power intensive, and do not allow for a low active duty cycle (i.e., allowing for device sleep/idle time). The usual way this issue is alleviated it by the system reacting to an event trigger. Such events may include things such as; motion, timing, acceleration or temperature. When compared to the function of event-based cameras, where event detection in built into the system, this can be seen as a stop-gap measure.
+With the emergence of the Internet of Things (IoT), sensors have become, or at the very least will become, ubiquitous in everyday life. These devices operate using power at a premium since they need to perform adequately with a limited power supply (e.g., small battery cells etc.). This scarcity is further emphasised when attempting to do more power-intensive tasks. One such task is computer vision, which is becoming evermore prevalent as a means of human-computer interaction. Classical frame-based cameras are power intensive, and do not allow for a low active duty cycle (i.e., allowing for device sleep/idle time). The usual way in which this issue is alleviated is by making the system react to an event trigger by `waking up' to work for a short period of time. Such events may include things such as; motion, timing, acceleration, or temperature. When compared to the function of event-based cameras, where event detection in built into the system, this can be seen as a stop-gap measure.
 
-The high temporal resolution and dynamic range of event-based cameras also presents further benefits when compared to frame-based cameras. These features allow for videos to be represented in a very high fidelity format that preserves more data in fast-paced and brightly lit environments. This may lead to more reliable use of the data for computer vision and even other purposes.
+The high temporal resolution and dynamic range of event-based cameras also presents further benefits when compared to frame-based cameras. These features allow for videos to be represented in a very high fidelity format that preserves more data in fast-paced and brightly lit environments. This may lead to more reliable use of the data for computer vision and even other purposes where the exact environment the camera is set up in is uncertain and unpredictable.
 
 \section{Objectives}
 
-The objectives of this project were roughly divided into three two main sections; main objectives and extensions.
+The objectives of this project were roughly divided into two main sections; main objectives and extensions. Objectives were created so as to allow for contingencies and fallbacks at every stage. A detailed implementation plan and project timeline for these objectives an be found in \Cref{chap:implementation_plan}.
 
 \subsection{Main Objectives}
 
+% Understanding Data
+% Create Sequantial NN System
+% Create Parallel NN System
+% Classification
+% Set-up Camera
+% Test System on Camera Data
+% Experimental Setup
+% Convert System for SLAM
+
 \begin{itemize}
-    \item Evaluate different Artificial Neural Network (ANN) models on neuromorphic data from external datasets.
+      \item Understand structure of neuromorphic data and methods to preprocess it for inputting into an Artificial Neural Network (ANN).
+      \item Evaluate different ANN models on neuromorphic data from external datasets.
 
-          This allows for determining the performance of both traditional Neural Networks (NNs) as well the performance Spiking Neural Networks (SNNs) for comparison. These networks can take two main forms:
-          \begin{itemize}
-              \item Two networks sequentially processing data. The first would be converting reconstructing spiking data into an intensity video, and the second would be applying pre-existing computer vision networks to analyse the frame-based output.
-              \item Having one network that takes the spiking data as input to directly carry out the intended function.
-          \end{itemize}
-          The system will initially be used to solve a classification task.
-    \item Create practical set-up to experimentally record data.
+            This allows for determining and comparing the performance of both traditional Neural Networks (NNs) as well of Spiking Neural Networks (SNNs). These networks can take two main forms:
+            \begin{itemize}
+                  \item Two networks sequentially processing data. The first would be reconstructing spiking data into an intensity video, and the second would be applying pre-existing computer vision networks to analyse the frame-based output.
+                  \item One network that takes the spiking data as input to directly carry out the intended function.
+            \end{itemize}
+            The system will initially be used to solve a classification task.
+      \item Create practical set-up to experimentally record data.
 
-          Using a neuromorphic camera, data can be experimentally captured to assess the performance of any built networks on more realistic unseen input data.
-    \item Carry out Simultaneous Localisation and Mapping (SLAM) for a robot moving in an unknown trajectory.
+            Using a neuromorphic camera, data can be experimentally captured to assess the performance of any built networks on more realistic unseen input data.
+      \item Carry out Simultaneous Localisation and Mapping (SLAM) for a robot moving in an unknown trajectory.
 
-          Use most efficient NN model to solve the more complex task of SLAM. The neuromorphic camera can be used to capture data from a room in the absence of large sets of labelled datasets.
+            Use most efficient NN model to solve the more complex task of SLAM. The neuromorphic camera can be used to capture data from a room in the absence of large sets of labelled datasets.
 \end{itemize}
 
-\subsection{Challenges \& Fall-backs}
+\subsection{Challenges \& Contingency Plan}
 
 \begin{itemize}
-    \item Only using existing datasets rather than practical set-up.
+      \item Only using existing datasets rather than practical set-up.
 
-          Since there is sufficient amounts of existing data-sets, they can be split into training, validation and testing sets themselves. This eliminates the need to generate more data for the testing process.
-    \item Rather than focusing on SLAM the emphasis may be on object detection/recognition
+            Since there is sufficient amounts of existing datasets for classification tasks, they can be split into training, validation, and testing sets themselves. This eliminates the need to generate more data for the testing process.
+      \item Rather than focusing on SLAM the emphasis may be on object detection/recognition or gesture recognition
 
-          The project has be segmented into individual milestones, and so even if the final one of a SLAM algorithm isn't achieved, it is easy to change the scope of the project to be simply a classification or gesture recognition network.
+            The project has been segmented into individual milestones, and so even if the final milestone of a SLAM algorithm isn't achieved, it is easy to change the scope of the project to be a classification or gesture recognition network.
 \end{itemize}
 
 \section{Report Structure}
 
-A brief outline of the report is as outlined:
+A brief outline of the report is given below:
 
-\begin{enumerate}
-    \item Background
+\begin{description}
+      \item[Background] (\Cref{chap:background})
 
-          This section gives a background to the project subject. There are outlines of previous works in the field in order to highlight gaps in knowledge where more work can be done. It provides a good illustration of what issues there are and what value there would be in solving them.
-    \item Implementation Plan
+            This chapter gives a background to the project subject. There are outlines of previous works in the field in order to highlight gaps in knowledge where more work can be done. It provides a good illustration of what issues there are and what value there would be in solving them.
+      \item[Implementation Plan] (\Cref{chap:implementation_plan})
 
-          This section has a list of planned objectives and their estimated completion date.
-    \item Evaluation Plan
+            This chapter has a list of planned objectives and their estimated completion date.
+      \item[Evaluation Plan] (\Cref{chap:evaluation_plan})
 
-          This section presents a variety of ways in which the final project could be evaluated at each step. This allows for a comparison between existing solutions as well every iteration of solution given during the project.
-    \item Ethical, Legal and Safety Plan
+            This chapter presents a variety of ways in which the final project could be evaluated at each step. This allows for a comparison between existing solutions as well every iteration of solution created during the project.
+      \item[Ethical, Legal and Safety Plan] (\Cref{chap:ethical_plan})
 
-          Any ethical, legal and safety considerations taken into account during the project are given in this section.
-\end{enumerate}
+            This chapter presents any ethical, legal and safety considerations taken into account during the project.
+
+      \item[Initial Implementation] (\Cref{chap:initial_implementation})
+
+            This chapter outlines some initial steps taken in the implementation process.
+\end{description}

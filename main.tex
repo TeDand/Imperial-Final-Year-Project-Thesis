@@ -30,29 +30,30 @@
 \begin{document}
 \input{title/title.tex}
 
-\begin{abstract}
-    Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
+% \begin{abstract}
+%     Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
 
-    Simultaneous localisation and mapping (SLAM) is a popular application of robotics and computer vision, in which a robot moves autonomously along an unknown trajectory. A useful application of this would be in cases such as  finding the location of natural fires, in which it is important to know both the mapping of the surrounding environment as well as the locations of both the robot and the objects of interest.
+%     Simultaneous localisation and mapping (SLAM) is a popular application of robotics and computer vision, in which a robot moves autonomously along an unknown trajectory. A useful application of this would be in cases such as  finding the location of natural fires, in which it is important to know both the mapping of the surrounding environment as well as the locations of both the robot and the objects of interest.
 
-    The main aim of the project is to utilise a neuromorphic camera to carry out SLAM (moving in an unknown trajectory), mapping out the environment around the robot and finding the location it is in. \textcolor{red}{This could possibly leverage spiking neural networks to further emulate biological responses to the stimuli the camera would receive.
-        Then, if time permits, the next step would be to carry out some object recognition to localise objects or points of interest in the local environment.}
-\end{abstract}
+%     The main aim of the project is to utilise a neuromorphic camera to carry out SLAM (moving in an unknown trajectory), mapping out the environment around the robot and finding the location it is in. \textcolor{red}{This could possibly leverage spiking neural networks to further emulate biological responses to the stimuli the camera would receive.
+%         Then, if time permits, the next step would be to carry out some object recognition to localise objects or points of interest in the local environment.}
+% \end{abstract}
 
-\renewcommand{\abstractname}{Acknowledgements}
-\begin{abstract}
-    Thanks mum!
-\end{abstract}
+% \renewcommand{\abstractname}{Acknowledgements}
+% \begin{abstract}
+%     Thanks mum!
+% \end{abstract}
 
-\tableofcontents
-\listoffigures
-\listoftables
+\tableofcontents \thispagestyle{empty}
+\listoffigures \thispagestyle{empty}
+\listoftables \thispagestyle{empty}
 
 \input{introduction/introduction.tex}
 \input{background/background.tex}
 \input{impementation_plan/implementation_plan.tex}
 \input{evaluation_plan/evaluation_plan.tex}
 \input{ethical_plan/ethical_plan.tex}
+\input{implementation/implementation.tex}
 % \input{requirements/requirements}
 % \input{project/project.tex}
 % \input{analysisanddesign/analysisanddesign}
