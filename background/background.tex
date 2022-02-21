@@ -97,7 +97,7 @@ It should however be noted that the approximation in \autoref{eq:temporal_deriva
       \label{fig:davis_camera}
 \end{figure}
 
-\section{Spiking Neural Networks and Neural Heterogeneity}
+\section{Spiking Neural Networks and Neural Heterogeneity} \label{ssec:snn_and_heterogeneity}
 
 \Cref{ssec:event_camera_benefits} lists some persuasive reasons for utilising neuromorphic systems, but there still many challenges posed when attempting to do so. For example, each pixel only responds to brightness change, but the problem is that such a change could be a result of not only scene changes, but also the position of the camera within the scene. For this reason most neuromorphic systems have currently been limited to stationary cameras. As well as this, the system is especially prone to stochastic noise due to inherent shot noise in photons and from transistor circuit noise \cite{EventBasedVisionASurvery}. For this reason \autoref{eq:ideal_event_equation} can only be said to be true under ideal conditions. A more realistic model for events fired is a probabilistic event generation model. These take into consideration the aforementioned sources of noise. One such model is given by P. Lichtsteiner \textit{et al.}\cite{NonIdealEventCamera}, where sensor variation measurements suggested a normal distribution centred around $ C $ for event triggers.
 
