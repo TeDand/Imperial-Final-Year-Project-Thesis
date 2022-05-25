@@ -121,6 +121,10 @@ This model was inspired by the biological neuron model shown in \autoref{fig:bio
 
 With SNNs it is theoretically possible to achieve very high energy efficiency, and when combined with a novel surrogate gradient and Recurrent Neural Network (RNN) as was experimented with in a paper by Bojian Yin \textit{et al.}\cite{EfficientSNN} excels in challenging tasks such as gesture recognition, and at some points even outperforms traditional ANNs. Alongside the aforementioned neural heterogeneity to combat stochastic processes we can see substantial improvements in previous SNN performance.
 
+\section{Nengo} \label{sec:nengo}
+
+\color{red} TODO: Write about nengo here \color{black}.
+
 \section{Existing Algorithms for Event Analysis} \label{sec:existing_algorithms}
 
 For SLAM, pose estimation and classification tasks the problem again is that classical systems heavily rely on the structure of conventional camera's outputs, and so there needs to be a radical paradigm shift in order to take events as inputs instead.
@@ -129,84 +133,90 @@ For SLAM, pose estimation and classification tasks the problem again is that cla
 
 Since obtaining the equation for the temporal derivative in \autoref{eq:temporal_derivative}, there is now a indirect measure of brightness and so a more classic computer vision techniques using optic-flow constraints can be utilised to characterise the events detected by pixels. In frame-based systems, optic flow methods create a flow-field that describe the displacement vector (signifying direction and magnitude of movement) for each pixel in the frame, and a similar derivation can be done for event data. A core constraint in this derivation is that the intensity of a local time-varying image region is constant under motion (for at least a short amount of time)\cite{GenerativeEventModel}. \autoref{eq:optic_flow} is the resulting equations that shows the relation between the brightness gradient and the displacement of the pixel over a short period of time given its velocity\cite{EventBasedVisionASurvery}. It implies that if the motion is parallel to the edge, there is no event fired (since $ v \cdot \nabla L = 0  $) and conversely if the motion is perpendicular to the edge events are fired at their highest rate.
 
+\color{red} TODO: Write about how optic flow is often used in classification to see in a frame what the directions of motion are as well as the frame itself and the laplacian or edge map. \color{black}
+
 \begin{equation}
       \Delta L \approx -\nabla L \cdot v \Delta t_k
       \label{eq:optic_flow}
 \end{equation}
 
-\subsection{Localisation using Probabilistic Filters} \label{ssec:prob_filters}
+\subsection{Frame Integration of Event Streams}
 
-\subsubsection{Bayesian Inference}
+\color{red} TODO: Write more about this method from the spikingjelly docs \color{black}
 
-Unlike most other previous systems, probabilistic filters such as Bayesian filters are very much suited to work with data from event-based cameras. The reason for this is that it depends on iterative updates to the location probabilities using inputs, for which spiking inputs are ideal. Bayes's theorem can be derived from simple probabilistic rules\cite{BayesLaw}. We know $P(X|Y) = \frac{P(X, Y)}{P(Y)} $ and similarly $ P(Y|X) = \frac{P(Y, X)}{P(X)} $. Therefore we can re-arrange both to give $ P(X|Y)P(Y) = P(Y|X)P(X) $, since $ P(X, Y) = P(Y, X) $. Then from there formula for Bayesian inference can be trivially obtained, as shown in \autoref{eq:baysean_inference}.
+% \subsection{Localisation using Probabilistic Filters} \label{ssec:prob_filters}
 
-\begin{equation}
-      \begin{gathered}
-            P(XZ) = P(Z|X)P(X) = P(X|Z)P(Z)\\
-            P(X|Z) = \frac{P(Z|X)P(X)}{P(Z)}
-      \end{gathered}
-      \label{eq:baysean_inference}
-\end{equation}
+% \subsubsection{Bayesian Inference}
 
-In \autoref{eq:baysean_inference}, $ X $ is known as the prior (which is the assumed location of the camera) and $ Z $ is known as the posterior (which is the measurement taken by the sensor or camera). $P(Z|X) $ is known as the likelihood function, which indicates how likely it is to have received a particular reading given the assumed position.
+% Unlike most other previous systems, probabilistic filters such as Bayesian filters are very much suited to work with data from event-based cameras. The reason for this is that it depends on iterative updates to the location probabilities using inputs, for which spiking inputs are ideal. Bayes's theorem can be derived from simple probabilistic rules\cite{BayesLaw}. We know $P(X|Y) = \frac{P(X, Y)}{P(Y)} $ and similarly $ P(Y|X) = \frac{P(Y, X)}{P(X)} $. Therefore we can re-arrange both to give $ P(X|Y)P(Y) = P(Y|X)P(X) $, since $ P(X, Y) = P(Y, X) $. Then from there formula for Bayesian inference can be trivially obtained, as shown in \autoref{eq:baysean_inference}.
 
-\subsubsection{Monte-Carlo Localisation}
+% \begin{equation}
+%       \begin{gathered}
+%             P(XZ) = P(Z|X)P(X) = P(X|Z)P(Z)\\
+%             P(X|Z) = \frac{P(Z|X)P(X)}{P(Z)}
+%       \end{gathered}
+%       \label{eq:baysean_inference}
+% \end{equation}
 
-Now that we have the concept of Bayesian inference we can adapt it to create an efficient localisation algorithm. It includes initialising a number of particles that act as predictors of where in the map the camera is. We can now give the probability of a posterior camera position given a sensor reading.
+% In \autoref{eq:baysean_inference}, $ X $ is known as the prior (which is the assumed location of the camera) and $ Z $ is known as the posterior (which is the measurement taken by the sensor or camera). $P(Z|X) $ is known as the likelihood function, which indicates how likely it is to have received a particular reading given the assumed position.
 
-The probability distribution $ P(X|X) $ is a continuous function, and so updating each of the posteriors for every value of $ X $ is a computationally difficult problem. We can instead break it up into smaller bins to alleviate this issue. When generating these particles we can represent the probability distribution, albeit at a lower granularity. The benefit of this is that even though we cannot see the full distribution the peaks (i.e. the locations the camera is most likely to be in) are very well defined.
+% \subsubsection{Monte-Carlo Localisation}
 
-Now we can use the above simplification to carry out the following steps:
+% Now that we have the concept of Bayesian inference we can adapt it to create an efficient localisation algorithm. It includes initialising a number of particles that act as predictors of where in the map the camera is. We can now give the probability of a posterior camera position given a sensor reading.
 
-\begin{enumerate}
-      \item Randomly assign particle distribution across map.
-      \item Apply Bayes' law to measurement to update particle distribution.
+% The probability distribution $ P(X|X) $ is a continuous function, and so updating each of the posteriors for every value of $ X $ is a computationally difficult problem. We can instead break it up into smaller bins to alleviate this issue. When generating these particles we can represent the probability distribution, albeit at a lower granularity. The benefit of this is that even though we cannot see the full distribution the peaks (i.e. the locations the camera is most likely to be in) are very well defined.
 
-            Bayes' rule can be simplified to be:
-            $$ w_{i_{x+1}} = P(z|x_{i_x}) \times x_{i_x} $$
-            This can be done since the ignored multiplier on the right hand side will be normalised in the next step.
-      \item Normalise particle weights.
+% Now we can use the above simplification to carry out the following steps:
 
-            Now the particles will have weights that no longer sum to 1, and so we need to normalise them again to follow the usual rules of probability:
+% \begin{enumerate}
+%       \item Randomly assign particle distribution across map.
+%       \item Apply Bayes' law to measurement to update particle distribution.
 
-            $$ w_{i_{x+1}} = \frac{w_i}{\sum^N_{i=1}w_i} $$
-      \item Re-sample particle distribution.
+%             Bayes' rule can be simplified to be:
+%             $$ w_{i_{x+1}} = P(z|x_{i_x}) \times x_{i_x} $$
+%             This can be done since the ignored multiplier on the right hand side will be normalised in the next step.
+%       \item Normalise particle weights.
 
-            We now need to create a new set of particles that all have the same weight ($ \frac{1}{N} $), but whose spacial distribution reflects the new probability density.
-\end{enumerate}
+%             Now the particles will have weights that no longer sum to 1, and so we need to normalise them again to follow the usual rules of probability:
 
-\begin{figure}[htb]
-      \centering
-      \includegraphics[width=\textwidth]{background/images/monte_carlo.png}
-      \caption{An example of Monte-Carlo localisation\cite{MonteCarloLocalisation}.}
-      \label{fig:monte_carlo}
-\end{figure}
+%             $$ w_{i_{x+1}} = \frac{w_i}{\sum^N_{i=1}w_i} $$
+%       \item Re-sample particle distribution.
 
-\autoref{fig:monte_carlo} shows a typical example of the algorithm. The leftmost panel shows the random initialisation (or previous particle distribution), which then becomes the centrally shown distribution after one iteration. Since only one measurement is taken and the room is symmetrical, it is possible that it could be in one of two location (hence the two dense clusters). After one more reading in the next iteration, the algorithm is quickly able to narrow down the location of the robot. We can also see that any movement of the robot causes some noise to be added to the known robot location as we are estimating the location based on simple odometry using hardware such as wheel encoders to estimate the robots motion.
+%             We now need to create a new set of particles that all have the same weight ($ \frac{1}{N} $), but whose spacial distribution reflects the new probability density.
+% \end{enumerate}
 
-\subsection{SLAM Algorithm}
+% \begin{figure}[htb]
+%       \centering
+%       \includegraphics[width=\textwidth]{background/images/monte_carlo.png}
+%       \caption{An example of Monte-Carlo localisation\cite{MonteCarloLocalisation}.}
+%       \label{fig:monte_carlo}
+% \end{figure}
 
-The Monte-Carlo localisation technique is useful for estimating a vehicles position (i.e, its location and orientation) given a model (or map) of the environment surrounding it. The next step is to carry out pose estimation of a robot while simultaneously generating a map of its surroundings (as shown in \autoref{fig:slam_diagram}). It is clear from the diagram that the equipment is not perfect and in an idealised environment. There is uncertainty in both the robot position (since there is uncertainty in the robots odometry), and there is also uncertainty in the measurements the robot takes.
+% \autoref{fig:monte_carlo} shows a typical example of the algorithm. The leftmost panel shows the random initialisation (or previous particle distribution), which then becomes the centrally shown distribution after one iteration. Since only one measurement is taken and the room is symmetrical, it is possible that it could be in one of two location (hence the two dense clusters). After one more reading in the next iteration, the algorithm is quickly able to narrow down the location of the robot. We can also see that any movement of the robot causes some noise to be added to the known robot location as we are estimating the location based on simple odometry using hardware such as wheel encoders to estimate the robots motion.
 
-\begin{figure}[htb]
-      \centering
-      \includegraphics[width=0.4\textwidth]{background/images/slam_diagram.png}
-      \caption{A diagram showing the fundamentals of the SLAM problem\cite{BasicSlam}.}
-      \label{fig:slam_diagram}
-\end{figure}
+% \subsection{SLAM Algorithm}
 
-There are two main branches of SLAM algorithms; filtering methods and smoothing methods. The former includes methods such as the Extended Kalman Filter (EKF) and particle filtering (similar to the Monte-Carlo filtering explained earlier). With these methods the state is estimated iteratively on the job as latest measurements are input into the system. The latter uses the set of complete measurements to estimate the full trajectory of a robot. Pose (or factor) graph optimisation is one such smoothing method that has become exceedingly popular in modern-day SLAM solutions.
+% The Monte-Carlo localisation technique is useful for estimating a vehicles position (i.e, its location and orientation) given a model (or map) of the environment surrounding it. The next step is to carry out pose estimation of a robot while simultaneously generating a map of its surroundings (as shown in \autoref{fig:slam_diagram}). It is clear from the diagram that the equipment is not perfect and in an idealised environment. There is uncertainty in both the robot position (since there is uncertainty in the robots odometry), and there is also uncertainty in the measurements the robot takes.
 
-\begin{figure}[htb]
-      \centering
-      \includegraphics[width=0.4\textwidth]{background/images/slam_graph_optimisation.png}
-      \caption{A diagram showing loop closure and optimisation steps of SLAM pose graph optimisation technique\cite{PoseGraphOptimisation}.}
-      \label{fig:slam_graph_optimisation}
-\end{figure}
+% \begin{figure}[htb]
+%       \centering
+%       \includegraphics[width=0.4\textwidth]{background/images/slam_diagram.png}
+%       \caption{A diagram showing the fundamentals of the SLAM problem\cite{BasicSlam}.}
+%       \label{fig:slam_diagram}
+% \end{figure}
 
-The pose graph optimisation technique relies on memorising the robots relative position and the readings it took in that position. For example we can see a possible robot trajectory in \autoref{fig:slam_diagram}. The robot and its new relative positions are all nodes of the graph and are connected by edges. Whenever a new node is created in the graph, a reading is also taken and stored. Then whenever a new node is visited it is compared with previously stored readings, and if there is a reading that is similar to a very high degree, `loop closure' can take place. In essence this means that the robot is now visiting a location it has already visited, and so the nodes can be joined together. Then once each the loop has been established the graph has to be optimised so that each edge (and therefore node) is at its most likely position relative to the other edges. The way this is done is that each edge of the graph has a relative certainty associated with it, and this certainty dictates how flexible that particular edge is in the optimisation process. Once the loop has been closed the edges are moved such that the overall certainty of the graph is maximised. Once this is complete the readings can be stitched together to form a map of the environment, and the location of the robot within it is very well defined. This process can be seen clearly in \autoref{fig:slam_graph_optimisation}, where in \textbf{(a)} loop closure takes places, and \textbf{(b)} shows the map created after the subsequent optimisation phase. The maps are created using `binary occupancy grids' or `probabilistic grids'. The former simply stores binary 1's and 0's on whether a particular section of the grid is occupied or not. The latter adapts this by having probabilities of occupancy for each section rather than just binary values.
+% There are two main branches of SLAM algorithms; filtering methods and smoothing methods. The former includes methods such as the Extended Kalman Filter (EKF) and particle filtering (similar to the Monte-Carlo filtering explained earlier). With these methods the state is estimated iteratively on the job as latest measurements are input into the system. The latter uses the set of complete measurements to estimate the full trajectory of a robot. Pose (or factor) graph optimisation is one such smoothing method that has become exceedingly popular in modern-day SLAM solutions.
 
-These SLAM algorithms and localisation algorithms in \Cref{ssec:prob_filters}, however, are classical and have been mostly superseded by deep neural networks in most modern day applications. Furthermore, the algorithm in \Cref{ssec:prob_filters} is only applicable to localising the robot, whereas we want to be able to simultaneously map it's surroundings, for which SLAM  was developed. Both these tasks have now been efficiently solved by neural networks for classical frame-based data, but there is still much ongoing research on how to do the same with spiking data.
+% \begin{figure}[htb]
+%       \centering
+%       \includegraphics[width=0.4\textwidth]{background/images/slam_graph_optimisation.png}
+%       \caption{A diagram showing loop closure and optimisation steps of SLAM pose graph optimisation technique\cite{PoseGraphOptimisation}.}
+%       \label{fig:slam_graph_optimisation}
+% \end{figure}
+
+% The pose graph optimisation technique relies on memorising the robots relative position and the readings it took in that position. For example we can see a possible robot trajectory in \autoref{fig:slam_diagram}. The robot and its new relative positions are all nodes of the graph and are connected by edges. Whenever a new node is created in the graph, a reading is also taken and stored. Then whenever a new node is visited it is compared with previously stored readings, and if there is a reading that is similar to a very high degree, `loop closure' can take place. In essence this means that the robot is now visiting a location it has already visited, and so the nodes can be joined together. Then once each the loop has been established the graph has to be optimised so that each edge (and therefore node) is at its most likely position relative to the other edges. The way this is done is that each edge of the graph has a relative certainty associated with it, and this certainty dictates how flexible that particular edge is in the optimisation process. Once the loop has been closed the edges are moved such that the overall certainty of the graph is maximised. Once this is complete the readings can be stitched together to form a map of the environment, and the location of the robot within it is very well defined. This process can be seen clearly in \autoref{fig:slam_graph_optimisation}, where in \textbf{(a)} loop closure takes places, and \textbf{(b)} shows the map created after the subsequent optimisation phase. The maps are created using `binary occupancy grids' or `probabilistic grids'. The former simply stores binary 1's and 0's on whether a particular section of the grid is occupied or not. The latter adapts this by having probabilities of occupancy for each section rather than just binary values.
+
+% These SLAM algorithms and localisation algorithms in \Cref{ssec:prob_filters}, however, are classical and have been mostly superseded by deep neural networks in most modern day applications. Furthermore, the algorithm in \Cref{ssec:prob_filters} is only applicable to localising the robot, whereas we want to be able to simultaneously map it's surroundings, for which SLAM  was developed. Both these tasks have now been efficiently solved by neural networks for classical frame-based data, but there is still much ongoing research on how to do the same with spiking data.
 
 \section{Image Reconstruction Algorithms} \label{ssec:image_reconstruction}
 
@@ -250,6 +260,10 @@ In a paper by Arnon Amir \textit{et al.}\cite{eventBasedGestureRec} a system was
 
 There have been other implementations of systems to carry out complex tasks such as classification, and each has a different way of dealing with spiking input data other than with temporal filters. For example a paper by Xavier Lagorce \textit{et al.}\cite{eventsToTimeSurfaces} moves towards building time surfaces from events to feed into a neural network, whereas Yin Bi \textit{et al.}\cite{eventsToGraphs} propose using a non-uniform sampler to create a graph from events to then feed into a network of so-called graph convolution networks.
 
+\section{Temporally Aware Deep Learning and Classification Models} \label{sec:temporally_aware_models}
+
+\color{red} TODO: Write about conv3D and convLTSM networks etc. \color{black}
+
 \section{Existing Datasets} \label{sec:existing_datasets}
 
 There already exists many repositories of recorded neuromorphic data to get familiar with spiking data. In this section there are some examples of such datasets and a quick overview of their contents.
@@ -287,6 +301,8 @@ More examples of neuromorphic datasets include:
       \item \textbf{Heridelberg Spiking Datasets}
 
             The Spiking Heidelberg datasets for spiking neural networks\cite{SpikingHeidelberg} are useful for realising that spiking data is useful for so many more applications than computer vision. This dataset is split into two; The Spiking Heidelberg Digits (SHD) dataset and the Spiking Speech Command (SSC) dataset. Both of these datasets are audio-based classification datasets for which input spikes and output labels are provided.
+      
+      \item \color{red} \textbf{TODO: Write About The Event-Camera Dataset} \color{black}
 \end{itemize}
 
 The above datasets are created using one of a variety of event-based cameras available on the market. the function of each of the cameras is fundamentally similar (as described in \Cref{ssec:event_camera_function}) but they also have some differences between them. The cameras widely available today are shown in \autoref{fig:camera_models}.

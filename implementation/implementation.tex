@@ -31,9 +31,9 @@ There were many ways with which a neural network could accept an input to the sy
 
 \subsection{Pure Convolution Network}
 
-Convolutional neural networks have been shown to be much more effective when processing images that networks built solely with dense, fully-connected layers \color{red} add references here \color{black}. This is because they are able to better identify spacial patterns within an image as a kernel spans more than one pixel. For this reason the basic architecture was to have an input layer (the structure of which is dependent on the input format), followed by a series of hidden convolutional layers of varying parameters.
+Convolutional neural networks have been shown to be much more effective when processing images that networks built solely with dense, fully-connected layers \color{red} TODO: add references here \color{black}. This is because they are able to better identify spacial patterns within an image as a kernel spans more than one pixel. For this reason the basic architecture was to have an input layer (the structure of which is dependent on the input format), followed by a series of hidden convolutional layers of varying parameters.
 However, since the input to the system is in fact a 3D tensor of multiple images (i.e. the intensity map video generated from the camera events) a typical convolutional network would not be sufficient to capture the temporal patterns in the data. Typically 2D convolution layers can take as input images with three channels (usually RGB), and so feasibly this coudld be extended to more channels for each frame of the video, but this is not a scalable approach. Instead 3D convolutional layers were used \cite{3DConv}.
-Finally the outputs of the hidden layer were fed into a dense layer with 10 neurons to correctly classify the correct class (0-9). Activation functions need to be present in the network to prevent all the layers from becoming equivalent to a single one \color{red} add references here \color{black} (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \autoref{eq:artificial_neuron_output} in \Cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular), and in this network as well, is ReLU. \color{red} add references here \color{black}. Finally, the output layer has a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the 10 classes. This means we can simply take the highest probability as the predicted class from the network.
+Finally the outputs of the hidden layer were fed into a dense layer with 10 neurons to correctly classify the correct class (0-9). Activation functions need to be present in the network to prevent all the layers from becoming equivalent to a single one \color{red} TODO: add references here \color{black} (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \autoref{eq:artificial_neuron_output} in \Cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular), and in this network as well, is ReLU. \color{red} TODO: add references here \color{black}. Finally, the output layer has a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the 10 classes. This means we can simply take the highest probability as the predicted class from the network.
 
 \subsubsection{Hyper-parameter Tuning}
 
@@ -57,7 +57,7 @@ The network in each case was trained for multiple epochs. The performance of a t
 
 It was clear, however, that these results may be misleading since they only represent the efficiency of the system when classifying values within the training data-set. However, when looking at the performance on an unseen test data-set, it is obvious that some of the features learnt do not easily translate to general trends in unseen data. This is known as over-fitting, and can be avoided by reducing the capacity of the data-set so that it does not learn information specific to the training set.
 
-Model capacity is directly correlated to the n$ ^o $ of filters, as well as the number of layers, and as the model recognises more patterns in the training data, so it is important to get the optimum value for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen \color{red} add image and reference here \color{black}. As for the dense layers at the end of the network, it can be seen that better results were achieved as a result of it since global patterns can be further identified after the data has been processed by the convolution layers that have picked out the most important features.
+Model capacity is directly correlated to the n$ ^o $ of filters, as well as the number of layers, and as the model recognises more patterns in the training data, so it is important to get the optimum value for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen \color{red} TODO: add image and reference here \color{black}. As for the dense layers at the end of the network, it can be seen that better results were achieved as a result of it since global patterns can be further identified after the data has been processed by the convolution layers that have picked out the most important features.
 
 \begin{figure}[htb]%
     \centering
@@ -74,17 +74,17 @@ Further testing was done with increasing kernel sizes, and with pooling layers a
 large and the filter size is small to capture details. The no
 of filters decreases and the filter size increases later in the
 network for higher-level patterns. Pooling filters the image
-after convolution layers to pick out important features. \color{red} add final system architecture here \color {black}.
+after convolution layers to pick out important features. \color{red} TODO: add final system architecture here \color {black}.
 
 \subsection{LTSM}
 
 \subsection{Convolutional LTSM}
 
-\color{red} CITATION \cite{ConvLTSM}. \color{black}
+\color{red} TODO: Citation \cite{ConvLTSM}. \color{black}
 
 \subsection{Spiking Neural Network}
 
-\color{red} CITE NENGO etc. \color{black}
+\color{red} TODO: Cite nengo etc. \color{black}
 
 \subsubsection{Synaptic Smoothing}
 
@@ -100,4 +100,21 @@ The models described above allow for the system to learn directly on the spiking
 
 \subsection{E2VID}
 
-E2VID, as described in \color{red} REFERENCE BACKGROUND READING HERE \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} CHECK \color{black})
+E2VID, as described in \color{red} TODO: Reference background reading here \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} TODO: check accuracy figure \color{black})
+
+\color{red} TODO: all of the following;
+
+\begin{itemize}
+    \item Loss of high frequency data
+    \item conventional networks built around frame based vision
+    \item for NMNIST the small size of images means that reconstructions do no vary much from the rudimentary intensity maps (could be used as an illustration of how reconstruction works).
+    \item Similar to denoising network CNN more easily able to find patterns in data
+    \item gestures are more complicated to characterise, since the networks for NMIST can easily learn all possible features. As well as this the image size for NMNIST is very small
+    \item events tend to give edge map (does filling in the surroundings help?)
+    \item intensity maps can be of much higher framerate since events are taken asynchronously
+    \item gesture intensity maps equivalent to 100fps but retains high frequency information without too much noise
+    \item spikingjelly for integrating frames which is widely used approach
+    \item most gesture recognition datasets involve removing backgrounds and focussing on the hand, our network automatically only sees moving objects
+\end{itemize}
+
+\color{black}
