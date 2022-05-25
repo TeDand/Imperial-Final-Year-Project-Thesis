@@ -1,8 +1,46 @@
-\chapter{Initial Implementation} \label{chap:initial_implementation}
+\chapter{Implementation} \label{chap:implementation}
 
-\section{End-to-end Classification System}
+% - Image Reconstruction
+% 	- Reconstruction algorithm (E2VID and data pre-processing etc.)
+% 	- Computer vision techniques and models
+% 		- NMNIST Classification
+% 		- DVS128 Gesture Classification
+
+% - Direct Event Classification
+% 	- Data pre-processing etc. (talk briefly about working directly with events with nlp-like method)
+% 	- Various model architectures
+% 		- NMNIST Classification
+% 		- DVS128 Gesture Classification
+
+% - Converting previous networks to SNNs
+
+\section{Video Reconstruction}
+
+The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data. It was interesting to note the performance differences between the previous networks and the described two-phase network.
+
+\subsection{Reconstruction Algorithms}
+
+\subsubsection{E2VID}
+
+E2VID, as described in \color{red} TODO: Reference background reading here \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} TODO: check accuracy figure \color{black})
+
+\color{red} TODO: all of the following;
+
+\begin{itemize}
+    \item Similar to denoising network CNN more easily able to find patterns in data
+    \item gesture intensity maps equivalent to 100fps but retains high frequency information without too much noise
+    \item spikingjelly for integrating frames which is widely used approach
+\end{itemize}
+
+\color{black}
+
+\subsection{Classification Models on Reconstructed Video Output}
+
+\section{Direct Classification of Events}
 
 \subsection{Data Preprocessing}
+
+\color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
 
 \subsubsection{Time-relative Event Segmentation}
 In order to begin analysing neuromorphic data, it was pre-processed it into a form that a NN can take as input. One such method of doing so was to segment the events into groups based on their timestamp. \autoref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \autoref{fig:nmnist_spikes_visualisation} in \Cref{sec:existing_datasets}).
@@ -29,13 +67,15 @@ There were many ways with which a neural network could accept an input to the sy
     \item Passing a 3D tensor to an convolutional layer as input.
 \end{itemize}
 
-\subsection{Pure Convolution Network}
+\subsection{Classification Models}
+
+\subsubsection{Pure Convolution Network}
 
 Convolutional neural networks have been shown to be much more effective when processing images that networks built solely with dense, fully-connected layers \color{red} TODO: add references here \color{black}. This is because they are able to better identify spacial patterns within an image as a kernel spans more than one pixel. For this reason the basic architecture was to have an input layer (the structure of which is dependent on the input format), followed by a series of hidden convolutional layers of varying parameters.
 However, since the input to the system is in fact a 3D tensor of multiple images (i.e. the intensity map video generated from the camera events) a typical convolutional network would not be sufficient to capture the temporal patterns in the data. Typically 2D convolution layers can take as input images with three channels (usually RGB), and so feasibly this coudld be extended to more channels for each frame of the video, but this is not a scalable approach. Instead 3D convolutional layers were used \cite{3DConv}.
 Finally the outputs of the hidden layer were fed into a dense layer with 10 neurons to correctly classify the correct class (0-9). Activation functions need to be present in the network to prevent all the layers from becoming equivalent to a single one \color{red} TODO: add references here \color{black} (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \autoref{eq:artificial_neuron_output} in \Cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular), and in this network as well, is ReLU. \color{red} TODO: add references here \color{black}. Finally, the output layer has a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the 10 classes. This means we can simply take the highest probability as the predicted class from the network.
 
-\subsubsection{Hyper-parameter Tuning}
+Hyper-parameter Tuning:
 
 In order to choose the most appropriate parameters for the system, multiple tests were run varying each of the possible hyper-parameters. The tests conducted were to determine;
 
@@ -76,45 +116,20 @@ of filters decreases and the filter size increases later in the
 network for higher-level patterns. Pooling filters the image
 after convolution layers to pick out important features. \color{red} TODO: add final system architecture here \color {black}.
 
-\subsection{LTSM}
+\subsubsection{LTSM}
 
-\subsection{Convolutional LTSM}
+\subsubsection{Convolutional LTSM}
 
 \color{red} TODO: Citation \cite{ConvLTSM}. \color{black}
 
-\subsection{Spiking Neural Network}
+\section{Spiking Neural Network}
 
 \color{red} TODO: Cite nengo etc. \color{black}
 
-\subsubsection{Synaptic Smoothing}
+\subsection{Synaptic Smoothing}
 
-\subsubsection{Firing Rates}
+\subsection{Firing Rates}
 
-\textit{Post-training Scaling}
+\subsubsection{Post-training Scaling}
 
-\textit{Regularizing During Training}
-
-\section{Video Reconstruction}
-
-The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data. It was interesting to note the performance differences between the previous networks and the described two-phase network.
-
-\subsection{E2VID}
-
-E2VID, as described in \color{red} TODO: Reference background reading here \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} TODO: check accuracy figure \color{black})
-
-\color{red} TODO: all of the following;
-
-\begin{itemize}
-    \item Loss of high frequency data
-    \item conventional networks built around frame based vision
-    \item for NMNIST the small size of images means that reconstructions do no vary much from the rudimentary intensity maps (could be used as an illustration of how reconstruction works).
-    \item Similar to denoising network CNN more easily able to find patterns in data
-    \item gestures are more complicated to characterise, since the networks for NMIST can easily learn all possible features. As well as this the image size for NMNIST is very small
-    \item events tend to give edge map (does filling in the surroundings help?)
-    \item intensity maps can be of much higher framerate since events are taken asynchronously
-    \item gesture intensity maps equivalent to 100fps but retains high frequency information without too much noise
-    \item spikingjelly for integrating frames which is widely used approach
-    \item most gesture recognition datasets involve removing backgrounds and focussing on the hand, our network automatically only sees moving objects
-\end{itemize}
-
-\color{black}
+\subsubsection{Regularizing During Training}
