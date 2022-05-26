@@ -86,7 +86,7 @@ In order to choose the most appropriate parameters for the system, multiple test
     \item The introduction of some fully connected layers after convolutional layers.
 \end{itemize}
 
-The network in each case was trained for multiple epochs. The performance of a typical network can be seen in \autoref{fig:accuracy_and_loss_per_epoch}, where the performance on the training set steadily improves as the network progresses through epochs. Accuracy is one of the metrics defined in \Cref{chap:evaluation_plan}, and the loss for the given network is called categorical cross-entropy loss. The formula used to calculate the loss is given by: $ L = -\frac{1}{N}\sum^N_{i=1}\sum^C_{c=1}y_c^{(i)}log(\hat{y}_c^{(i)}) $, where there are $ N $ samples and $ C $ classes. $ y_c^{(i)} $ is $ 1 $ when the class is correctly predicted and $ 0 $ otherwise and $ \hat{y}_c^{(i)} $ is the predicted probability of class $ c $ for data-point $ i $.
+The network in each case was trained for multiple epochs. The performance of a typical network can be seen in \autoref{fig:accuracy_and_loss_per_epoch}, where the performance on the training set steadily improves as the network progresses through epochs. Accuracy is one of the metrics defined in \cref{sec:evalutaion_metrics}, and the loss for the given network is called categorical cross-entropy loss. The formula used to calculate the loss is given by: $ L = -\frac{1}{N}\sum^N_{i=1}\sum^C_{c=1}y_c^{(i)}log(\hat{y}_c^{(i)}) $, where there are $ N $ samples and $ C $ classes. $ y_c^{(i)} $ is $ 1 $ when the class is correctly predicted and $ 0 $ otherwise and $ \hat{y}_c^{(i)} $ is the predicted probability of class $ c $ for data-point $ i $.
 
 \begin{figure}[htb]
     \centering

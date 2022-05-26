@@ -1,7 +1,5 @@
 \chapter{Evaluation Plan} \label{chap:evaluation_plan}
 
-The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics \color{black}
-
 \section{Dataset Preparations}
 
 \subsection{Dataset Splitting}
@@ -13,6 +11,8 @@ It is commonplace to split the shuffled dataset into  three segments; training, 
 With smaller datasets the splitting of data may mean that there is too little left to train with. This problem can be alleviated by using cross-validation. This method entails dividing the dataset into a certain number of segments. Then in the first iteration of the learning process, the first segment is used as testing data while the rest is used as training and validation. Then in the next iteration the process can be repeated by using the second segment as the testing, and so on until each segment has been used as testing data. Finally we can use the average of the errors for each testing dataset as the `global error estimate'. It can be noted that the same segmentation and iteration process can be used for the training and validation datasets.
 
 \section{Evaluation Metrics}
+
+The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in implementation plan \color{black}
 
 For a classification task, when we obtain the results from the test dataset (as shown in \autoref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
 
