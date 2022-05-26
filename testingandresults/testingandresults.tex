@@ -1,17 +1,49 @@
 \chapter{Testing and Results}
 
+\section{Event Classification Networks}
+
+The benefits of the event driven camera (as described in \cref{ssec:event_camera_benefits}) were evident in the acquired results. \color{red} TODO: Add images of integrated frames here \color{black}. As opposed to tradition frame-based cameras, high frequency data is not lost when processing events. There are spikes for every event at a much more granular scale in the temporal dimension in the event camera when compared to the frame camera, meaning fast movements were captured more reliably since events are captured at the $\mu s$ scale, no longer restricted by the frame-rates of modern cameras (which often results in motion blur).
+
+It is, however, evident that modern computer vision techniques have been developed with frame-based cameras in mind, and so modern networks achieve good accuracy, and are able to find patterns well, on frame-based data. For this reason the common technique of integrating frame \color{red} TODO: Add reference to spikingjelly integrating frames from background reading here \color{black} results in regular frames, akin to the ones a regular camera generates, in order to feed into such networks. It does, however, still pose many benefits when compared to the frames from a regular camera. As mentioned previously information between frames is still not lost or degraded since the events are still captured and visible in each frame. As well as this, the frames generated from events inherently focussed on the points of interest in the image, since these were the only ones in motion in the frame. Most common architectures \color{red} TODO: Add references to common gesture recognition architectures here \color{black} for classical videos feature an intermediate layer to remove backgrounds and other noise from images from the image to focus on the points of interest. In this way the intermediate layer could be omitted when operating on the integrated event frames, since the output was already similar to an edge map \color{red} TODO: Add image comparison here \color{black}. It is conceivable, however, that in noisy environments with lots of motion this stage would still be necessary.
+
+\section{Two-Phase Video Reconstruction and Classification Networks}
+
+The E2VID reconstruction network (as described in \cref{ssec:image_reconstruction}) was used to recreate intensity videos from events. It was evident that the reconstructions created were robust and relatively to to life. The reconstructions were not effected by adverse lighting effects or fast motions \color{red} TODO: Add image examples \color{black}. This meant that modern computer vision techniques could still be applied to event data, while still preserving the many benefits the event model presents. It was interesting to note the performance of the reconstruction model on inputs with few moving parts. Since events are only triggered when there is an intensity change on any given pixel on the sensor, only regions with motion in them showed up as events, and the nature of all the space with no motion was not easily inferable. This can clearly be seen in \color{red} TODO: Add images showing poor reconstruction of gestures \color{black}, where only parts of the scene were accurately reconstructed. This did not, however, pose much of a problem for tasks such as gesture recognition, since the motion is exactly what is being classified, however for other tasks such as object recognition it had to be ensured that there was some sort of motion of either the object or the camera for the reconstruction algorithm to be effective.
+
+\section{Comparisons and Evaluations of Models}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c  | c ||}
+        \hline
+        Network     & NMNIST Accuracy \\
+        \hline \hline
+        Conv3D Event Classifier          & 81.43\%           \\
+        \hline
+        Conv2D LTSM Event Classifier         & 95.80\%           \\
+        \hline
+        Custom LTSM Event Classifier         & \color{red} 48.10\% \color{black}           \\
+        \hline
+        Conv2D LTSM Reconstruction Classifier           & \color{red} 83.13\% \color{black}           \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification accuracies of various models.}
+    \label{tab:network_performances}
+\end{table}
+
 \color{red} TODO: Write out the following;
 
 \begin{itemize}
-    \item Loss of high frequency data
-    \item conventional networks built around frame based vision
+    % \item Loss of high frequency data
+    % \item conventional networks built around frame based vision
     \item for NMNIST the small size of images means that reconstructions do no vary much from the rudimentary intensity maps (could be used as an illustration of how reconstruction works).
     \item Similar to denoising network CNN more easily able to find patterns in data
     \item gestures are more complicated to characterise, since the networks for NMIST can easily learn all possible features. As well as this the image size for NMNIST is very small
-    \item events tend to give edge map (does filling in the surroundings help?)
+    % \item events tend to give edge map (does filling in the surroundings help?)
     \item intensity maps can be of much higher framerate since events are taken asynchronously
     \item gesture intensity maps equivalent to 100fps but retains high frequency information without too much noise
     \item most gesture recognition datasets involve removing backgrounds and focussing on the hand, our network automatically only sees moving objects
+    \item gesture recognition robust for even harsh lighting conditions
 \end{itemize}
 
 \color{black}

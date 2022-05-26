@@ -120,7 +120,9 @@ after convolution layers to pick out important features. \color{red} TODO: add f
 
 \subsubsection{Convolutional LTSM}
 
-\color{red} TODO: Citation \cite{ConvLTSM}. \color{black}
+LTSM networks show promise in their ability to find patterns not only on an frame-by-frame basis but also in the time dimension. These spatio-temporal patterns are much more effective for classifying image sequences that just spatial patterns since information is carried throughout the frames to find overall movements and gestures. These LTSMs utilise fully connected layers to find patterns in each frame, however it has been shown that convolutional neural networks produce much better results when operating on image data, and so it would stand to reason that LTSMs would benefit from their structure as well. ConvLTMS, developed by \textit{Xingjian SHI et al.}, showed great promise, and in their experiments captured spatio-temporal correlations better and more consistently FC-LSTM, outperforming it by a sizeable margin in the application of forecasting.
+
+\color{red} TODO: Show model of custom Conv3D network \color{black}
 
 \section{Spiking Neural Network}
 
