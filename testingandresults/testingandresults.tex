@@ -14,17 +14,17 @@ The E2VID reconstruction network (as described in \cref{ssec:image_reconstructio
 
 \begin{table}[htb]
     \centering
-    \begin{tabular}{|| c  | c ||}
+    \begin{tabular}{|| c  | c | c ||}
         \hline
-        Network     & NMNIST Accuracy \\
+        Network     & NMNIST Accuracy & DVS128 Gesture Accuracy \\
         \hline \hline
-        Conv3D Event Classifier          & 81.43\%           \\
+        Conv3D Event Classifier          & 81.43\%   &   \color{red} 47.22\% \color{black}    \\
         \hline
-        Conv2D LTSM Event Classifier         & 95.80\%           \\
+        Conv2D LTSM Event Classifier         & 95.80\%   &        \\
         \hline
-        Custom LTSM Event Classifier         & \color{red} 48.10\% \color{black}           \\
+        Custom LTSM Event Classifier         & \color{red} 48.10\% \color{black}   &        \\
         \hline
-        Conv2D LTSM Reconstruction Classifier           & \color{red} 83.13\% \color{black}           \\
+        Conv2D LTSM Reconstruction Classifier           & \color{red} 83.13\% \color{black}    &       \\
         \hline
     \end{tabular}
     \caption{A table showing classification accuracies of various models.}
