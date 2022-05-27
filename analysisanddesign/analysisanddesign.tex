@@ -18,3 +18,96 @@
 % replaced by a detailed description of the project aims 
 % and objectives in the Introduction or the Background 
 % sections.
+
+\section{End-to-end Event Classification Models}
+
+\subsection{Data Pre-processing}
+
+\subsection{3-Dimensional Convolutional Neural Network}
+
+\begin{lstlisting}[language=Bash,caption={Overview of layers in 3D convolutional network},label={lst:3d_conv_layers},numbers=none]
+_________________________________________________________________
+ Layer (type)                Output Shape              Param #   
+=================================================================
+ conv3d_7 (Conv3D)           (None, 8, 34, 34, 512)    14336     
+                                                                 
+ activation_17 (Activation)  (None, 8, 34, 34, 512)    0         
+                                                                 
+ max_pooling3d_10 (MaxPoolin  (None, 4, 17, 17, 512)   0         
+ g3D)                                                            
+                                                                 
+ conv3d_8 (Conv3D)           (None, 4, 17, 17, 256)    16384256  
+                                                                 
+ activation_18 (Activation)  (None, 4, 17, 17, 256)    0         
+                                                                 
+ max_pooling3d_11 (MaxPoolin  (None, 2, 8, 8, 256)     0         
+ g3D)                                                            
+                                                                 
+ conv3d_9 (Conv3D)           (None, 2, 8, 8, 128)      11239552  
+                                                                 
+ activation_19 (Activation)  (None, 2, 8, 8, 128)      0         
+                                                                 
+ max_pooling3d_12 (MaxPoolin  (None, 1, 4, 4, 128)     0         
+ g3D)                                                            
+                                                                 
+ flatten_3 (Flatten)         (None, 2048)              0         
+                                                                 
+ dense_6 (Dense)             (None, 256)               524544    
+                                                                 
+ activation_20 (Activation)  (None, 256)               0         
+                                                                 
+ dense_7 (Dense)             (None, 10)                2570      
+                                                                 
+ activation_21 (Activation)  (None, 10)                0         
+                                                                 
+=================================================================
+Total params: 28,165,258
+Trainable params: 28,165,258
+Non-trainable params: 0
+_________________________________________________________________
+\end{lstlisting}
+
+A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data.
+
+\section{Convolutional LSTM Network}
+
+\begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network},label={lst:conv_lstm_layers},numbers=none]
+_________________________________________________________________
+Layer (type)                Output Shape              Param #   
+=================================================================
+conv_lstm2d_6 (ConvLSTM2D)  (None, 8, 34, 34, 64)     150016    
+                                                                
+max_pooling3d_4 (MaxPooling  (None, 8, 17, 17, 64)    0         
+3D)                                                             
+                                                                
+batch_normalization_6 (Batc  (None, 8, 17, 17, 64)    256       
+hNormalization)                                                 
+                                                                
+conv_lstm2d_7 (ConvLSTM2D)  (None, 8, 17, 17, 32)     110720    
+                                                                
+max_pooling3d_5 (MaxPooling  (None, 8, 9, 9, 32)      0         
+3D)                                                             
+                                                                
+batch_normalization_7 (Batc  (None, 8, 9, 9, 32)      128       
+hNormalization)                                                 
+                                                                
+conv_lstm2d_8 (ConvLSTM2D)  (None, 9, 9, 16)          27712     
+                                                                
+max_pooling2d_2 (MaxPooling  (None, 5, 5, 16)         0         
+2D)                                                             
+                                                                
+batch_normalization_8 (Batc  (None, 5, 5, 16)         64        
+hNormalization)                                                 
+                                                                
+flatten_2 (Flatten)         (None, 400)               0         
+                                                                
+dense_4 (Dense)             (None, 256)               102656    
+                                                                
+dense_5 (Dense)             (None, 10)                2570      
+                                                                
+=================================================================
+\end{lstlisting}
+
+\section{Two-phase Intensity Reconstruction Models}
+
+In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events.

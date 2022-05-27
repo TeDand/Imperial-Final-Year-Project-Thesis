@@ -14,15 +14,32 @@
 
 % - Converting previous networks to SNNs
 
-\section{Video Reconstruction}
+\section{Two-phase Intensity Reconstruction Models}
 
-The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data. It was interesting to note the performance differences between the previous networks and the described two-phase network.
+The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data.
 
 \subsection{Reconstruction Algorithms}
 
 \subsubsection{E2VID}
 
 E2VID, as described in \color{red} TODO: Reference background reading here \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} TODO: check accuracy figure \color{black})
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{implementation/images/dvs_wave_fluorescent_led.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{implementation/images/dvs_wave_fluorescent.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{implementation/images/dvs_wave_lab.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{implementation/images/dvs_wave_led.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{implementation/images/dvs_wave_natural.png}}}%
+    \caption{A waving motion being reconstructed from events captures by DVS128 event camera under different lighting conditions.The lighting conditions are as follows; (a) fluorescent led, (b) fluorescent, (c) lab lighting, (d) led lighting and (d) natural lighting.}%
+    \label{fig:wave_in_lightings_reconstructions}%
+\end{figure}
+
+\color{red} TODO: Explain why performance is good and similar for all lighting conditions \color{black}
 
 \color{red} TODO: all of the following;
 
@@ -36,9 +53,28 @@ E2VID, as described in \color{red} TODO: Reference background reading here \colo
 
 \subsection{Classification Models on Reconstructed Video Output}
 
-\section{Direct Classification of Events}
+\section{End-to-end Event Classification Models}
 
 \subsection{Data Preprocessing}
+
+A common method of processing events to get a stream of events is given in \cref{ssec:frame_integration}. This technique was applied to three readily available data-sets; NMNIST, DVS128 Gesture and CIFAR10-DVS.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{analysisanddesign/images/Dvs128_integrated_frame_1.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{analysisanddesign/images/Dvs128_integrated_frame_2.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{analysisanddesign/images/Dvs128_integrated_frame_3.png}}}%
+    \caption{Three contiguous intensity frames ({a}, {b} and {c}), created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
+    \label{fig:dvs128_integrated_frames}%
+\end{figure}
+
+The intensity frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. For each instance of a gesture the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. This means that the frames are not synchronous like they would be from an frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more easily distinguishable features may be seen. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
+
+\color{red} TODO: Add more photos of integrated frames with more and less frames \color{black}
+
+\color{red} TODO: Include image and explanations of frame integration \color{black}
 
 \color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
 

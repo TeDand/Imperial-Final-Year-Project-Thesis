@@ -140,7 +140,7 @@ Since obtaining the equation for the temporal derivative in \cref{eq:temporal_de
       \label{eq:optic_flow}
 \end{equation}
 
-\subsection{Frame Integration of Event Streams}
+\subsection{Frame Integration of Event Streams} \label{ssec:frame_integration}
 
 A common method of getting frame-like videos from event data is to use the event-to-frame integration method. One such method is outlined by \textit{Wei Fang et al.}\cite{LearnableMembraneSNN}, which is the one used in the python package spikingjelly\cite{SpikingJelly}. The method used is outlined in \cref{eq:event_integration}.
 
@@ -344,6 +344,8 @@ More examples of neuromorphic datasets include:
             The Spiking Heidelberg datasets for spiking neural networks\cite{SpikingHeidelberg} are useful for realising that spiking data is useful for so many more applications than computer vision. This dataset is split into two; The Spiking Heidelberg Digits (SHD) dataset and the Spiking Speech Command (SSC) dataset. Both of these datasets are audio-based classification datasets for which input spikes and output labels are provided.
       
       \item \color{red} \textbf{TODO: Write About The Event-Camera Dataset} \color{black}
+      
+      \item \color{red} \textbf{TODO: Write About The CIFAR10-DVS Dataset} \color{black}
 \end{itemize}
 
 The above datasets are created using one of a variety of event-based cameras available on the market. the function of each of the cameras is fundamentally similar (as described in \cref{ssec:event_camera_function}) but they also have some differences between them. The cameras widely available today are shown in \cref{fig:camera_models}.
