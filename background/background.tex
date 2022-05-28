@@ -121,10 +121,6 @@ This model was inspired by the biological neuron model shown in \cref{fig:biolog
 
 With SNNs it is theoretically possible to achieve very high energy efficiency, and when combined with a novel surrogate gradient and Recurrent Neural Network (RNN) as was experimented with in a paper by Bojian Yin \textit{et al.}\cite{EfficientSNN} excels in challenging tasks such as gesture recognition, and at some points even outperforms traditional ANNs. Alongside the aforementioned neural heterogeneity to combat stochastic processes we can see substantial improvements in previous SNN performance.
 
-\section{Nengo} \label{sec:nengo}
-
-\color{red} TODO: Write about nengo here \color{black}.
-
 \section{Existing Algorithms for Event Analysis} \label{sec:existing_algorithms}
 
 For SLAM, pose estimation and classification tasks the problem again is that classical systems heavily rely on the structure of conventional camera's outputs, and so there needs to be a radical paradigm shift in order to take events as inputs instead.
@@ -299,11 +295,43 @@ However, since the input to the system is in fact a 3D tensor of multiple images
 
 \color{red} TODO: find papers on GRU \color{black}
 
-\subsection{Convolutional LTSM Network}
+\subsection{Convolutional LTSM Network} \label{ssec:conv_lstm}
 
 LSTM networks show promise in their ability to find patterns not only on an frame-by-frame basis but also in the time dimension. These spatio-temporal patterns are much more effective for classifying image sequences that just spatial patterns since information is carried throughout the frames to find overall movements and gestures. These LTSMs utilise fully connected layers to find patterns in each frame, however it has been shown that convolutional neural networks produce much better results when operating on image data, and so it would stand to reason that LTSMs would benefit from their structure as well. ConvLSTM, developed by \textit{Xingjian SHI et al.}, showed great promise, and in their experiments captured spatio-temporal correlations better and more consistently FC-LSTM, outperforming it by a sizeable margin in the application of forecasting.
 
 \color{red} TODO: Write more about convLTSM networks etc. \color{black}
+
+\section{Hardware and Software}
+
+\subsection{Programming Languages}
+
+When choosing a programming language for the project there were a few choices that are most often chosen by developers; Python \color{red} TODO: Cite \color{black}, R \color{red} TODO: Cite \color{black}, and C++ \color{red} TODO: Cite \color{black}. Python is the most popular choice due to the ease with which algorithms can be developed using it. Python features an extensive list of libraries and debugging functions that are invaluable when creating machine learning algorithms in particular, making the language of choice for this project. It is also important to note, however, the benefits of the other language options. C++ often results in programs with impressive performance due to the ability it grants to make low-level processes more efficient. Unfortunately this fine-level control also opens up programmers to more a demanding and time-intensive programming experience, with much more code writing and debugging to be done manually. R would also be a great choice for machine learning, and shares many similarities with Python, being open-source and having a huge community of developers constantly building libraries and tools. It has a different approach to machine learning, with a a more statistical analysis emphasis. Therefore Python remains the best choice for a more general approach for data processing.
+
+\subsection{Machine Learning Frameworks and Software}
+
+\subsubsection{PyTorch}
+
+Pytorch \color{red} TODO: Cite \color{black} is a relatively new framework for machine learning, and provides a developer friendly way to write machine learning code. It is a more `pythonic' approach to code abstraction that its competition in the space, and the \emph{torch.nn.module} gives access to clear, reusable module definitions in an Object-Oriented Programming manner. It also allows for simple data parallelism, so that batch processing can easily be split over different sets of hardware. It also has an intuitive debugging experience since itt can use standard debugging tools such as PyCharm and pdb \color{red} TODO: Cite \color{black}.
+
+\subsubsection{Tensorflow}
+
+Tensorflow \color{red} TODO: Cite \color{black} is the older and more widely adopted machine learning library. It provides a more robust set of functionality with clear documentation. In terms of deployment it is the clear favourite as it allows models to be deployed on specialised servers and even on mobile. When visualising data software such as TensorBoard \color{red} TODO: Cite \color{black} are ideal as it includes functionality to display model graphs, variables, histograms and much more. As well as this, Keras \color{red} TODO: Cite \color{black} is a framework developed by Google, and uses a primarily Tensorflow based back-end. It provides an easy to use API for fast prototyping abd high levels of abstraction. It is used commercially by a plethora of companies and has a vast and highly developed research community. For these reasons Keras using a Tensorflow back-end were chosen for this project.
+
+\subsection{Other Software}
+
+\subsubsection{SpikingJelly}
+
+SpikingJelly \color{red} TODO: Cite \color{black} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (Some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by Multimedia Learning Group, Institute of Digital Media (NELVT), Peking University and Peng Cheng Laboratory, can be installed directly via the \emph{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
+
+\subsubsection{Nengo} \label{sssec:nengo}
+
+\color{red} TODO: Write about nengo and brian etc. \color{black}
+
+\subsection{Cloud Environments}
+
+Since Python is the language of choice for the project, Python Notebooks \color{red} TODO: Cite \color{black} are a good choice for code segmentation and presentation. They allow for python code to be written in executable cells, so that their output as well as other text can be presented in a full document. This makes the code easy to understand for others, and good for development as well. Python notebooks can be run locally on a web server, as well as online on a cloud service. Many machine learning frameworks and algorithms make use of hardware acceleration using GPUs or TPUs. This means that code runs much faster on more powerful machines with this specialised hardware in them, which was not the case for hardware readily available during the course of the project. For this reason cloud services provided by the likes of Google and Amazon Web Services are a good alternative to physically owning hardware. They allow for the renting of GPUs etc. from their own servers, so that code can be run on them via their respective web services. 
+
+The two main web services available at this time are Google Colaboratory \color{red} TODO: Cite \color{black} and AWS Sagemaker Studio Lab \color{red} TODO: Cite \color{black}. In terms of hardware, both services offer access to great GPUs, though sagemaker offers the more powerful T4 GPU \color{red} TODO: Cite \color{black} at the free tier. This benefit, however, is not entirely relevant as a pro subscription would be necessary with either service to make use high-RAM runtimes. Due to Colaboratory's better share-ability and wider adoption, it was chosen as the service for this project.
 
 \section{Existing Datasets} \label{sec:existing_datasets}
 
@@ -329,7 +357,7 @@ An example of a visualisation of this data is shown in \cref{fig:nmnist_spikes_v
       \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{background/images/nmnist_spikes_visualisation.png}}}%
       \qquad
       \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{background/images/mnist_matching_nmnist.png}}}%
-      \caption{A visualisation of events from a single training sample from the NMNIST dataset.}%
+      \caption{A visualisation of events, \textbf{(a)}, from a single training sample from the NMNIST dataset, \textbf{(b)}.}%
       \label{fig:nmnist_spikes_visualisation}%
 \end{figure}
 

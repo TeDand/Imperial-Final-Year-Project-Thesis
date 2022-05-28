@@ -67,7 +67,7 @@ Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
 
-A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data.
+A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data. An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}.
 
 \section{Convolutional LSTM Network}
 
@@ -107,6 +107,8 @@ dense_5 (Dense)             (None, 10)                2570
                                                                 
 =================================================================
 \end{lstlisting}
+
+A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data. An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}.
 
 \section{Two-phase Intensity Reconstruction Models}
 
