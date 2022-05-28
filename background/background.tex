@@ -372,17 +372,36 @@ An example of a visualisation of this data is shown in \cref{fig:nmnist_spikes_v
 
 \subsubsection{DVS128 Gesture} \label{sssec:dvs128_gesture}
 
-This dataset is a set of 11 hand gestures from 29 subjects under 3 illumination conditions. It was created to help create a real-time gesture recognition system that utilises the low power capabilities of event-based cameras\cite{DVS128}.
+This dataset is a set of 11 hand gestures from 29 subjects under various illumination conditions with a DVS camera. It was created to help create a real-time gesture recognition system that utilises the low power capabilities of event-based cameras\cite{DVS128}. A visualisation of these gestures can be seen in \cref{fig:dvs128_gestures}. The illumination conditions include; fluorescent led, fluorescent, lab lighting, led lighting and natural lighting. This dataset is ideal for testing a networks capability for identifying spatio-temporal patterns in order to correctly classify each gesture.
 
-\color{red} \textbf{TODO: Write more about this dataset} \color{black}
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.65\textwidth]{background/images/dvs128_gestures.png}
+      \caption{Visualisation of all gestures captured in the DVS128 Gesture dataset\cite{DVS128}.}
+      \label{fig:dvs128_gestures}
+\end{figure}
 
 \subsubsection{CIFAR10-DVS} \label{sssec:cifar10_dvs}
 
-\color{red} \textbf{TODO: Write About The Event-Camera Dataset} \color{black}
+CIFAR10-DVS\cite{CIFAR10DVS} is an neuromorphic dataset for object classification. 10,000 frame-based images that come from the original CIFAR-10 dataset are converted into 10,000 event streams with an event-based sensor, whose resolution is 128x128 pixels. The dataset has an intermediate difficulty with 10 different classes. A visualisation of these classes can be found in \cref{fig:cifar10_objects}.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.35\textwidth]{background/images/cifar10_objects.jpg}
+      \caption{Visualisation of all objects captured in the CIFAR10-DVS dataset\cite{CIFAR10DVS}.}
+      \label{fig:cifar10_objects}
+\end{figure}
 
 \subsubsection{Event-Camera Dataset} \label{sssec:event_camera_dataset}
 
-\color{red} \textbf{TODO: Write About The Event-Camera Dataset} \color{black}
+The Event-Camera Dataset and Simulator\cite{EventCameraDataset} were created for the purpose For this purpose of motivating research on new algorithms for high-speed and high-dynamic-range robotics and computer-vision. It is a collection of datasets captured with a DAVIS in a variety of synthetic and real environments. In addition to global-shutter intensity images and asynchronous events, inertial measurements and ground-truth camera poses from a motion-capture system are provided. The latter allows comparing the pose accuracy of ego-motion estimation algorithms quantitatively. A visualisation of the frame-camera video alongside its event-camera counterpart can be seen in \cref{fig:event_dataset_videos}.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.5\textwidth]{background/images/event_dataset_videos.png}
+      \caption{Visualisation of all videos and events captured in the Event-Camera dataset\cite{EventCameraDataset}.}
+      \label{fig:event_dataset_videos}
+\end{figure}
 
 \subsubsection{Heridelberg Spiking Datasets} \label{sssec:heridelberg_spiking}
 
