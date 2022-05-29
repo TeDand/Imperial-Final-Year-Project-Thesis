@@ -73,9 +73,13 @@
 %     Thanks mum!
 % \end{abstract}
 
-\tableofcontents \thispagestyle{empty}
-\listoffigures \thispagestyle{empty}
-\listoftables \thispagestyle{empty}
+\pagenumbering{gobble}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\pagenumbering{arabic}
 
 \input{introduction/introduction.tex}
 \input{background/background.tex}
