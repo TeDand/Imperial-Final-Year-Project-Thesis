@@ -129,12 +129,19 @@ For SLAM, pose estimation and classification tasks the problem again is that cla
 
 Since obtaining the equation for the temporal derivative in \cref{eq:temporal_derivative}, there is now a indirect measure of brightness and so a more classic computer vision techniques using optic-flow constraints can be utilised to characterise the events detected by pixels. In frame-based systems, optic flow methods create a flow-field that describe the displacement vector (signifying direction and magnitude of movement) for each pixel in the frame, and a similar derivation can be done for event data. A core constraint in this derivation is that the intensity of a local time-varying image region is constant under motion (for at least a short amount of time)\cite{GenerativeEventModel}. \cref{eq:optic_flow} is the resulting equations that shows the relation between the brightness gradient and the displacement of the pixel over a short period of time given its velocity\cite{EventBasedVisionASurvery}. It implies that if the motion is parallel to the edge, there is no event fired (since $ v \cdot \nabla L = 0  $) and conversely if the motion is perpendicular to the edge events are fired at their highest rate.
 
-\color{red} TODO: Write about how optic flow is often used in classification to see in a frame what the directions of motion are as well as the frame itself and the laplacian or edge map. \color{black}
-
 \begin{equation}
       \Delta L \approx -\nabla L \cdot v \Delta t_k
       \label{eq:optic_flow}
 \end{equation}
+
+Optic flow methods serve as a method for finding the magnitude and direction of apparent motion in individual still frames of a video. This is an added dimension of potentially relevant information for classification task where motion are of particular importance (e.g. gesture recognition). For example, a method implemented by Qiguang Miao \textit{et al.}\cite{MultimodalGestureRecognition} is shown in \cref{fig:multimodal_gesture_recognition_pipeline}. The network shows multimodal data, including RGB, depth and optical flow data generated from the RGB ones, being sent to the ResC3D network to extract spatio-temporal features. Finally, the features are blended together using canonical correlation analysis, and the final recognition result is obtained by a linear SVM classifier.
+
+\begin{figure}[htb]
+      \centering
+      \includegraphics[width=0.75\textwidth]{background/images/multimodal_gesture_recognition_pipeline.png}
+      \caption{A diagram showing the pipeline for a multimodal gesture recognition system\cite{MultimodalGestureRecognition}.}
+      \label{fig:multimodal_gesture_recognition_pipeline}
+\end{figure}
 
 \subsection{Frame Integration of Event Streams} \label{ssec:frame_integration}
 
@@ -160,7 +167,7 @@ Data in neuromorphic datasets are in the formulation of $ E(x_i, y_i, t_i, p_i) 
  
 where $ \lfloor . \rfloor $ is the floor operation, $ I_{p, x, y}(p_i, x_i, y_i) $ is an indicator function and it equals 1 only when $ (p, x, y) = (p_i, x_i, y_i) $.
 
-\color{red} TODO: Write more about this method from the spikingjelly docs \color{black}
+With this formulation, we can obtain a stream of frames which show clusters of events in a more easily processable format. These frames can either capture a number of events in a certain time-slice, in which case the frames will be synchronous in a similar way to the output of classical frame-based cameras, or create time-slices with a set number of events in each. In the latter case the output frames will not be of a constant framerate, and will instead be asynchronous. They do, however, ensure that there is a constant amount of information per frame regardless of the amount of motion at any one time, which may be better for pattern recognition.
 
 % \subsection{Localisation using Probabilistic Filters} \label{ssec:prob_filters}
 
@@ -236,7 +243,7 @@ where $ \lfloor . \rfloor $ is the floor operation, $ I_{p, x, y}(p_i, x_i, y_i)
 
 % These SLAM algorithms and localisation algorithms in \Cref{ssec:prob_filters}, however, are classical and have been mostly superseded by deep neural networks in most modern day applications. Furthermore, the algorithm in \Cref{ssec:prob_filters} is only applicable to localising the robot, whereas we want to be able to simultaneously map it's surroundings, for which SLAM  was developed. Both these tasks have now been efficiently solved by neural networks for classical frame-based data, but there is still much ongoing research on how to do the same with spiking data.
 
-\section{Image Reconstruction Algorithms} \label{ssec:image_reconstruction}
+\section{Video Reconstruction Algorithms} \label{ssec:video_reconstruction}
 
 Image reconstruction has been implemented for event data building on the direct optimised versions of Convolutional Neural Networks (CNNs). An example of this is the network named `U-net'\cite{UNET} which managed to reconstruct a video using 10M parameters to analyse events from an AER camera protocol. Recent work by Rebecq \textit{et al.} illustrates a novel network architecture that reconstructs a video from a stream of events \cite{spikingToVideo}. These methods are purported to allow the introduction of mainstream computer vision research to event cameras. \Cref{fig:spikes_to_video} shows an example of how converting spiking data to a video stream allows for use of classical computer vision algorithms.
 
@@ -256,9 +263,9 @@ A naive approach would be take each event $ e_k = (\boldsymbol{\mathbf{x}}_k, t_
       \label{fig:spikes_to_video_rnn}
 \end{figure}
 
-\subsection{Black-box Network}
+\subsection{End-to-end Event Classification Network}
 
-A method such as the one described in \cref{ssec:image_reconstruction} allows for the use of hugely researched and well documented computer vision algorithms for classification and other tasks while maintaining the benefits of event-based cameras. However, it may be possible to bypass the intermediate step of video reconstruction altogether, and simply create a model that simply acts as a black box and can be trained to give the required output directly from a neuromorphic input. \Cref{fig:temporal_filter} shows how a frame-based video is converted to a continuous stream of events from which snapshots of events can be taken. It should be noted that the distribution of the data from the neuromorphic camera is much more dense than the frame-based video, which means that the motion blue visible in the video should not be a problem with the new representation (as explained in \cref{ssec:event_camera_benefits}).
+A method such as the one described in \cref{ssec:video_reconstruction} allows for the use of hugely researched and well documented computer vision algorithms for classification and other tasks while maintaining the benefits of event-based cameras. However, it may be possible to bypass the intermediate step of video reconstruction altogether, and simply create a model that simply acts as a black box and can be trained to give the required output directly from a neuromorphic input. \Cref{fig:temporal_filter} shows how a frame-based video is converted to a continuous stream of events from which snapshots of events can be taken. It should be noted that the distribution of the data from the neuromorphic camera is much more dense than the frame-based video, which means that the motion blue visible in the video should not be a problem with the new representation (as explained in \cref{ssec:event_camera_benefits}).
 
 \begin{figure}[htb]
       \centering
@@ -298,38 +305,6 @@ When attempting to store information learned in previous frames of a multi-frame
 LSTM networks show promise in their ability to find patterns not only on an frame-by-frame basis but also in the time dimension. These spatio-temporal patterns are much more effective for classifying image sequences that just spatial patterns since information is carried throughout the frames to find overall movements and gestures. These LTSMs utilise fully connected layers to find patterns in each frame, however it has been shown that convolutional neural networks produce much better results when operating on image data, and so it would stand to reason that LTSMs would benefit from their structure as well. ConvLSTM, developed by \textit{Xingjian SHI et al.}, showed great promise, and in their experiments captured spatio-temporal correlations better and more consistently FC-LSTM, outperforming it by a sizeable margin in the application of forecasting.
 
 \color{red} TODO: Write more about convLTSM networks etc. \color{black}
-
-\section{Hardware and Software}
-
-\subsection{Programming Languages}
-
-When choosing a programming language for the project there were a few choices that are most often chosen by developers; Python\cite{Python}, R\cite{R}, and C++\cite{C++}. Python is the most popular choice due to the ease with which algorithms can be developed using it. Python features an extensive list of libraries and debugging functions that are invaluable when creating machine learning algorithms in particular, making the language of choice for this project. It is also important to note, however, the benefits of the other language options. C++ often results in programs with impressive performance due to the ability it grants to make low-level processes more efficient. Unfortunately this fine-level control also opens up programmers to more a demanding and time-intensive programming experience, with much more code writing and debugging to be done manually. R would also be a great choice for machine learning, and shares many similarities with Python, being open-source and having a huge community of developers constantly building libraries and tools. It has a different approach to machine learning, with a a more statistical analysis emphasis. Therefore Python remains the best choice for a more general approach for data processing.
-
-\subsection{Machine Learning Frameworks and Software}
-
-\subsubsection{PyTorch}
-
-Pytorch\cite{Pytorch} is a relatively new framework for machine learning, and provides a developer friendly way to write machine learning code. It is a more `pythonic' approach to code abstraction that its competition in the space, and the \emph{torch.nn.module} gives access to clear, reusable module definitions in an Object-Oriented Programming manner. It also allows for simple data parallelism, so that batch processing can easily be split over different sets of hardware. It also has an intuitive debugging experience since itt can use standard debugging tools such as PyCharm and pdb.
-
-\subsubsection{Tensorflow}
-
-Tensorflow\cite{Tensorflow} is the older and more widely adopted machine learning library. It provides a more robust set of functionality with clear documentation. In terms of deployment it is the clear favourite as it allows models to be deployed on specialised servers and even on mobile. When visualising data software such as TensorBoard are ideal as it includes functionality to display model graphs, variables, histograms and much more. As well as this, Keras\cite{Keras} is a framework developed by Google, and uses a primarily Tensorflow based back-end. It provides an easy to use API for fast prototyping abd high levels of abstraction. It is used commercially by a plethora of companies and has a vast and highly developed research community. For these reasons Keras using a Tensorflow back-end were chosen for this project.
-
-\subsection{Other Software}
-
-\subsubsection{SpikingJelly}
-
-SpikingJelly\cite{SpikingJelly} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (Some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by Multimedia Learning Group, Institute of Digital Media (NELVT), Peking University and Peng Cheng Laboratory, can be installed directly via the \emph{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
-
-\subsubsection{Nengo} \label{sssec:nengo}
-
-\color{red} TODO: Write about nengo and brian etc. \color{black}
-
-\subsection{Cloud Environments}
-
-Since Python is the language of choice for the project, Python Notebooks are a good choice for code segmentation and presentation. They allow for python code to be written in executable cells, so that their output as well as other text can be presented in a full document. This makes the code easy to understand for others, and good for development as well. Python notebooks can be run locally on a web server, as well as online on a cloud service. Many machine learning frameworks and algorithms make use of hardware acceleration using GPUs or TPUs. This means that code runs much faster on more powerful machines with this specialised hardware in them, which was not the case for hardware readily available during the course of the project. For this reason cloud services provided by the likes of Google and Amazon Web Services are a good alternative to physically owning hardware. They allow for the renting of GPUs etc. from their own servers, so that code can be run on them via their respective web services. 
-
-The two main web services available at this time are Google Colaboratory\cite{GoogleColab} and AWS Sagemaker Studio Lab\cite{AwsSagemaker}. In terms of hardware, both services offer access to great GPUs, though sagemaker offers the more powerful T4 GPU at the free tier. This benefit, however, is not entirely relevant as a pro subscription would be necessary with either service to make use high-RAM runtimes. Due to Colaboratory's better share-ability and wider adoption, it was chosen as the service for this project.
 
 \section{Existing Datasets} \label{sec:existing_datasets}
 
@@ -410,93 +385,3 @@ The Spiking Heidelberg datasets for spiking neural networks\cite{SpikingHeidelbe
 \subsection{Non-neuromorphic Datasets}
 
 Other data-sets such as fashion-MNIST could also be converted to spiking times by treating image intensities as input currents to model neurons, so that higher intensity pixels would lead to earlier spikes, and lower intensity to later spikes, as was done by Nicolas Perez-Nieves \textit{et al.}\cite{NeuralHetroPromRobLearn}. This avoids having to own an event-based camera to create data (as was done with the NMNIST dataset mentioned in \cref{ssec:neuromorphic_datasets}), which is useful since the cameras are expensive and difficult to get a hold of in general.
-
-\section{Evaluation Metrics} \label{sec:evalutaion_metrics}
-
-The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in backround \color{black}
-
-For a classification task, when we obtain the results from the test dataset (as shown in \cref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c  | c ||}
-        \hline
-        Labels     & Predictions \\
-        \hline \hline
-        1          & 1           \\
-        \hline
-        1          & 2           \\
-        \hline
-        3          & 8           \\
-        \hline
-        9          & 9           \\
-        \hline
-        6          & 9           \\
-        \hline
-        $ \vdots $ & $ \vdots $  \\
-    \end{tabular}
-    \caption{A table showing an example of results when inputting test data from NMNIST dataset\cite{NMNIST} into the final model.}
-    \label{tab:possible_results}
-\end{table}
-
-\subsection{Confusion matrix}
-
-Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. It should be noted that a similar confusion matrix should be created taking each class as positive, then each metric can be calculated by taking the averages (as shown in \cref{ssec:eval_metric_averaging}). For each of the cells the number of matching records are stored to calculate each of the evaluation metrics. The table includes True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c c | c | c | c | c ||}
-        \hline
-                                                                         &                                    & \multicolumn{4}{ c ||}{\textbf{Predicted Class}}                                        \\
-        \cline{3-6}
-                                                                         &                                    & 1                                                & 2          & 3          & $ \hdots $ \\
-        \hline
-        \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Actual Class}}} & \multicolumn{1}{| c |}{1}          & TP                                               & FN         & FN         & $ \hdots $ \\
-        \cline{2-6}
-                                                                         & \multicolumn{1}{| c |}{2}          & FP                                               & TN         & TN         & $ \hdots $ \\
-        \cline{2-6}
-                                                                         & \multicolumn{1}{| c |}{3}          & FP                                               & TN         & TN         & $ \hdots $ \\
-        \cline{2-6}
-                                                                         & \multicolumn{1}{| c |}{4}          & FP                                               & TN         & TN         & $ \hdots $ \\
-        \cline{2-6}
-                                                                         & \multicolumn{1}{| c |}{5}          & FP                                               & TN         & TN         & $ \hdots $ \\
-        \cline{2-6}
-                                                                         & \multicolumn{1}{| c |}{$ \vdots $} & $ \vdots $                                       & $ \vdots $ & $ \vdots $ & $ \ddots $ \\
-    \end{tabular}
-    \caption{a table showing one particular confusion matrix for NMNIST dataset\cite{NMNIST} for class 1 as the positive class.}
-    \label{tab:confusion_matrix}
-\end{table}
-
-\subsection{Accuracy}
-
-The accuracy of the system is the proportion of samples correctly classified.
-
-$$ Accuracy = \frac{TP + TN}{TP + TN + FP + FN} $$
-
-Note: classification error can also be used and is defined as $ 1 - accuracy $.
-
-\subsection{Precision}
-
-Precision is the proportion of positively predicted samples identified correctly.
-
-$$ Precision = \frac{TP}{TP + FP} $$
-
-It should be noted that a high precision may mean that there are many false positives.
-
-\subsection{Recall}
-
-Recall is the proportion of actual positives correctly classified.
-
-$$ Recall = \frac{TP}{TP + FN} $$
-
-It should be noted that a high recall may mean a lot of positive samples may be missed.
-
-\subsection{F-measure/F-score}
-
-This is defined as the harmonic mean of precision and recall in order to get one number as an average measure of performance.
-
-$$ F_1 = \frac{2 \cdot precision \cdot recall}{precision + recall} $$
-
-\subsection{Micro and Macro Averaging} \label{ssec:eval_metric_averaging}
-
-Macro-averaging involves taking an average on the class level. Metrics are calculated for each class and then averaged at the end. Micro-averaging involves taking an average on the item level (i.e., taking the average of each of TP, FP, TN and FN to get the averages metrics).

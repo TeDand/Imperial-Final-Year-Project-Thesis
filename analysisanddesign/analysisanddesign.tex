@@ -19,13 +19,47 @@
 % and objectives in the Introduction or the Background 
 % sections.
 
+\section{Hardware and Software}
+
+\subsection{Programming Languages}
+
+When choosing a programming language for the project there were a few choices that are most often chosen by developers; Python\cite{Python}, R\cite{R}, and C++\cite{C++}. Python is the most popular choice due to the ease with which algorithms can be developed using it. Python features an extensive list of libraries and debugging functions that are invaluable when creating machine learning algorithms in particular, making the language of choice for this project. It is also important to note, however, the benefits of the other language options. C++ often results in programs with impressive performance due to the ability it grants to make low-level processes more efficient. Unfortunately this fine-level control also opens up programmers to more a demanding and time-intensive programming experience, with much more code writing and debugging to be done manually. R would also be a great choice for machine learning, and shares many similarities with Python, being open-source and having a huge community of developers constantly building libraries and tools. It has a different approach to machine learning, with a a more statistical analysis emphasis. Therefore Python remains the best choice for a more general approach for data processing.
+
+\subsection{Machine Learning Frameworks and Software}
+
+\subsubsection{PyTorch}
+
+Pytorch\cite{Pytorch} is a relatively new framework for machine learning, and provides a developer friendly way to write machine learning code. It is a more `pythonic' approach to code abstraction that its competition in the space, and the \emph{torch.nn.module} gives access to clear, reusable module definitions in an Object-Oriented Programming manner. It also allows for simple data parallelism, so that batch processing can easily be split over different sets of hardware. It also has an intuitive debugging experience since itt can use standard debugging tools such as PyCharm and pdb.
+
+\subsubsection{Tensorflow}
+
+Tensorflow\cite{Tensorflow} is the older and more widely adopted machine learning library. It provides a more robust set of functionality with clear documentation. In terms of deployment it is the clear favourite as it allows models to be deployed on specialised servers and even on mobile. When visualising data software such as TensorBoard are ideal as it includes functionality to display model graphs, variables, histograms and much more. As well as this, Keras\cite{Keras} is a framework developed by Google, and uses a primarily Tensorflow based back-end. It provides an easy to use API for fast prototyping abd high levels of abstraction. It is used commercially by a plethora of companies and has a vast and highly developed research community. For these reasons Keras using a Tensorflow back-end were chosen for this project.
+
+\subsection{Other Software}
+
+\subsubsection{SpikingJelly}
+
+SpikingJelly\cite{SpikingJelly} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (Some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by Multimedia Learning Group, Institute of Digital Media (NELVT), Peking University and Peng Cheng Laboratory, can be installed directly via the \emph{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
+
+\subsubsection{Nengo} \label{sssec:nengo}
+
+\color{red} TODO: Write about nengo and brian etc. \color{black}
+
+\subsection{Cloud Environments}
+
+Since Python is the language of choice for the project, Python Notebooks are a good choice for code segmentation and presentation. They allow for python code to be written in executable cells, so that their output as well as other text can be presented in a full document. This makes the code easy to understand for others, and good for development as well. Python notebooks can be run locally on a web server, as well as online on a cloud service. Many machine learning frameworks and algorithms make use of hardware acceleration using GPUs or TPUs. This means that code runs much faster on more powerful machines with this specialised hardware in them, which was not the case for hardware readily available during the course of the project. For this reason cloud services provided by the likes of Google and Amazon Web Services are a good alternative to physically owning hardware. They allow for the renting of GPUs etc. from their own servers, so that code can be run on them via their respective web services. 
+
+The two main web services available at this time are Google Colaboratory\cite{GoogleColab} and AWS Sagemaker Studio Lab\cite{AwsSagemaker}. In terms of hardware, both services offer access to great GPUs, though sagemaker offers the more powerful T4 GPU at the free tier. This benefit, however, is not entirely relevant as a pro subscription would be necessary with either service to make use high-RAM runtimes. Due to Colaboratory's better share-ability and wider adoption, it was chosen as the service for this project.
+
+\section{Datasets and Pre-processing}
+
 The datasets used for the evaluation of the networks in this project were NMNIST (\Cref{sssec:nmnist}), DVS128 Gesture (\Cref{sssec:dvs128_gesture}) and CIFAR10-DVS (\Cref{sssec:cifar10_dvs}), since these are the most suited for training on classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The event camera dataset for slam (\Cref{sssec:event_camera_dataset}) are also extensive and include side by side frames from a traditional camera, and so were ideal to use for testing the event reconstruction algorithms.
 
-\color{red} TODO: Find a place for this \color{black}
+\color{red} TODO: Maybe write more about this and add more stuff about synchronous/asynchronous frame integration. \color{black}
+
+\color{red} TODO: Write about pre-processing for video reconstruction. \color{black}
 
 \section{End-to-end Event Classification Models}
-
-\subsection{Data Pre-processing}
 
 \subsection{3-Dimensional Convolutional Neural Network}
 
@@ -117,3 +151,95 @@ A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implement
 \section{Two-phase Intensity Reconstruction Models}
 
 In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events.
+
+\color{red} TODO: Add system diagram of various networks being fed by E2VID and explain it. \color{black}
+
+\section{Evaluation Metrics} \label{sec:evalutaion_metrics}
+
+The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in backround \color{black}
+
+For a classification task, when we obtain the results from the test dataset (as shown in \cref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c  | c ||}
+        \hline
+        Labels     & Predictions \\
+        \hline \hline
+        1          & 1           \\
+        \hline
+        1          & 2           \\
+        \hline
+        3          & 8           \\
+        \hline
+        9          & 9           \\
+        \hline
+        6          & 9           \\
+        \hline
+        $ \vdots $ & $ \vdots $  \\
+    \end{tabular}
+    \caption{A table showing an example of results when inputting test data from NMNIST dataset\cite{NMNIST} into the final model.}
+    \label{tab:possible_results}
+\end{table}
+
+\subsection{Confusion matrix}
+
+Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. It should be noted that a similar confusion matrix should be created taking each class as positive, then each metric can be calculated by taking the averages (as shown in \cref{ssec:eval_metric_averaging}). For each of the cells the number of matching records are stored to calculate each of the evaluation metrics. The table includes True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c c | c | c | c | c ||}
+        \hline
+                                                                         &                                    & \multicolumn{4}{ c ||}{\textbf{Predicted Class}}                                        \\
+        \cline{3-6}
+                                                                         &                                    & 1                                                & 2          & 3          & $ \hdots $ \\
+        \hline
+        \multirow{6}{*}{\rotatebox[origin=c]{90}{\textbf{Actual Class}}} & \multicolumn{1}{| c |}{1}          & TP                                               & FN         & FN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{2}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{3}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{4}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{5}          & FP                                               & TN         & TN         & $ \hdots $ \\
+        \cline{2-6}
+                                                                         & \multicolumn{1}{| c |}{$ \vdots $} & $ \vdots $                                       & $ \vdots $ & $ \vdots $ & $ \ddots $ \\
+    \end{tabular}
+    \caption{a table showing one particular confusion matrix for NMNIST dataset\cite{NMNIST} for class 1 as the positive class.}
+    \label{tab:confusion_matrix}
+\end{table}
+
+\subsection{Accuracy}
+
+The accuracy of the system is the proportion of samples correctly classified.
+
+$$ Accuracy = \frac{TP + TN}{TP + TN + FP + FN} $$
+
+Note: classification error can also be used and is defined as $ 1 - accuracy $.
+
+\subsection{Precision}
+
+Precision is the proportion of positively predicted samples identified correctly.
+
+$$ Precision = \frac{TP}{TP + FP} $$
+
+It should be noted that a high precision may mean that there are many false positives.
+
+\subsection{Recall}
+
+Recall is the proportion of actual positives correctly classified.
+
+$$ Recall = \frac{TP}{TP + FN} $$
+
+It should be noted that a high recall may mean a lot of positive samples may be missed.
+
+\subsection{F-measure/F-score}
+
+This is defined as the harmonic mean of precision and recall in order to get one number as an average measure of performance.
+
+$$ F_1 = \frac{2 \cdot precision \cdot recall}{precision + recall} $$
+
+\subsection{Micro and Macro Averaging} \label{ssec:eval_metric_averaging}
+
+Macro-averaging involves taking an average on the class level. Metrics are calculated for each class and then averaged at the end. Micro-averaging involves taking an average on the item level (i.e., taking the average of each of TP, FP, TN and FN to get the averages metrics).
