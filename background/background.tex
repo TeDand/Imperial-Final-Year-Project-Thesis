@@ -294,11 +294,11 @@ However, since the inputs to systems handling event data are in fact 3D tensors 
 
 \subsection{Long-Short Term Memory Networks}
 
-When attempting to store information learned in previous frames of a multi-framed input to a network, recurrent back-propagation is a long process due to decaying error backflow. Long-short term memory (LSTM) networks\cite{LSTM} address these issues with efficient, gradient-based methods. These systems were tested to run much more quickly, efficiently and successfully than their recurrent network counterparts. They also allow networks to learn more complex patterns such as long-time-lag tasks that previously plagues ANNs.
+When attempting to store information learned in previous frames of a multi-framed input to a network, recurrent back-propagation is a long process due to decaying error backflow. Long-short term memory (LSTM) networks\cite{LSTM} address these issues with efficient, gradient-based methods. These systems were tested to run much more quickly, efficiently and successfully than their recurrent network counterparts. They also allow networks to learn more complex patterns such as long-time-lag tasks that previously plagues ANNs. They are gated networks with separate memory cells. The three gates (input, forget and output) control the flow of information through each cell, acting as filters regulating what information is to be kept and discarded at each iteration.
 
 \subsection{Gated Recurrent Unit Networks}
 
-\color{red} TODO: find papers on GRU \color{black}
+The recently proposed Gated Recurrent Unit (GRU), is similar in design to the LSTM, since that is also a gated unit. It is more simple than the LSTM, having only two gates in its construction, and omitting separate memory cells. The performance of GRU networks, alongside LSTMs, is shown to be far superior than traditional RNNs\cite{GRU}. Since it is a more simple design, GRUs have fewer training parameter when compared to LSTMs, and therefore train faster. Though performance is often similar to LSTM networks, it has been noted that on very large datasets they underperform slightly, and in cases where accuracy is concerned they may be less ideal than LSTMs.
 
 \subsection{Convolutional LTSM Network} \label{ssec:conv_lstm}
 
