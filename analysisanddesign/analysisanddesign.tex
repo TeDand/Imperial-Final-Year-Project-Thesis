@@ -53,9 +53,13 @@ Since Python is the language of choice for the project, Python Notebooks are a g
 
 The two main web services available at this time are Google Colaboratory\cite{GoogleColab} and AWS Sagemaker Studio Lab\cite{AwsSagemaker}. In terms of hardware, both services offer access to great GPUs, though sagemaker offers the more powerful T4 GPU at the free tier. This benefit, however, is not entirely relevant as a pro subscription would be necessary with either service to make use high-RAM runtimes. Due to Colaboratory's better share-ability and wider adoption, it was chosen as the service for this project.
 
-\section{Datasets and Pre-processing}
+\section{Datasets}
 
 The datasets used for the evaluation of the networks in this project were NMNIST (\Cref{sssec:nmnist}), DVS128 Gesture (\Cref{sssec:dvs128_gesture}) and CIFAR10-DVS (\Cref{sssec:cifar10_dvs}), since these are the most suited for training on classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The event camera dataset for slam (\Cref{sssec:event_camera_dataset}) are also extensive and include side by side frames from a traditional camera, and so were ideal to use for testing the event reconstruction algorithms.
+
+\section{End-to-end Event Classification Models}
+
+\subsection{Data Pre-processing}
 
 For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively. A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}.
 
@@ -68,99 +72,6 @@ For classifying frames directly a frame integration method was utilised as descr
 
 \color{red} TODO: Maybe write more about this and add more stuff about synchronous/asynchronous frame integration. \color{black}
 
-\section{End-to-end Event Classification Models}
-
-\subsection{3-Dimensional Convolutional Neural Network}
-
-\begin{lstlisting}[language=Bash,caption={Overview of layers in 3D convolutional network},label={lst:3d_conv_layers},numbers=none]
-_________________________________________________________________
- Layer (type)                Output Shape              Param #   
-=================================================================
- conv3d_7 (Conv3D)           (None, 8, 34, 34, 512)    14336     
-                                                                 
- activation_17 (Activation)  (None, 8, 34, 34, 512)    0         
-                                                                 
- max_pooling3d_10 (MaxPoolin  (None, 4, 17, 17, 512)   0         
- g3D)                                                            
-                                                                 
- conv3d_8 (Conv3D)           (None, 4, 17, 17, 256)    16384256  
-                                                                 
- activation_18 (Activation)  (None, 4, 17, 17, 256)    0         
-                                                                 
- max_pooling3d_11 (MaxPoolin  (None, 2, 8, 8, 256)     0         
- g3D)                                                            
-                                                                 
- conv3d_9 (Conv3D)           (None, 2, 8, 8, 128)      11239552  
-                                                                 
- activation_19 (Activation)  (None, 2, 8, 8, 128)      0         
-                                                                 
- max_pooling3d_12 (MaxPoolin  (None, 1, 4, 4, 128)     0         
- g3D)                                                            
-                                                                 
- flatten_3 (Flatten)         (None, 2048)              0         
-                                                                 
- dense_6 (Dense)             (None, 256)               524544    
-                                                                 
- activation_20 (Activation)  (None, 256)               0         
-                                                                 
- dense_7 (Dense)             (None, 10)                2570      
-                                                                 
- activation_21 (Activation)  (None, 10)                0         
-                                                                 
-=================================================================
-Total params: 28,165,258
-Trainable params: 28,165,258
-Non-trainable params: 0
-_________________________________________________________________
-\end{lstlisting}
-
-A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data. An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}.
-
-\section{Convolutional LSTM Network}
-
-\begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network},label={lst:conv_lstm_layers},numbers=none]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-conv_lstm2d_6 (ConvLSTM2D)  (None, 8, 34, 34, 64)     150016    
-                                                                
-max_pooling3d_4 (MaxPooling  (None, 8, 17, 17, 64)    0         
-3D)                                                             
-                                                                
-batch_normalization_6 (Batc  (None, 8, 17, 17, 64)    256       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_7 (ConvLSTM2D)  (None, 8, 17, 17, 32)     110720    
-                                                                
-max_pooling3d_5 (MaxPooling  (None, 8, 9, 9, 32)      0         
-3D)                                                             
-                                                                
-batch_normalization_7 (Batc  (None, 8, 9, 9, 32)      128       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_8 (ConvLSTM2D)  (None, 9, 9, 16)          27712     
-                                                                
-max_pooling2d_2 (MaxPooling  (None, 5, 5, 16)         0         
-2D)                                                             
-                                                                
-batch_normalization_8 (Batc  (None, 5, 5, 16)         64        
-hNormalization)                                                 
-                                                                
-flatten_2 (Flatten)         (None, 400)               0         
-                                                                
-dense_4 (Dense)             (None, 256)               102656    
-                                                                
-dense_5 (Dense)             (None, 10)                2570      
-                                                                
-=================================================================
-Total params: 394,122
-Trainable params: 393,898
-Non-trainable params: 224
-_________________________________________________________________
-\end{lstlisting}
-
-A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data. An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}.
-
 \section{Two-phase Intensity Reconstruction Models}
 
 In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks..
@@ -168,12 +79,33 @@ In order to make use of existing highly-tested and documented computer vision te
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.8\textwidth]{analysisanddesign/images/two_phase_network_pipeline.png}
+    \includegraphics[width=0.85\textwidth]{analysisanddesign/images/two_phase_network_pipeline.png}
     \caption{An illustration of the two-phase classification pipeline.}
     \label{fig:two_phase_network_pipeline}
 \end{figure}
 
 \color{red} TODO: Add system diagram of various networks being fed by E2VID and explain it. \color{black}
+
+\section{Classification Networks}
+
+\subsection{3-Dimensional Convolutional Neural Network} \label{ssec:conv_3d_network_design}
+
+A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data.
+
+\subsection{Convolutional LSTM Network}
+
+A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data.
+
+\subsection{Custom Convolutional LSTM Network}
+
+This network is an extension of the LSTM network in the previous section, adding more capacity for the model to learn spatio-temporal patterns. It involves altering the intermediate convolutional neural network that analyses each frame in the video time series. A diagram showing the pipeline of the overall network can be seen in \cref{fig:custom_conv_lstm_pipeline}. This additional capacity is helpful for deciphering more complex `actions' in a video, such as in the case of gesture recognition.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.65\textwidth]{analysisanddesign/images/custom_conv_lstm_pipeline.png}
+    \caption{An illustration of the custom convolutional LSTM network.}
+    \label{fig:custom_conv_lstm_pipeline}
+\end{figure}
 
 \section{Evaluation Metrics} \label{sec:evalutaion_metrics}
 
