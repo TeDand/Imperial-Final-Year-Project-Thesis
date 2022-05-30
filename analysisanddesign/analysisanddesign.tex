@@ -150,13 +150,21 @@ A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implement
 
 \section{Two-phase Intensity Reconstruction Models}
 
-In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events.
+In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks..
+
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{analysisanddesign/images/two_phase_network_pipeline.png}
+    \caption{An illustration of the two-phase classification pipeline.}
+    \label{fig:two_phase_network_pipeline}
+\end{figure}
 
 \color{red} TODO: Add system diagram of various networks being fed by E2VID and explain it. \color{black}
 
 \section{Evaluation Metrics} \label{sec:evalutaion_metrics}
 
-The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in backround \color{black}
+The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in background \color{black}
 
 For a classification task, when we obtain the results from the test dataset (as shown in \cref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
 
