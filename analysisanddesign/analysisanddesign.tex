@@ -41,9 +41,11 @@ Tensorflow\cite{Tensorflow} is the older and more widely adopted machine learnin
 
 SpikingJelly\cite{SpikingJelly} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (Some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by Multimedia Learning Group, Institute of Digital Media (NELVT), Peking University and Peng Cheng Laboratory, can be installed directly via the \emph{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
 
-\subsubsection{Nengo} \label{sssec:nengo}
+\subsubsection{NengoDL} \label{sssec:nengo}
 
-\color{red} TODO: Write about nengo and brian etc. \color{black}
+NengoDL\cite{NengoDL} is a software framework designed to combine the strengths of neuromorphic modelling and deep learning. It is a useful tool for constructing biologically inspired spiking neuron models, and combining them to create fully spiking neural networks. As well as these these networks are intermixed with efficiently simulated deep learning concepts such as convolutional neural networks. This unified framework therefore allows us to train SNNs in the same way as we would for other ANN models with an easy to use interface. As well as this converters exist in order to convert ANNs to SNNs with relative ease.
+
+\color{red} TODO: This could be moved if Nengo doesn't end up being used. \color{black}
 
 \subsection{Cloud Environments}
 
@@ -55,9 +57,16 @@ The two main web services available at this time are Google Colaboratory\cite{Go
 
 The datasets used for the evaluation of the networks in this project were NMNIST (\Cref{sssec:nmnist}), DVS128 Gesture (\Cref{sssec:dvs128_gesture}) and CIFAR10-DVS (\Cref{sssec:cifar10_dvs}), since these are the most suited for training on classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The event camera dataset for slam (\Cref{sssec:event_camera_dataset}) are also extensive and include side by side frames from a traditional camera, and so were ideal to use for testing the event reconstruction algorithms.
 
-\color{red} TODO: Maybe write more about this and add more stuff about synchronous/asynchronous frame integration. \color{black}
+For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively. A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}.
 
-\color{red} TODO: Write about pre-processing for video reconstruction. \color{black}
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{analysisanddesign/images/frame_integration_illustration.png}
+    \caption{An illustration of the frame integration process with custom integrating method.}
+    \label{fig:frame_integration_diagram}
+\end{figure}
+
+\color{red} TODO: Maybe write more about this and add more stuff about synchronous/asynchronous frame integration. \color{black}
 
 \section{End-to-end Event Classification Models}
 
