@@ -10,6 +10,44 @@ The benefits of the event driven camera (as described in \cref{ssec:event_camera
 
 It is, however, evident that modern computer vision techniques have been developed with frame-based cameras in mind, and so modern networks achieve good accuracy, and are able to find patterns well, on frame-based data. For this reason the common technique of integrating frame \color{red} TODO: Add reference to spikingjelly integrating frames from background reading here \color{black} results in regular frames, akin to the ones a regular camera generates, in order to feed into such networks. It does, however, still pose many benefits when compared to the frames from a regular camera. As mentioned previously information between frames is still not lost or degraded since the events are still captured and visible in each frame. As well as this, the frames generated from events inherently focussed on the points of interest in the image, since these were the only ones in motion in the frame. Most common architectures \color{red} TODO: Add references to common gesture recognition architectures here \color{black} for classical videos feature an intermediate layer to remove backgrounds and other noise from images from the image to focus on the points of interest. In this way the intermediate layer could be omitted when operating on the integrated event frames, since the output was already similar to an edge map \color{red} TODO: Add image comparison here \color{black}. It is conceivable, however, that in noisy environments with lots of motion this stage would still be necessary.
 
+It was also interesting to note the inherent ability of neuromorphic cameras to capture points of interest. When using the frame integration method, the result was very similar to an edge map, which is often the primary step of image analysis using convolutional neural networks to images in existing networks already. \Cref{fig:canny_edge_detection_nmnist} shows the effect of carrying out canny edge detection\cite{CannyEdgeDetection} on an integrated frame from the NMNIST dataset. The sample is taken from a recording of the number `0', and it can be seen that the original frame is in essence just a noisy edge map of the number. The steps taken for canny edge detection were as follows;
+
+\begin{enumerate}
+    \item Smooth image by convolving with an averaging filter of the form: $ \begin{bmatrix}
+        \frac{1}{4^2} & \frac{1}{4^2}  & \frac{1}{4^2}  & \frac{1}{4^2} \\
+        \frac{1}{4^2} & \frac{1}{4^2}  & \frac{1}{4^2}  & \frac{1}{4^2} \\
+        \frac{1}{4^2} & \frac{1}{4^2}  & \frac{1}{4^2}  & \frac{1}{4^2} \\
+        \frac{1}{4^2} & \frac{1}{4^2}  & \frac{1}{4^2}  & \frac{1}{4^2} \\
+    \end{bmatrix} $
+    \item Sobel edge detection was carried out in order to find the edges of the smoothed image. To do this the image was convolved with the following matrices: $ S_x =
+    \begin{bmatrix}
+        -1 & 0 & 1 \\
+        -2 & 0 & 2 \\
+        -1 & 0 & 1 \\
+    \end{bmatrix} $ and $ S_y = 
+    \begin{bmatrix}
+        1 & 2 & 1 \\
+        0 & 0 & 0 \\
+        -1 & -2 & -1 \\
+    \end{bmatrix} $
+    \item Hysteresis thresholding allowed for weaker edges to be counted as long as they are connected to stronger ones. Then non-maximum suppression was applied to get a single line for every edge (by finding the strongest point of every line in the direction of its gradient).
+\end{enumerate}
+
+This refined edge map could have been part of the pre-processing of the data before being passed into the network, but it was found that this was not beneficial to network training. This was because some information is lost in the smoothing process, and any feature mapping was done efficiently during the training of convolutional networks anyway.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/denoise_origional.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/denoise_smoothed.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/denoise_edge_map.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/denoise_hysteresis.png}}}%
+    \caption{Progression of canny edge detection on integrated frame of a sample from the NMNIST dataset with class `0'. The steps are as follows; \textbf{(a)} original integrated frame, \textbf{(b)} smoothed, \textbf{(c)} edge detection, and \textbf{(d)} Non-maximum suppression and hysteresis thresholding.}%
+    \label{fig:canny_edge_detection_nmnist}%
+\end{figure}
+
 \color{red} TODO: Write about the two different frame integration methods and show diagrams. \color{black}
 
 \color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration \color{black}
@@ -54,13 +92,137 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_convlstm.png}}}%
     \qquad
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_convlstm.png}}}%
-    \caption{Confusion matrices for the NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \caption{Confusion matrices for NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
     \label{fig:nmnist_c_matrices}%
 \end{figure}
 
+\Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the NMNIST dataset in more detail.
+\color{red} TODO: Write more about the meaning of the tables. \color{black}
+
+
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
 
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
+        0            & 1.00  & 0.97  & 0.98 & 500 \\
+        \hline
+        1            & 0.99  & 1.00  & 0.99 & 500 \\
+        \hline
+        2            & 0.99  & 0.99  & 0.99 & 500 \\
+        \hline
+        3            & 0.99  & 0.99  & 0.99 & 500 \\
+        \hline
+        4            & 0.99  & 0.97  & 0.98 & 500 \\
+        \hline
+        5            & 1.00  & 0.98  & 0.99 & 500 \\
+        \hline
+        6            & 0.97  & 1.00  & 0.98 & 500 \\
+        \hline
+        7            & 0.98  & 0.97  & 0.98 & 500 \\
+        \hline
+        8            & 0.97  & 0.97  & 0.97 & 500 \\
+        \hline
+        9            & 0.95  & 0.98  & 0.96 & 500 \\
+        \hline
+        macro avg    & 0.98  & 0.98  & 0.98 & 5000 \\
+        \hline
+        weighted avg & 0.98  & 0.98  & 0.98 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of 3D convolutional network on NMNIST dataset.}
+    \label{tab:conv3d_nmnist_evaluation_metrics}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
+        0            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        1            & 0.98 & 1.00 & 0.99 & 500  \\
+        \hline
+        2            & 0.97 & 0.99 & 0.98 & 500  \\
+        \hline
+        3            & 0.94 & 0.99 & 0.96 & 500  \\
+        \hline
+        4            & 1.00 & 0.98 & 0.99 & 500  \\
+        \hline
+        5            & 0.96 & 0.99 & 0.98 & 500  \\
+        \hline
+        6            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        7            & 0.96 & 0.98 & 0.97 & 500  \\
+        \hline
+        8            & 0.98 & 0.91 & 0.95 & 500  \\
+        \hline
+        9            & 0.97 & 0.94 & 0.96 & 500  \\
+        \hline
+        macro avg    & 0.98 & 0.97 & 0.97 & 5000 \\
+        \hline
+        weighted avg & 0.98 & 0.97 & 0.97 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of convolutional LSTM network on NMNIST dataset.}
+    \label{tab:conv_lstm_nmnist_evaluation_metrics}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
+        0            & 0.98 & 0.98 & 0.98 & 500  \\
+        \hline
+        1            & 0.98 & 1.00 & 0.99 & 500  \\
+        \hline
+        2            & 0.98 & 0.99 & 0.98 & 500  \\
+        \hline
+        3            & 0.98 & 0.97 & 0.97 & 500  \\
+        \hline
+        4            & 0.99 & 0.98 & 0.98 & 500  \\
+        \hline
+        5            & 0.98 & 0.98 & 0.98 & 500  \\
+        \hline
+        6            & 0.97 & 0.99 & 0.98 & 500  \\
+        \hline
+        7            & 0.96 & 0.98 & 0.97 & 500  \\
+        \hline
+        8            & 0.97 & 0.94 & 0.96 & 500  \\
+        \hline
+        9            & 0.98 & 0.94 & 0.96 & 500  \\
+        \hline
+        macro avg    & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+        weighted avg & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of custom convolutional LSTM network on NMNIST dataset.}
+    \label{tab:custom_conv_lstm_nmnist_evaluation_metrics}
+\end{table}
+
 \subsubsection{DVS128 Gesture Dataset}
+
+The confusion matrices for the classification of the DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5, as well as actions 6 and 7, were often misclassified as one another.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_dvs128_conv3d.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_dvs128_convlstm.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_dvs128_custom_convlstm.png}}}%
+    \caption{Confusion matrices for DVS128 Gesure classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \label{fig:dvs128_c_matrices}%
+\end{figure}
+
+\color{red} TODO: Make more custom convolution LSTMs \color{black}
 
 \subsection{Network Comparisons}
 
@@ -74,7 +236,7 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
         \hline
         Conv2D LTSM Event Classifier         & 97.48\%   &    71.53\%    \\
         \hline
-        Custom LTSM Event Classifier         & 97.88\%  &        \\
+        Custom LTSM Event Classifier         & 97.88\%  &   76.39\%     \\
         \hline
         Conv2D LTSM Reconstruction Classifier           & \color{red} 83.13\% \color{black}    &    \color{red} 19.26\% \color{black}   \\
         \hline
@@ -95,7 +257,7 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
         \hline
         Conv2D LTSM Event Classifier         & 1h3m9s   &    0h8m33s    \\
         \hline
-        Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} \color{black}    \\
+        Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} 1h24m19s \color{black}    \\
         \hline
         Conv2D LTSM Reconstruction Classifier           &     &      \\
         \hline
