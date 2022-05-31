@@ -14,29 +14,6 @@ It is, however, evident that modern computer vision techniques have been develop
 
 \color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration \color{black}
 
-\subsection{Classification Results}
-
-\subsubsection{NMNIST Dataset}
-
-The confusion matrices for the classification of the NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9. 
-
-The drawback to the 3D convolutional network is that the number of trainiable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
-
-\begin{figure}[htb]%
-    \centering
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_conv3d.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_convlstm.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_convlstm.png}}}%
-    \caption{Confusion matrices for the NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
-    \label{fig:nmnist_c_matrices}%
-\end{figure}
-
-\color{red} TODO: Make more custom convolution LSTMs \color{black}
-
-\subsubsection{DVS128 Gesture Dataset}
-
 \section{Two-phase Intensity Reconstruction Models}
 
 \subsection{Intensity Reconstruction}
@@ -66,9 +43,26 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
 
 \subsubsection{NMNIST Dataset}
 
+The confusion matrices for the classification of the NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9. 
+
+The drawback to the 3D convolutional network is that the number of trainiable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_conv3d.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_convlstm.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_convlstm.png}}}%
+    \caption{Confusion matrices for the NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \label{fig:nmnist_c_matrices}%
+\end{figure}
+
+\color{red} TODO: Make more custom convolution LSTMs \color{black}
+
 \subsubsection{DVS128 Gesture Dataset}
 
-\section{Classification Results of All Networks}
+\subsection{Network Comparisons}
 
 \begin{table}[htb]
     \centering
@@ -76,9 +70,9 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
         \hline
         Network     & NMNIST & DVS128 Gesture \\
         \hline \hline
-        Conv3D Event Classifier          & 98.22\%   &   52.43\%    \\
+        Conv3D Event Classifier          & 98.22\%   &   69.44\%    \\
         \hline
-        Conv2D LTSM Event Classifier         & 97.48\%   &        \\
+        Conv2D LTSM Event Classifier         & 97.48\%   &    71.53\%    \\
         \hline
         Custom LTSM Event Classifier         & 97.88\%  &        \\
         \hline
@@ -89,17 +83,19 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
     \label{tab:network_performances}
 \end{table}
 
+The full table of classification accuracies can be seen in \cref{tab:network_performances}. Here, the different strengths of the various networks becomes apparent in this comparison. For the simple object classification task on the NMNIST dataset, the higher capacity 3D convolutional network outperformed the others. However, in the more complex task of gesture recognition on the DVS128 Gesture dataset it struggled. The reason for this is that though it is excellent at detecting spacial patterns in each frame, it is less able to detect the temporal patterns prevalent in the gestures.
+
 \begin{table}[htb]
     \centering
     \begin{tabular}{|| c | c | c ||}
         \hline
         Network     & NMNIST & DVS128 Gesture \\
         \hline \hline
-        Conv3D Event Classifier          & 1h43m3s   &       \\
+        Conv3D Event Classifier          & 1h43m3s   &   0h34m49s    \\
         \hline
-        Conv2D LTSM Event Classifier         & 1h3m9s   &        \\
+        Conv2D LTSM Event Classifier         & 1h3m9s   &    0h8m33s    \\
         \hline
-        Custom LTSM Event Classifier         &    &        \\
+        Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} \color{black}    \\
         \hline
         Conv2D LTSM Reconstruction Classifier           &     &      \\
         \hline
@@ -107,3 +103,5 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
     \caption{A table showing training times various models.}
     \label{tab:network_training_times}
 \end{table}
+
+The training times for each of the networks on the datasets can be seen in \cref{tab:network_training_times}. It is evident that the networks with a higher capacity had higher training times. The 3D convolution network in particular had much longer training times than the other two networks, since it had many more parameters to optimise via back-propagation. It should be noted that for the networks in \color{red} red \color{black} the system encountered an Out Of Memory (OOM) error when attempting create a tensor of larger batch size. For these cases a smaller batch size was used, resulting in slightly higher training times, as well as possible skewed results.
