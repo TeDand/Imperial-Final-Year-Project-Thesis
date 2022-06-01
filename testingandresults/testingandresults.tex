@@ -2,6 +2,10 @@
 
 In order to evaluate each of the networks implemented in the previous chapter, various tests were conducted. The main forms of evaluation were previously outlines in \cref{sec:evalutaion_metrics}, allowing for a comprehensive understanding of network performance. As well as this some explanation of the findings are also given.
 
+\section{Data Pre-processing}
+
+The data was converted to the z-score as described in \cref{ssec:data_preprocessing_design}, which made the network learn more stably and ensure any patterns found were more robust and easily applicable to unseen data. This effect was much more apparent on the reconstructed video sequences since the intensities tended to vary much more than the intensities from integrated frames. This is since the values from the integrated frames were naturally `centred' around similar values.
+
 \section{End-to-end Event Classification Models}
 
 The benefits of the event driven camera (as described in \cref{ssec:event_camera_benefits}) were evident in the acquired results. \color{red} TODO: Add images of integrated frames here \color{black}. As opposed to tradition frame-based cameras, high frequency data is not lost when processing events. There are spikes for every event at a much more granular scale in the temporal dimension in the event camera when compared to the frame camera, meaning fast movements were captured more reliably since events are captured at the $\mu s$ scale, no longer restricted by the frame-rates of modern cameras (which often results in motion blur).
@@ -53,6 +57,8 @@ This refined edge map could have been part of the pre-processing of the data bef
 \color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration \color{black}
 
 \section{Two-phase Intensity Reconstruction Models}
+
+\color{red} TODO: Write a nice intro to this section like the last section. \color{black}
 
 \subsection{Intensity Reconstruction}
 

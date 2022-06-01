@@ -61,9 +61,16 @@ The two main web services available at this time are Google Colaboratory\cite{Go
 
 The datasets used for the evaluation of the networks in this project were NMNIST (\Cref{sssec:nmnist}), DVS128 Gesture (\Cref{sssec:dvs128_gesture}) and CIFAR10-DVS (\Cref{sssec:cifar10_dvs}), since these are the most suited for training on classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The event camera dataset for slam (\Cref{sssec:event_camera_dataset}) are also extensive and include side by side frames from a traditional camera, and so were ideal to use for testing the event reconstruction algorithms.
 
-\section{End-to-end Event Classification Models}
+\subsection{Data Pre-processing} \label{ssec:data_preprocessing_design}
 
-\subsection{Data Pre-processing}
+Before processing it, z-score standardisation needs to take place. \Cref{eq:z_score} shows the equation dictating the process. In practical terms the standard deviation of $ x $ can be substituted by the max value of $ x $. The reason this needs to occur is to `center' the data, meaning the inputs to the network can be guaranteed to be of a certain scale. In the training process the weights and biases (as described in \cref{eq:artificial_neuron_output}) are applied to the initial inputs, which are then back-propagated based on the loss gradient. The standardisation process ensures that these gradients don't spike out of proportion, meaning the same global learning rate can be used for the network. As well as this parameters are often shared across deep learning networks, and if inputs weren't of a similar scale for every part of an image, then this sharing of parameters wouldn't work since some areas would have a much larger weight than others. It is also important to note that the standard deviation and mean statistics used in this standardisation is always of the training dataset, since it is important to never use values from the testing set since that would invalidate them as true indicators of the networks performance.
+
+\begin{equation}
+    x_{scaled} = \frac{x - mean_x}{std_x}
+    \label{eq:z_score}
+\end{equation}
+
+\section{End-to-end Event Classification Models}
 
 For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively. A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}.
 
@@ -92,13 +99,19 @@ In order to make use of existing highly-tested and documented computer vision te
 
 \section{Classification Networks}
 
+Given below are the various networks used to classify either integrated frames or image reconstructions. Each network has its benefits and drawbacks, but there are a few commonalities between them. 
+
+During the training process of each of the networks a callback function was used called \lstinline{EarlyStopping}. This built-in Keras callback allows for the interrupting of network training when the validation accuracy of the network stagnates or falls, which should in theory prevent over-fitting to the training data. A patience value is set so that even if accuracy drops for only one epoch it is possible it can rise again. This, of course, means that the training data-set needs to be split into training and validation, where the validation set is more unseen data to evaluate the performance of the networks per epoch.
+
+As well as this the most optimal weights are loaded back when the network finishes training. As well as this dropout (or recurrent dropout for LSTM and GRU cases) layers were used. These layers mean that during the training process certain neurons will be `turned off' and therefore not part of the back-propagation process. This should allow the resulting network to be robust since there is no over-reliance on any one neuron of the network.
+
 \subsection{3-Dimensional Convolutional Neural Network} \label{ssec:conv_3d_network_design}
 
-A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data.
+A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data. \color{red} TODO: Write more about this network. \color{black}
 
 \subsection{Convolutional LSTM Network}
 
-A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data.
+A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data. \color{red} TODO: Write more about this network. \color{black}
 
 \subsection{Custom Convolutional LSTM Network}
 

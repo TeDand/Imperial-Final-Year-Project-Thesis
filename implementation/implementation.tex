@@ -4,32 +4,9 @@ This chapter presents the final implementation of the project. The full process 
 
 \section{End-to-end Event Classification Models}
 
-\subsection{Data Preprocessing}
+\subsubsection{Frame Integration}
 
-A common method of processing events streams to get integrated frames is given in \cref{ssec:frame_integration}. This technique was applied to three readily available data-sets; NMNIST, DVS128 Gesture and CIFAR10-DVS.
-
-\begin{figure}[htb]%
-    \centering
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_1.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_2.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_3.png}}}%
-    \caption{Three contiguous intensity frames ({a}, {b} and {c}), created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
-    \label{fig:dvs128_integrated_frames}%
-\end{figure}
-
-The integratedi frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. For each instance of a gesture the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. This means that the frames are not synchronous like they would be from an frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more easily distinguishable features may be seen. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
-
-\color{red} TODO: Add more photos of integrated frames with more and less frames \color{black}
-
-\color{red} TODO: Include image and explanations of frame integration \color{black}
-
-\color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
-
-\subsubsection{Time-relative Event Segmentation}
-
-In order to begin analysing neuromorphic data, it was pre-processed it into a form that a NN can take as input. One such method of doing so was to segment the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}).
+In order to begin analysing neuromorphic data, it was pre-processed it into a form that a NN can take as input. One such method of doing so was to segment the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}). This is an implementation of the more formal method of processing events streams to get integrated frames is given in \cref{ssec:frame_integration}. This technique was also applied to two other readily available data-sets; DVS128 Gesture and CIFAR10-DVS.
 
 \begin{figure}[htb]%
     \centering
@@ -42,7 +19,27 @@ In order to begin analysing neuromorphic data, it was pre-processed it into a fo
     \label{fig:nmnist_spikes_to_intensity_map}%
 \end{figure}
 
-Once a set of projections was made for each sample from the NMNIST dataset, it could be fed into a neural network in parallel. Ths could be done by simply flattening each intensity map and feeding all the cell values to a fully-connected dense layer in parallel, or the maps could be fed in as images to a convolutional layer. For the convolutional layer method a 3D tensor could be generated by stacking each of the intensity maps against each other and feeding them all directly into the first layer of the NN.
+The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. For each instance of a gesture the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. This means that the frames are not synchronous like they would be from an frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more easily distinguishable features may be seen. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
+
+\color{red} TODO: Read over this and make sure that the information in it is not repeated from the previous paragraph. \color{black}
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_1.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_2.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_3.png}}}%
+    \caption{Three contiguous intensity frames ({a}, {b} and {c}), created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
+    \label{fig:dvs128_integrated_frames}%
+\end{figure}
+
+\color{red} TODO: Add more photos of integrated frames with more and less frames \color{black}
+
+\color{red} TODO: Include image and explanations of frame integration \color{black}
+
+\color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
+
 
 \section{Two-phase Intensity Reconstruction Models}
 
@@ -92,74 +89,89 @@ The network in each case was trained for multiple epochs. The performance of a t
     \label{fig:accuracy_and_loss_per_epoch}
 \end{figure}
 
-It was clear, however, that these results may be misleading since they only represent the efficiency of the system when classifying values within the training data-set. However, when looking at the performance on an unseen test data-set, it is obvious that some of the features learnt do not easily translate to general trends in unseen data. This is known as over-fitting, and can be avoided by reducing the capacity of the data-set so that it does not learn information specific to the training set.
+It was clear, however, that these results may be misleading since they only represent the efficiency of the system when classifying values within the training data-set. However, when looking at the performance on an unseen test data-set, it is obvious that some of the features learnt do not easily translate to general trends in unseen data. This is known as over-fitting, and can be avoided by reducing the capacity of the data-set so that it does not learn information specific to the training set, or by stopping the training process earlier.
 
-Model capacity is directly correlated to the n$ ^o $ of filters, as well as the number of layers, and as the model recognises more patterns in the training data, so it is important to get the optimum value for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen \color{red} TODO: add image and reference here \color{black}. As for the dense layers at the end of the network, it can be seen that better results were achieved as a result of it since global patterns can be further identified after the data has been processed by the convolution layers that have picked out the most important features.
+Model capacity is directly correlated to the n$ ^o $ of filters, as well as the number of layers, and as the model recognises more patterns in the training data, so it is important to get the optimum value for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen. An example of the effects of changing such hyper-parameters can be seen in \cref{fig:hyperparameter_tests} As for the dense layers at the end of the network, it can be seen that better results were achieved as a result of it since global patterns can be further identified after the data has been processed by the convolution layers that have picked out the most important features.
 
 \begin{figure}[htb]%
     \centering
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/layer_tests.png}}}%
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/kernel_tests.png}}}%
-    \hfill
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/layer_tests.png}}}%
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/layer_tests.png}}}%
-    \caption{A visualisation of intensity maps created by segmenting events into bins of size $ 1 \times 10^6 $ ms.}%
-    \label{fig:tests}%
+    \caption{Graphs showing the effect on training loss with varying hyper-parameters.}%
+    \label{fig:hyperparameter_tests}%
 \end{figure}
 
-Further testing was done with increasing kernel sizes, and with pooling layers added to the network. To find local patters filter kernels smaller than the image (32x32) are used. In earlier layers the no of filters is
-large and the filter size is small to capture details. The no
-of filters decreases and the filter size increases later in the
-network for higher-level patterns. Pooling filters the image
-after convolution layers to pick out important features. \color{red} TODO: add final system architecture here \color {black}.
+Further testing was done with increasing kernel sizes, and with pooling layers added to the network. 
 
-An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}. It features the repeating pattern of 3D convolution layers and max-pooling. The number of filters in each layer keeps decreasing (from 512 to 256 and 128), and the size of the filters decreasing. This way when the image size decreases due to the max-pooling layers, smaller filter sizes are also used to match the scale. Since the max-pooling layers scale down the image, this also means that more large scale patterns can be identified from smaller sections of the frame.
+An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}. It features the repeating pattern of 3D convolution layers and max-pooling. The number of filters in each layer keeps increasing (from 32 to 64 and 128). The function of 2D filters is to capture patterns in the data, and as you move forward through the network these patterns get more complex. For example, if dots and lines are captured in the first layer, shapes such as triangles and squares may be captured in the second one. Since the patterns are more complex, the number of possible combinations also increases. This is the reason more filters are required for later layers. The max-pooling layers scale down the image, this also means that more large scale patterns can be identified from smaller sections of the frame.
 
 \begin{lstlisting}[language=Bash,caption={Overview of layers in 3D convolutional network},label={lst:3d_conv_layers},numbers=none,float=htb]
 _________________________________________________________________
-    Layer (type)                Output Shape              Param #   
+Layer (type)                Output Shape              Param #   
 =================================================================
-    conv3d_7 (Conv3D)           (None, 8, 34, 34, 512)    14336     
-                                                                    
-    activation_17 (Activation)  (None, 8, 34, 34, 512)    0         
-                                                                    
-    max_pooling3d_10 (MaxPoolin  (None, 4, 17, 17, 512)   0         
-    g3D)                                                            
-                                                                    
-    conv3d_8 (Conv3D)           (None, 4, 17, 17, 256)    16384256  
-                                                                    
-    activation_18 (Activation)  (None, 4, 17, 17, 256)    0         
-                                                                    
-    max_pooling3d_11 (MaxPoolin  (None, 2, 8, 8, 256)     0         
-    g3D)                                                            
-                                                                    
-    conv3d_9 (Conv3D)           (None, 2, 8, 8, 128)      11239552  
-                                                                    
-    activation_19 (Activation)  (None, 2, 8, 8, 128)      0         
-                                                                    
-    max_pooling3d_12 (MaxPoolin  (None, 1, 4, 4, 128)     0         
-    g3D)                                                            
-                                                                    
-    flatten_3 (Flatten)         (None, 2048)              0         
-                                                                    
-    dense_6 (Dense)             (None, 256)               524544    
-                                                                    
-    activation_20 (Activation)  (None, 256)               0         
-                                                                    
-    dense_7 (Dense)             (None, 10)                2570      
-                                                                    
-    activation_21 (Activation)  (None, 10)                0         
-                                                                    
+conv3d_10 (Conv3D)          (None, 8, 34, 34, 32)     4032      
+                                                                
+batch_normalization_12 (Bat  (None, 8, 34, 34, 32)    128       
+chNormalization)                                                
+                                                                
+conv3d_11 (Conv3D)          (None, 8, 34, 34, 32)     128032    
+                                                                
+batch_normalization_13 (Bat  (None, 8, 34, 34, 32)    128       
+chNormalization)                                                
+                                                                
+max_pooling3d_6 (MaxPooling  (None, 4, 17, 17, 32)    0         
+3D)                                                             
+                                                                
+dropout_8 (Dropout)         (None, 4, 17, 17, 32)     0         
+                                                                
+conv3d_12 (Conv3D)          (None, 4, 17, 17, 64)     256064    
+                                                                
+batch_normalization_14 (Bat  (None, 4, 17, 17, 64)    256       
+chNormalization)                                                
+                                                                
+max_pooling3d_7 (MaxPooling  (None, 2, 9, 9, 64)      0         
+3D)                                                             
+                                                                
+dropout_9 (Dropout)         (None, 2, 9, 9, 64)       0         
+                                                                
+conv3d_13 (Conv3D)          (None, 2, 9, 9, 128)      1024128   
+                                                                
+batch_normalization_15 (Bat  (None, 2, 9, 9, 128)     512       
+chNormalization)                                                
+                                                                
+conv3d_14 (Conv3D)          (None, 2, 9, 9, 128)      2048128   
+                                                                
+batch_normalization_16 (Bat  (None, 2, 9, 9, 128)     512       
+chNormalization)                                                
+                                                                
+max_pooling3d_8 (MaxPooling  (None, 1, 5, 5, 128)     0         
+3D)                                                             
+                                                                
+dropout_10 (Dropout)        (None, 1, 5, 5, 128)      0         
+                                                                
+flatten_2 (Flatten)         (None, 3200)              0         
+                                                                
+dense_4 (Dense)             (None, 128)               409728    
+                                                                
+batch_normalization_17 (Bat  (None, 128)              512       
+chNormalization)                                                
+                                                                
+dropout_11 (Dropout)        (None, 128)               0         
+                                                                
+dense_5 (Dense)             (None, 10)                1290      
+                                                                
+activation_2 (Activation)   (None, 10)                0         
+                                                                
 =================================================================
-Total params: 28,165,258
-Trainable params: 28,165,258
-Non-trainable params: 0
+Total params: 3,873,450
+Trainable params: 3,872,426
+Non-trainable params: 1,024
 _________________________________________________________________
 \end{lstlisting}
 
 \subsection{Convolutional LTSM}
 
-An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}. The thought behind the structure of this network is simlar to the one when designing the 3D convolutional network. The number of filters decreases as well as the filter sizes. The difference this time is that 2D convolution is carried out on each contiguous frame of the video input before being passed through LTSM networks. The way this is implemented is with the convLTSM network described in \cref{ssec:conv_lstm}.
+An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}. The thought behind the structure of this network is similar to the one when designing the 3D convolutional network. The number of filters increases as you go further through the network. The difference this time is that 2D convolution is carried out on each contiguous frame of the video input before being passed through LTSM networks. The way this is implemented is with the convLTSM network described in \cref{ssec:conv_lstm}.
 
 \begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network.},label={lst:conv_lstm_layers},numbers=none,float=htb]
 _________________________________________________________________
@@ -282,7 +294,7 @@ _________________________________________________________________
 
 \subsection{Spiking Neural Network}
 
-\color{red} TODO: Cite nengo etc. \color{black}
+\color{red} TODO: Create design for spiking network with nengo. \color{black}
 
 \subsubsection{Synaptic Smoothing}
 
