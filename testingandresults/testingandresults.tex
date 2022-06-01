@@ -1,6 +1,6 @@
 \chapter{Testing and Results} \label{chap:testing_and_results}
 
-\color{red} TODO: Write a nice intro to the chapter \color{black}
+In order to evaluate each of the networks implemented in the previous chapter, various tests were conducted. The main forms of evaluation were previously outlines in \cref{sec:evalutaion_metrics}, allowing for a comprehensive understanding of network performance. As well as this some explanation of the findings are also given.
 
 \section{End-to-end Event Classification Models}
 
@@ -29,7 +29,7 @@ It was also interesting to note the inherent ability of neuromorphic cameras to 
         1 & 2 & 1 \\
         0 & 0 & 0 \\
         -1 & -2 & -1 \\
-    \end{bmatrix} $
+    \end{bmatrix} $. These matrices got the pixel gradients in the x and y directions, and taking their magnitudes ( $ \sqrt{S_x^2 + S_y^2} $ ) gives the edges map of the frame.
     \item Hysteresis thresholding allowed for weaker edges to be counted as long as they are connected to stronger ones. Then non-maximum suppression was applied to get a single line for every edge (by finding the strongest point of every line in the direction of its gradient).
 \end{enumerate}
 
