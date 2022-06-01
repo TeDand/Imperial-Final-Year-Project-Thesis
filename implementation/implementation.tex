@@ -252,42 +252,42 @@ _________________________________________________________________
 
 \begin{lstlisting}[language=Bash,caption={Overview of layers in Custom 2D Convolutional network built into the Custom LSTM Network in \cref{lst:custom_conv_lstm_layers}.},label={lst:custom_conv_2d_layers},numbers=none,float=htb]
 _________________________________________________________________
-    Layer (type)                Output Shape              Param #   
+Layer (type)                Output Shape              Param #   
 =================================================================
-    conv2d_4 (Conv2D)           (None, 8, 34, 512)        157184    
-                                                                    
-    activation_5 (Activation)   (None, 8, 34, 512)        0         
-                                                                    
-    max_pooling2d_3 (MaxPooling  (None, 4, 17, 512)       0         
-    2D)                                                             
-                                                                    
-    conv2d_5 (Conv2D)           (None, 4, 17, 256)        3277056   
-                                                                    
-    activation_6 (Activation)   (None, 4, 17, 256)        0         
-                                                                    
-    max_pooling2d_4 (MaxPooling  (None, 2, 8, 256)        0         
-    2D)                                                             
-                                                                    
-    conv2d_6 (Conv2D)           (None, 2, 8, 128)         1605760   
-                                                                    
-    activation_7 (Activation)   (None, 2, 8, 128)         0         
-                                                                    
-    max_pooling2d_5 (MaxPooling  (None, 1, 4, 128)        0         
-    2D)                                                             
-                                                                    
-    flatten_1 (Flatten)         (None, 512)               0         
-                                                                    
-    dense_2 (Dense)             (None, 256)               131328    
-                                                                    
-    activation_8 (Activation)   (None, 256)               0         
-                                                                    
-    dense_3 (Dense)             (None, 10)                2570      
-                                                                    
-    activation_9 (Activation)   (None, 10)                0         
-                                                                    
+conv2d_3 (Conv2D)           (None, 34, 34, 128)       640       
+                                                                
+activation_3 (Activation)   (None, 34, 34, 128)       0         
+                                                                
+max_pooling2d_4 (MaxPooling  (None, 17, 17, 128)      0         
+2D)                                                             
+                                                                
+conv2d_4 (Conv2D)           (None, 17, 17, 256)       131328    
+                                                                
+activation_4 (Activation)   (None, 17, 17, 256)       0         
+                                                                
+max_pooling2d_5 (MaxPooling  (None, 8, 8, 256)        0         
+2D)                                                             
+                                                                
+conv2d_5 (Conv2D)           (None, 8, 8, 512)         524800    
+                                                                
+activation_5 (Activation)   (None, 8, 8, 512)         0         
+                                                                
+max_pooling2d_6 (MaxPooling  (None, 4, 4, 512)        0         
+2D)                                                             
+                                                                
+flatten_2 (Flatten)         (None, 8192)              0         
+                                                                
+dense_7 (Dense)             (None, 256)               2097408   
+                                                                
+activation_6 (Activation)   (None, 256)               0         
+                                                                
+dense_8 (Dense)             (None, 10)                2570      
+                                                                
+activation_7 (Activation)   (None, 10)                0         
+                                                                
 =================================================================
-Total params: 5,173,898
-Trainable params: 5,173,898
+Total params: 2,756,746
+Trainable params: 2,756,746
 Non-trainable params: 0
 _________________________________________________________________
 \end{lstlisting}
