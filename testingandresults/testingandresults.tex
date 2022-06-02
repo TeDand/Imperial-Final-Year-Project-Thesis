@@ -12,7 +12,7 @@ The benefits of the event driven camera (as described in \cref{ssec:event_camera
 
 \subsection{Frame Integration}
 
-It is, however, evident that modern computer vision techniques have been developed with frame-based cameras in mind, and so modern networks achieve good accuracy, and are able to find patterns well, on frame-based data. For this reason the common technique of integrating frame \color{red} TODO: Add reference to spikingjelly integrating frames from background reading here \color{black} results in regular frames, akin to the ones a regular camera generates, in order to feed into such networks. It does, however, still pose many benefits when compared to the frames from a regular camera. As mentioned previously information between frames is still not lost or degraded since the events are still captured and visible in each frame. As well as this, the frames generated from events inherently focussed on the points of interest in the image, since these were the only ones in motion in the frame. Most common architectures \color{red} TODO: Add references to common gesture recognition architectures here \color{black} for classical videos feature an intermediate layer to remove backgrounds and other noise from images from the image to focus on the points of interest. In this way the intermediate layer could be omitted when operating on the integrated event frames, since the output was already similar to an edge map \color{red} TODO: Add image comparison here \color{black}. It is conceivable, however, that in noisy environments with lots of motion this stage would still be necessary.
+It is, however, evident that modern computer vision techniques have been developed with frame-based cameras in mind, and so modern networks achieve good accuracy, and are able to find patterns well, on frame-based data. For this reason the common technique of integrating frames\cref{ssec:frame_integration} results in regular frames, akin to the ones a regular camera generates, in order to feed into such networks. It does, however, still pose many benefits when compared to the frames from a regular camera. As mentioned previously information between frames is still not lost or degraded since the events are still captured and visible in each frame. As well as this, the frames generated from events inherently focussed on the points of interest in the image, since these were the only ones in motion in the frame. Most common architectures (such as the one proposed by Raimundo F. Pinto \textit{et al.} for static hand gesture recognition\cite{StaticHandGesture}) for classical videos feature an intermediate layer to remove backgrounds and other noise from images from the image to focus on the points of interest. In this way the intermediate layer could be omitted when operating on the integrated event frames, since the output was already similar to an edge map. It is conceivable, however, that in noisy environments with lots of motion this stage would still be necessary.
 
 It was also interesting to note the inherent ability of neuromorphic cameras to capture points of interest. When using the frame integration method, the result was very similar to an edge map, which is often the primary step of image analysis using convolutional neural networks to images in existing networks already. \Cref{fig:canny_edge_detection_nmnist} shows the effect of carrying out canny edge detection\cite{CannyEdgeDetection} on an integrated frame from the NMNIST dataset. The sample is taken from a recording of the number `0', and it can be seen that the original frame is in essence just a noisy edge map of the number. The steps taken for canny edge detection were as follows;
 
@@ -87,7 +87,9 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
 
 \subsubsection{NMNIST Dataset}
 
-The confusion matrices for the classification of the NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9. 
+The confusion matrices for the classification of the frame-integrated  NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9.
+
+The confusion matrices for the classification of the intensity reconstructed NMNIST dataset can be seen in \cref{fig:nmnist_recon_c_matrices}. \color{red} TODO: Write more about this. \color{black}
 
 The drawback to the 3D convolutional network is that the number of trainiable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
 
@@ -98,8 +100,19 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_convlstm.png}}}%
     \qquad
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_convlstm.png}}}%
-    \caption{Confusion matrices for NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \caption{Confusion matrices for frame-integrated NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
     \label{fig:nmnist_c_matrices}%
+\end{figure}
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_recon_conv3d.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_recon_convlstm.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_recon_custom_convlstm.png}}}%
+    \caption{Confusion matrices for intensity reconstructed NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \label{fig:nmnist_recon_c_matrices}%
 \end{figure}
 
 \Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated NMNIST dataset in more detail.
@@ -112,7 +125,9 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
 
 \subsubsection{DVS128 Gesture Dataset}
 
-The confusion matrices for the classification of the DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5 (right arm clockwise and right arm counter-clockwise), as well as actions 6 and 7 (left arm clockwise and left arm counter-clockwise), were often misclassified as one another. The reason for this was that with length 20 frame integrated videos the fast rotational movement results in frames that look very similar in both directions. \color{red} TODO: Maybe try to get some pictures to prove this. \color{black} Other mistakes were more often made with the 3D convolutional network. For example 10 (air guitar) was quite often predicted for cases of classes 8 and 9 (air roll and air drums). 
+The confusion matrices for the classification of the frame-integrated DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5 (right arm clockwise and right arm counter-clockwise), as well as actions 6 and 7 (left arm clockwise and left arm counter-clockwise), were often misclassified as one another. The reason for this was that with length 20 frame integrated videos the fast rotational movement results in frames that look very similar in both directions. \color{red} TODO: Maybe try to get some pictures to prove this. \color{black} Other mistakes were more often made with the 3D convolutional network. For example 10 (air guitar) was quite often predicted for cases of classes 8 and 9 (air roll and air drums). 
+
+% The confusion matrices for the classification of the intensity reconstructed DVS128 Gesture dataset can be seen in \cref{fig:nmnist_recon_c_matrices}. \color{red} TODO: Write more about this. \color{black}
 
 \begin{figure}[htb]%
     \centering
@@ -121,11 +136,13 @@ The confusion matrices for the classification of the DVS128 Gesture dataset can 
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_dvs128_convlstm.png}}}%
     \qquad
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_dvs128_custom_convlstm.png}}}%
-    \caption{Confusion matrices for DVS128 Gesure classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \caption{Confusion matrices for frame-integrated  DVS128 Gesure classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
     \label{fig:dvs128_c_matrices}%
 \end{figure}
 
-\Cref{tab:conv3d_dvs128_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_evaluation_metrics} show the performance evaluation of each of the networks on the DVS128 Gesture dataset in more detail.
+\Cref{tab:conv3d_dvs128_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated DVS128 Gesture dataset in more detail.
+
+\Cref{tab:conv3d_dvs128_recon_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_recon_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_recon_evaluation_metrics} show the performance evaluation of each of the networks on the intensity reconstructed DVS128 Gesture dataset in more detail.
 \color{red} TODO: Write more about the meaning of the tables. \color{black}
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
 
@@ -143,11 +160,11 @@ The confusion matrices for the classification of the DVS128 Gesture dataset can 
         \hline
         Custom LTSM Event Classifier         & 97.88\%  &   76.39\%     \\
         \hline
-        Conv3D Reconstruction Classifier           & 85.73\%    &       \\
+        Conv3D Reconstruction Classifier           & 86.67\%    &   63.26\%    \\
         \hline
-        Conv2D LTSM Reconstruction Classifier          & 75.07\%   &      \\
+        Conv2D LTSM Reconstruction Classifier          & 79.60\%   &      \\
         \hline
-        Custom LTSM Reconstruction Classifier         & 80.40\%  &      \\
+        Custom LTSM Reconstruction Classifier         & 83.20\%  &      \\
         \hline
     \end{tabular}
     \caption{A table showing classification accuracies of various models.}
@@ -168,7 +185,7 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
         \hline
         Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} 1h24m19s \color{black}    \\
         \hline
-        Conv3D Reconstruction Classifier        &  0h05m02s    &      \\
+        Conv3D Reconstruction Classifier        &  0h05m02s    &    1h09m43s  \\
         \hline
         Conv2D LTSM Reconstruction Classifier        &  0h14m28s    &      \\
         \hline
