@@ -1,15 +1,14 @@
 \chapter{Conclusion and Further Work} \label{chap:conclusion_and_further_work}
 
-\color{red} TODO: Write out the following:
+To conclude, the testing done with the two classification pipelines show that there are significant benefits to working within the neuromorphic paradigm as opposed to with classic frame-based cameras. With the same networks, performance appears to be superior when analysing event streams rather than video frames. Secondly, the two-phase intensity reconstruction pipelines show promise, being able to harness the wealth of existing networks that exist for video classification. However, the performance with the same classification networks directly on the events rather than the video reconstructions tended to have better performance, perhaps due to the loss of high-frequency data and when creating the intensity maps. This is however open to interpretation, since the models used to classify the reconstructions are relatively simple. The reconstructions do show that the benefits of event-based cameras can be retained even when working with intensity videos, as the reconstruction networks produce high fidelity outputs even when recording videos with lots of motion or high dynamic range of light intensities. This means that the reconstructed videos are often more appropriate for classification that if a video was taken with a frame-based camera.
 
-\begin{itemize}
-    \item work with higher ram system to use whole of DVS128 dataset and run with higher batch sizes
-    \item work with more datasets
-    \item look at the use of nlp
-    \item create more robust spiking neural networks
-    \item test performance based on asynchronous and asynchronous frame-integration
-    \item test performance of difference number of integrated frames
-    \item evaluate the performance of more complex/pre-trained networks
-\end{itemize}
+Having reached the end of the project, it is important to note the limitations (such as computing power and available time) that need to be acknowledged. As such, there are some key areas in which there is scope for further research and development. These include;
 
-\color{black}
+\begin{enumerate}
+    \item With a more capable setup and time to test the networks, there is the opportunity to create more intensive networks. As well as this larger batch sizes can be used for more stable training with higher RAM available.
+    \item Compare the performance of the reconstructed pipeline like-for-like against a video stream from a frame-based camera. This has been omitted from this project due to time constraints and lack of available datasets.
+    \item Test the performance of the described networks and pipelines on more readily available datasets to make sure that the findings apply to other environments.
+    \item Look more at the use of natural language processing techniques when working with event streams.
+    \item Create more spiking neural networks, perhaps from scratch rather than converting regular ANNs. Further testing needs to be done in this area.
+    \item Test the performance of the end-to-end event classification networks when frame-integration is done asynchronously as well as synchronously (as described in \cref{ssec:frame_integration}). Comparisons between the two forms of integration, as well as effect of having smaller time-slices per frame need to be tested.
+\end{enumerate}
