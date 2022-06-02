@@ -102,116 +102,13 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
     \label{fig:nmnist_c_matrices}%
 \end{figure}
 
-\Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the NMNIST dataset in more detail.
+\Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated NMNIST dataset in more detail.
+
+\Cref{tab:conv3d_nmnist_recon_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_recon_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_recon_evaluation_metrics} show the performance evaluation of each of the networks on the intensity reconstructed NMNIST dataset in more detail.
+
 \color{red} TODO: Write more about the meaning of the tables. \color{black}
 
-
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-             & Precision & Recall & F1-score & Samples \\
-        \hline \hline
-        0            & 1.00  & 0.97  & 0.98 & 500 \\
-        \hline
-        1            & 0.99  & 1.00  & 0.99 & 500 \\
-        \hline
-        2            & 0.99  & 0.99  & 0.99 & 500 \\
-        \hline
-        3            & 0.99  & 0.99  & 0.99 & 500 \\
-        \hline
-        4            & 0.99  & 0.97  & 0.98 & 500 \\
-        \hline
-        5            & 1.00  & 0.98  & 0.99 & 500 \\
-        \hline
-        6            & 0.97  & 1.00  & 0.98 & 500 \\
-        \hline
-        7            & 0.98  & 0.97  & 0.98 & 500 \\
-        \hline
-        8            & 0.97  & 0.97  & 0.97 & 500 \\
-        \hline
-        9            & 0.95  & 0.98  & 0.96 & 500 \\
-        \hline
-        macro avg    & 0.98  & 0.98  & 0.98 & 5000 \\
-        \hline
-        weighted avg & 0.98  & 0.98  & 0.98 & 5000 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of 3D convolutional network on NMNIST dataset.}
-    \label{tab:conv3d_nmnist_evaluation_metrics}
-\end{table}
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-             & Precision & Recall & F1-score & Samples \\
-        \hline \hline
-        0            & 0.99 & 0.99 & 0.99 & 500  \\
-        \hline
-        1            & 0.98 & 1.00 & 0.99 & 500  \\
-        \hline
-        2            & 0.97 & 0.99 & 0.98 & 500  \\
-        \hline
-        3            & 0.94 & 0.99 & 0.96 & 500  \\
-        \hline
-        4            & 1.00 & 0.98 & 0.99 & 500  \\
-        \hline
-        5            & 0.96 & 0.99 & 0.98 & 500  \\
-        \hline
-        6            & 0.99 & 0.99 & 0.99 & 500  \\
-        \hline
-        7            & 0.96 & 0.98 & 0.97 & 500  \\
-        \hline
-        8            & 0.98 & 0.91 & 0.95 & 500  \\
-        \hline
-        9            & 0.97 & 0.94 & 0.96 & 500  \\
-        \hline
-        macro avg    & 0.98 & 0.97 & 0.97 & 5000 \\
-        \hline
-        weighted avg & 0.98 & 0.97 & 0.97 & 5000 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of convolutional LSTM network on NMNIST dataset.}
-    \label{tab:conv_lstm_nmnist_evaluation_metrics}
-\end{table}
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-             & Precision & Recall & F1-score & Samples \\
-        \hline \hline
-        0            & 0.98 & 0.98 & 0.98 & 500  \\
-        \hline
-        1            & 0.98 & 1.00 & 0.99 & 500  \\
-        \hline
-        2            & 0.98 & 0.99 & 0.98 & 500  \\
-        \hline
-        3            & 0.98 & 0.97 & 0.97 & 500  \\
-        \hline
-        4            & 0.99 & 0.98 & 0.98 & 500  \\
-        \hline
-        5            & 0.98 & 0.98 & 0.98 & 500  \\
-        \hline
-        6            & 0.97 & 0.99 & 0.98 & 500  \\
-        \hline
-        7            & 0.96 & 0.98 & 0.97 & 500  \\
-        \hline
-        8            & 0.97 & 0.94 & 0.96 & 500  \\
-        \hline
-        9            & 0.98 & 0.94 & 0.96 & 500  \\
-        \hline
-        macro avg    & 0.98 & 0.98 & 0.98 & 5000 \\
-        \hline
-        weighted avg & 0.98 & 0.98 & 0.98 & 5000 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of custom convolutional LSTM network on NMNIST dataset.}
-    \label{tab:custom_conv_lstm_nmnist_evaluation_metrics}
-\end{table}
 
 \subsubsection{DVS128 Gesture Dataset}
 
@@ -232,118 +129,6 @@ The confusion matrices for the classification of the DVS128 Gesture dataset can 
 \color{red} TODO: Write more about the meaning of the tables. \color{black}
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
 
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-            & Precision & Recall & F1-score & Samples \\
-        \hline
-        \hline
-        0            & 0.90 & 0.97 & 0.94 & 75  \\
-        \hline
-        1            & 0.96 & 0.97 & 0.97 & 75  \\
-        \hline
-        2            & 0.88 & 0.92 & 0.90 & 75  \\
-        \hline
-        3            & 0.90 & 0.71 & 0.79 & 75  \\
-        \hline
-        4            & 0.84 & 0.83 & 0.83 & 75  \\
-        \hline
-        5            & 0.80 & 0.80 & 0.80 & 75  \\
-        \hline
-        6            & 0.88 & 0.88 & 0.88 & 75  \\
-        \hline
-        7            & 0.85 & 0.85 & 0.85 & 75  \\
-        \hline
-        8            & 0.77 & 0.76 & 0.77 & 75  \\
-        \hline
-        9            & 0.80 & 0.88 & 0.84 & 75  \\
-        \hline
-        macro avg    & 0.86 & 0.86 & 0.86 & 750 \\
-        \hline
-        weighted avg & 0.86 & 0.86 & 0.86 & 750 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of 3D convolutional network on DVS128 Gesture dataset.}
-    \label{tab:conv3d_dvs128_evaluation_metrics}
-\end{table}
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-             & Precision & Recall & F1-score & Samples \\
-        \hline
-        \hline
-        0            & 0.55 & 0.88 & 0.68 & 24  \\
-        \hline
-        1            & 0.83 & 1.00 & 0.91 & 24  \\
-        \hline
-        2            & 0.77 & 0.83 & 0.80 & 24  \\
-        \hline
-        3            & 0.80 & 1.00 & 0.89 & 24  \\
-        \hline
-        4            & 0.60 & 0.75 & 0.67 & 24  \\
-        \hline
-        5            & 0.75 & 0.38 & 0.50 & 24  \\
-        \hline
-        6            & 0.80 & 0.33 & 0.47 & 24  \\
-        \hline
-        7            & 0.57 & 0.88 & 0.69 & 24  \\
-        \hline
-        8            & 0.75 & 0.79 & 0.77 & 48  \\
-        \hline
-        9            & 0.89 & 0.33 & 0.48 & 24  \\
-        \hline
-        10           & 0.94 & 0.62 & 0.75 & 24  \\
-        \hline
-        macro avg    & 0.75 & 0.71 & 0.69 & 288 \\
-        \hline
-        weighted avg & 0.75 & 0.72 & 0.70 & 288 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of convolutional LSTM network on DVS128 Gesture dataset.}
-    \label{tab:conv_lstm_dvs128_evaluation_metrics}
-\end{table}
-
-\begin{table}[htb]
-    \centering
-    \begin{tabular}{|| c | c | c | c | c ||}
-        \hline
-             & Precision & Recall & F1-score & Samples \\
-        \hline
-        \hline
-        0            & 0.77 & 0.83 & 0.80 & 24  \\
-        \hline
-        1            & 0.92 & 0.96 & 0.94 & 24  \\
-        \hline
-        2            & 0.82 & 0.75 & 0.78 & 24  \\
-        \hline
-        3            & 0.91 & 0.88 & 0.89 & 24  \\
-        \hline
-        4            & 0.58 & 0.75 & 0.65 & 24  \\
-        \hline
-        5            & 0.70 & 0.58 & 0.64 & 24  \\
-        \hline
-        6            & 0.52 & 0.58 & 0.55 & 24  \\
-        \hline
-        7            & 0.54 & 0.54 & 0.54 & 24  \\
-        \hline
-        8            & 0.94 & 0.98 & 0.96 & 48  \\
-        \hline
-        9            & 0.70 & 0.67 & 0.68 & 24  \\
-        \hline
-        10           & 0.94 & 0.67 & 0.78 & 24  \\
-        \hline
-        macro avg    & 0.76 & 0.74 & 0.75 & 288 \\
-        \hline
-        weighted avg & 0.77 & 0.76 & 0.76 & 288 \\
-        \hline
-    \end{tabular}
-    \caption{A table showing classification evaluation metrics of a convolutional LSTM on DVS128 Gesture dataset.}
-    \label{tab:custom_conv_lstm_dvs128_evaluation_metrics}
-\end{table}
-
 \subsection{Network Comparisons}
 
 \begin{table}[htb]
@@ -362,7 +147,7 @@ The confusion matrices for the classification of the DVS128 Gesture dataset can 
         \hline
         Conv2D LTSM Reconstruction Classifier          & 75.07\%   &      \\
         \hline
-        Custom LTSM Reconstruction Classifier         &   &      \\
+        Custom LTSM Reconstruction Classifier         & 80.40\%  &      \\
         \hline
     \end{tabular}
     \caption{A table showing classification accuracies of various models.}
@@ -379,17 +164,20 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
         \hline \hline
         Conv3D Event Classifier          & 1h43m03s   &   0h34m49s    \\
         \hline
-        Conv2D LTSM Event Classifier         & 1h3m09s   &    0h8m33s    \\
+        Conv2D LTSM Event Classifier         & 1h03m09s   &    0h08m33s    \\
         \hline
         Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} 1h24m19s \color{black}    \\
         \hline
-        Conv2D LTSM Reconstruction Classifier     0h5m01s      &     &      \\
+        Conv3D Reconstruction Classifier        &  0h05m02s    &      \\
         \hline
-        Conv2D LTSM Reconstruction Classifier         &    &       \\
+        Conv2D LTSM Reconstruction Classifier        &  0h14m28s    &      \\
+        \hline
+        Custom Conv2D LTSM Reconstruction Classifier         &  0h03m26s \color{red} why so short \color{black}  &       \\
         \hline
     \end{tabular}
     \caption{A table showing training times various models.}
     \label{tab:network_training_times}
 \end{table}
+
 
 The training times for each of the networks on the datasets can be seen in \cref{tab:network_training_times}. It is evident that the networks with a higher capacity had higher training times. The 3D convolution network in particular had much longer training times than the other two networks, since it had many more parameters to optimise via back-propagation. It should be noted that for the networks in \color{red} red \color{black} the system encountered an Out Of Memory (OOM) error when attempting create a tensor of larger batch size. For these cases a smaller batch size was used, resulting in slightly higher training times, as well as possible skewed results.

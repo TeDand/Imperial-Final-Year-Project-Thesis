@@ -2,6 +2,10 @@
 
 This chapter presents the final implementation of the project. The full process for both the end-to-end event classification models, as well as the two-phase video reconstruction networks are given, alongside any data pre-processing that was required.
 
+\section{Data Preprocessing}
+
+As described in  \cref{ssec:data_preprocessing_design}, data had to be centered to give a z-score. In practice the standard deviation was not used to normalise the values, and instead the following operation was undertaken: $ \textbf{x} = \frac{\textbf{x} - mean_x}{max_x} $. However, during the implementation of the networks it was evident that the default Keras functions would not be ideal. The reason for this is that the dataset, as real-world data often is, were far too large to store on the RAM of a computer. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class. \color{red} TODO: Maybe put code example here. \color{black}
+
 \section{End-to-end Event Classification Models}
 
 \subsubsection{Frame Integration}
