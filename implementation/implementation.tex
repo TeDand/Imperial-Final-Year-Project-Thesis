@@ -119,14 +119,25 @@ An implementation of a custom convolutional LSTM can be seen in \cref{lst:custom
 
 \subsection{Spiking Neural Network}
 
-For the basis of the spiking neural network, the same 2D convolutional neural network used in the custom convolutional LSTM network (See \cref{lst:custom_conv_2d_layers}). First an ANN was constructed and trained with traditional back-propagation. Since there were a series of frames being input to the network, the actual labels had to be repeated for each frame during the training process. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}.
+For the basis of the spiking neural network, the same 2D convolutional neural network used in the custom convolutional LSTM network (See \cref{lst:custom_conv_2d_layers}). First an ANN was constructed and trained with traditional back-propagation. Since there were a series of frames being input to the network, the actual labels had to be repeated for each frame during the training process. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}. The neural activity of this network can be seen in \cref{fig:pre_snn_conversion}. The input to this network was a integrated frame video with each frame repeated 8 times (as described in \cref{ssec:snn_design}). The plots are shown over time, and since our network doesn't have any temporal elements (i.e. spiking neurons), the neural activity is constant for each set of repeated frames. However, since multiple frames are being supplied as part of the input, the output predictions still change over time.
+
+\begin{figure}[htb]%
+    \centering
+    \includegraphics[width=0.6\textwidth]{implementation/images/pre_snn_conversion.png}
+    \caption{Graphs showing neural activity of ANN before conversion to SNN.}%
+    \label{fig:pre_snn_conversion}%
+\end{figure}
+
+Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each frame needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 25 times \color{red} TODO: Add some graph comparisons to prove this \color{black}. Graphs showing the performance of the converted network can be seen in \color{red} TODO: add image here \color{black}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is samples for predictions.
 
 Once the conversion from ANN to SNN was complete, the performance of the network was incomparable to before the process. The reason for this (as outlined in \cref{ssec:snn_and_heterogeneity}) is the poor approximations that take place in the conversion process. In order to mitigate this, some network alterations were made to improve the approximations.
 
 \subsubsection{Synaptic Smoothing}
 
-\subsubsection{Firing Rates}
+The plots for the spiking neural network show that since the neuron function is now no-longer continuous, discrete spikes occur to propagate information throughout the network. This means that the output of the network is very noisy. Since there are so many neurons spiking at any one given time, there is no guarantee that when you sample the output at the final time-step that the correct neuron will be firing (even if it has a relatively higher firing rate). For this reason we need to apply a smoothing function to the firing neurons. Essentially the \lstinline{synapse} parameter in nengo applies a moving average filter to the network output so that the predictions are more stable. The effect of applying this filter can be seen in \color{red} TODO: add image here \color{black}.
 
-\subsubsection{Post-training Scaling}
+\subsubsection{Post-training Firing Rate Scaling}
 
-\subsubsection{Regularizing During Training}
+Neuron updates only occur when it outputs, or 'fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaces is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \color{red} TODO: add image here \color{black}. It is important to note, however, that if the firing rate were to theoretically be scales infinitely, the neuron functions for be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place.
+
+It is also possible to change the effective firing rates of each neuron in the network, we could also add a custom loss function that incentivises a certain firing rate during the training processes as well. The benefit of this is that it can be applied to non-linear functions other than ReLU, but since there is no such function present in this project it need not be implemented.

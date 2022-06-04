@@ -126,7 +126,7 @@ This network is an extension of the LSTM network in the previous section, adding
     \label{fig:custom_conv_lstm_pipeline}
 \end{figure}
 
-\subsection{Spiking Neural Network}
+\subsection{Spiking Neural Network} \label{ssec:snn_design}
 
 With this network the whole system, from data generation to classification, could be fully neuromorphic. Using techniques as described in \cref{ssec:snn_and_heterogeneity}, traditional ANNs could easily be converted to SNNs\cite{Ann2Snn} for classification. For the conversion process the nengo\_dl package can be used (see \cref{sssec:nengo}). In order to train the network a differentiable approximation of the spiking neurons was used. This meant that the data could be trained using back-propagation as normal. During inference, however, the actual spiking neurons could be used\cite{TrainingSnn}. Since the network is trained before the conversion from ANN to SNN, the performance of the SNN will not be comparable to the ANN due to approximation errors. These approximations can be improved by changing certain properties of the SNN and checking the performance of the inference.
 
