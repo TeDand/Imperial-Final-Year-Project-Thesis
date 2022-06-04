@@ -123,6 +123,8 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
 
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
 
+\color{red} TODO: Add spiking neural network testing. \color{black}
+
 \subsubsection{DVS128 Gesture Dataset}
 
 The confusion matrices for the classification of the frame-integrated DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5 (right arm clockwise and right arm counter-clockwise), as well as actions 6 and 7 (left arm clockwise and left arm counter-clockwise), were often misclassified as one another. The reason for this was that with length 20 frame integrated videos the fast rotational movement results in frames that look very similar in both directions. \color{red} TODO: Maybe try to get some pictures to prove this. \color{black} Other mistakes were more often made with the 3D convolutional network. For example 10 (air guitar) was quite often predicted for cases of classes 8 and 9 (air roll and air drums). 
@@ -155,6 +157,7 @@ The confusion matrices for the classification of the intensity reconstructed DVS
 \color {red} TODO: Write about how frame integration is a more compact information store since the convLSTM couldn't even run for DVS128 reconstructions. \color{black}
 \color{red} TODO: Write more about the meaning of the tables. \color{black}
 \color{red} TODO: Make more custom convolution LSTMs \color{black}
+\color{red} TODO: Add spiking neural network testing. \color{black}
 
 \subsection{Network Comparisons}
 

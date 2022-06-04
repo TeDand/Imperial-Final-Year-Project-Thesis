@@ -6,7 +6,7 @@ This chapter presents the final implementation of the project. The full process 
 
 As described in  \cref{ssec:data_preprocessing_design}, data had to be centered to give a z-score. In practice the standard deviation was not used to normalise the values, and instead the following operation was undertaken: $ \textbf{x} = \frac{\textbf{x} - mean_x}{max_x} $. However, during the implementation of the networks it was evident that the default Keras functions would not be ideal. The reason for this is that the dataset, as real-world data often is, were far too large to store on the RAM of a computer. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class. \color{red} TODO: Maybe put code example here. \color{black}
 
-\section{End-to-end Event Classification Models}
+\section{End-to-end Event Classification Pipeline}
 
 \subsubsection{Frame Integration}
 
@@ -45,7 +45,7 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
 \color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
 
 
-\section{Two-phase Intensity Reconstruction Models}
+\section{Two-phase Intensity Reconstruction Pipeline}
 
 The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data.
 
@@ -109,196 +109,19 @@ Further testing was done with increasing kernel sizes, and with pooling layers a
 
 An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}. It features the repeating pattern of 3D convolution layers and max-pooling. The number of filters in each layer keeps increasing (from 32 to 64 and 128). The function of 2D filters is to capture patterns in the data, and as you move forward through the network these patterns get more complex. For example, if dots and lines are captured in the first layer, shapes such as triangles and squares may be captured in the second one. Since the patterns are more complex, the number of possible combinations also increases. This is the reason more filters are required for later layers. The max-pooling layers scale down the image, this also means that more large scale patterns can be identified from smaller sections of the frame.
 
-\begin{lstlisting}[language=Bash,caption={Overview of layers in 3D convolutional network},label={lst:3d_conv_layers},numbers=none,float=htb]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-conv3d_10 (Conv3D)          (None, 8, 34, 34, 32)     4032      
-                                                                
-batch_normalization_12 (Bat  (None, 8, 34, 34, 32)    128       
-chNormalization)                                                
-                                                                
-conv3d_11 (Conv3D)          (None, 8, 34, 34, 32)     128032    
-                                                                
-batch_normalization_13 (Bat  (None, 8, 34, 34, 32)    128       
-chNormalization)                                                
-                                                                
-max_pooling3d_6 (MaxPooling  (None, 4, 17, 17, 32)    0         
-3D)                                                             
-                                                                
-dropout_8 (Dropout)         (None, 4, 17, 17, 32)     0         
-                                                                
-conv3d_12 (Conv3D)          (None, 4, 17, 17, 64)     256064    
-                                                                
-batch_normalization_14 (Bat  (None, 4, 17, 17, 64)    256       
-chNormalization)                                                
-                                                                
-max_pooling3d_7 (MaxPooling  (None, 2, 9, 9, 64)      0         
-3D)                                                             
-                                                                
-dropout_9 (Dropout)         (None, 2, 9, 9, 64)       0         
-                                                                
-conv3d_13 (Conv3D)          (None, 2, 9, 9, 128)      1024128   
-                                                                
-batch_normalization_15 (Bat  (None, 2, 9, 9, 128)     512       
-chNormalization)                                                
-                                                                
-conv3d_14 (Conv3D)          (None, 2, 9, 9, 128)      2048128   
-                                                                
-batch_normalization_16 (Bat  (None, 2, 9, 9, 128)     512       
-chNormalization)                                                
-                                                                
-max_pooling3d_8 (MaxPooling  (None, 1, 5, 5, 128)     0         
-3D)                                                             
-                                                                
-dropout_10 (Dropout)        (None, 1, 5, 5, 128)      0         
-                                                                
-flatten_2 (Flatten)         (None, 3200)              0         
-                                                                
-dense_4 (Dense)             (None, 128)               409728    
-                                                                
-batch_normalization_17 (Bat  (None, 128)              512       
-chNormalization)                                                
-                                                                
-dropout_11 (Dropout)        (None, 128)               0         
-                                                                
-dense_5 (Dense)             (None, 10)                1290      
-                                                                
-activation_2 (Activation)   (None, 10)                0         
-                                                                
-=================================================================
-Total params: 3,873,450
-Trainable params: 3,872,426
-Non-trainable params: 1,024
-_________________________________________________________________
-\end{lstlisting}
-
 \subsection{Convolutional LTSM}
 
 An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}. The thought behind the structure of this network is similar to the one when designing the 3D convolutional network. The number of filters increases as you go further through the network. The difference this time is that 2D convolution is carried out on each contiguous frame of the video input before being passed through LTSM networks. The way this is implemented is with the convLTSM network described in \cref{ssec:conv_lstm}.
-
-\begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network.},label={lst:conv_lstm_layers},numbers=none,float=htb]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-conv_lstm2d_6 (ConvLSTM2D)  (None, 8, 34, 34, 64)     150016    
-                                                                
-max_pooling3d_4 (MaxPooling  (None, 8, 17, 17, 64)    0         
-3D)                                                             
-                                                                
-batch_normalization_6 (Batc  (None, 8, 17, 17, 64)    256       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_7 (ConvLSTM2D)  (None, 8, 17, 17, 32)     110720    
-                                                                
-max_pooling3d_5 (MaxPooling  (None, 8, 9, 9, 32)      0         
-3D)                                                             
-                                                                
-batch_normalization_7 (Batc  (None, 8, 9, 9, 32)      128       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_8 (ConvLSTM2D)  (None, 9, 9, 16)          27712     
-                                                                
-max_pooling2d_2 (MaxPooling  (None, 5, 5, 16)         0         
-2D)                                                             
-                                                                
-batch_normalization_8 (Batc  (None, 5, 5, 16)         64        
-hNormalization)                                                 
-                                                                
-flatten_2 (Flatten)         (None, 400)               0         
-                                                                
-dense_4 (Dense)             (None, 256)               102656    
-                                                                
-dense_5 (Dense)             (None, 10)                2570      
-                                                                
-=================================================================
-Total params: 394,122
-Trainable params: 393,898
-Non-trainable params: 224
-_________________________________________________________________
-\end{lstlisting}
 
 \subsection{Custom Convolutional LSTM}
 
 An implementation of a custom convolutional LSTM can be seen in \cref{lst:custom_conv_lstm_layers} and the implementation of the custom 2D convolutional network applied to each frame of the video can be seen in \cref{lst:custom_conv_2d_layers}. This network is the natural progression from the previous convLSTM network since it applies a more complex 2D convolution to each frame. This extra capacity is evident in the number of trainable parameters in the new network when compared to the one in \cref{lst:conv_lstm_layers}.
 
-\begin{lstlisting}[language=Bash,caption={Overview of layers in Custom Convolutional LTSM network.},label={lst:custom_conv_lstm_layers},numbers=none,float=htb]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-time_distributed_3 (TimeDis  (None, 8, 2048)          4887936   
-tributed)                                                       
-                                                                
-gru_3 (GRU)                 (None, 64)                405888    
-                                                                
-dense_25 (Dense)            (None, 1024)              66560     
-                                                                
-dropout_9 (Dropout)         (None, 1024)              0         
-                                                                
-dense_26 (Dense)            (None, 512)               524800    
-                                                                
-dropout_10 (Dropout)        (None, 512)               0         
-                                                                
-dense_27 (Dense)            (None, 128)               65664     
-                                                                
-dropout_11 (Dropout)        (None, 128)               0         
-                                                                
-dense_28 (Dense)            (None, 64)                8256      
-                                                                
-dense_29 (Dense)            (None, 10)                650       
-                                                                
-=================================================================
-Total params: 5,959,754
-Trainable params: 5,959,754
-Non-trainable params: 0
-_________________________________________________________________
-\end{lstlisting}
-
-\begin{lstlisting}[language=Bash,caption={Overview of layers in Custom 2D Convolutional network built into the Custom LSTM Network in \cref{lst:custom_conv_lstm_layers}.},label={lst:custom_conv_2d_layers},numbers=none,float=htb]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-conv2d_3 (Conv2D)           (None, 34, 34, 128)       640       
-                                                                
-activation_3 (Activation)   (None, 34, 34, 128)       0         
-                                                                
-max_pooling2d_4 (MaxPooling  (None, 17, 17, 128)      0         
-2D)                                                             
-                                                                
-conv2d_4 (Conv2D)           (None, 17, 17, 256)       131328    
-                                                                
-activation_4 (Activation)   (None, 17, 17, 256)       0         
-                                                                
-max_pooling2d_5 (MaxPooling  (None, 8, 8, 256)        0         
-2D)                                                             
-                                                                
-conv2d_5 (Conv2D)           (None, 8, 8, 512)         524800    
-                                                                
-activation_5 (Activation)   (None, 8, 8, 512)         0         
-                                                                
-max_pooling2d_6 (MaxPooling  (None, 4, 4, 512)        0         
-2D)                                                             
-                                                                
-flatten_2 (Flatten)         (None, 8192)              0         
-                                                                
-dense_7 (Dense)             (None, 256)               2097408   
-                                                                
-activation_6 (Activation)   (None, 256)               0         
-                                                                
-dense_8 (Dense)             (None, 10)                2570      
-                                                                
-activation_7 (Activation)   (None, 10)                0         
-                                                                
-=================================================================
-Total params: 2,756,746
-Trainable params: 2,756,746
-Non-trainable params: 0
-_________________________________________________________________
-\end{lstlisting}
-
 \subsection{Spiking Neural Network}
 
-\color{red} TODO: Create design for spiking network with nengo. \color{black}
+For the basis of the spiking neural network, the same 2D convolutional neural network used in the custom convolutional LSTM network (See \cref{lst:custom_conv_2d_layers}). First an ANN was constructed and trained with traditional back-propagation. Since there were a series of frames being input to the network, the actual labels had to be repeated for each frame during the training process. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}.
+
+Once the conversion from ANN to SNN was complete, the performance of the network was incomparable to before the process. The reason for this (as outlined in \cref{ssec:snn_and_heterogeneity}) is the poor approximations that take place in the conversion process. In order to mitigate this, some network alterations were made to improve the approximations.
 
 \subsubsection{Synaptic Smoothing}
 
