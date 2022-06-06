@@ -52,19 +52,26 @@ This refined edge map could have been part of the pre-processing of the data bef
     \label{fig:canny_edge_detection_nmnist}%
 \end{figure}
 
-\color{red} TODO: Show comparison between my frame integration technique and the spikingjelly one. \color{black}
-
-\color{red} TODO: Write about the two different frame integration methods and show diagrams. \color{black}
-
-\color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration \color{black}
+\color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration. \color{black}
 
 \subsubsection{Custom Frame Integration}
 
-\color{red} TODO: Write some experiments for this section. \color{black}
+Some tests were undertaken using the custom frame integration technique on the DVS128 Gesture dataset. As you can see, information can be stored to the same, or even smaller, temporal resolution in a lower channel image. \cref{fig:frame_integration_comparison} shows the left arm clockwise hand rotation gesture represented using the two techniques. In the interest of time, for the following testing the regular frame integration technique was used, since it is adequate for the sake of comparison. It is clear that the encoding is more efficient, since only single-channelled greyscale images are required with the custom integration method, and more fine-grained temporal information is retained since the intensity of the pixels signifies the amount of events occurring in any given pixel.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/classic_frame_integration.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.18\textwidth]{testingandresults/images/custom_frame_integration.png}}}%
+    \caption{Frame integration of arm rotation gesture from DVS128 Gesture dataset with two different methods; \textbf{(a)} classic frame integration, and \textbf{(b)} custom frame integration.}%
+    \label{fig:frame_integration_comparison}%
+\end{figure}
+
+\color{red} TODO: Write some experiments for comparison of the two techniques. \color{black} 
 
 \section{Two-phase Intensity Reconstruction Models}
 
-\color{red} TODO: Write a nice intro to this section like the last section. \color{black}
+Most current classification networks are built to harness the features of video streams from frame-based cameras. To this end, networks were created to use these networks on intensity reconstructions from pre-built networks like E2VID (as described in \cref{ssec:video_reconstruction}). The results of such a network are given in this next section.
 
 \subsection{Intensity Reconstruction}
 
