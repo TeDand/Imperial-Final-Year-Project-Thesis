@@ -70,7 +70,7 @@ Before processing it, z-score standardisation needs to take place. \Cref{eq:z_sc
     \label{eq:z_score}
 \end{equation}
 
-\section{End-to-end Event Classification Models}
+\section{End-to-end Event Classification Models} \label{sec:end_to_end_classification_design}
 
 For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively. A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}.
 
@@ -109,11 +109,18 @@ Finally, for the learning rates for each system, it is necessary to find the opt
 
 \subsection{3-Dimensional Convolutional Neural Network} \label{ssec:conv_3d_network_design}
 
-A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work directly on the event data. \color{red} TODO: Write more about this network. \color{black}
+A 3D convolutional network as described in \cref{ssec:3D_conv_network} was implemented to work on the event data. A diagram showing the function of one of the 3D convolutional layers used in the final network can be seen in \cref{fig:conv3d_diagram}. As opposed to their two dimensional counterparts, 3D convolutions involve taking video streams as input and output, allowing the network to decode patterns in both the spacial and temporal dimensions. As well as this, it the network employs batch normalisation layers accelerates training.The reason this is the case is because it provides provides some regularisation, meaning the data is rescaled so that it centres around 0 and has a standard deviation of 1. In essence this means the outputs of each intermediate layer look similar in distribution, so the same learning rate can be used for back-propagation throughout the network.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.4\textwidth]{analysisanddesign/images/conv3d_diagram.png}
+    \caption{An illustration of a 3D convolutional layer.}
+    \label{fig:conv3d_diagram}
+\end{figure}
 
 \subsection{Convolutional LSTM Network}
 
-A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work directly on the event data. \color{red} TODO: Write more about this network. \color{black}
+A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implemented to work on the event data. In this network the video that is fed in is passed through the network a frame at a time. The ConvLSTM layers apply 2D convolution on the frames to extract spacial patterns, and then these features are passed into LSTMs. The LSTMs allow for the network to remember previous frames and therefore analyse temporal features of the data as well.
 
 \subsection{Custom Convolutional LSTM Network}
 
@@ -141,9 +148,7 @@ Spiking neural networks work similarly to ANNs, however there are some key diffe
 
 \section{Evaluation Metrics} \label{sec:evalutaion_metrics}
 
-The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}. \color{red} TODO: Change this to actual used evaluation metrics and check it fits properly in background \color{black}
-
-For a classification task, when we obtain the results from the test dataset (as shown in \cref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
+The evaluation plan is as given by the typical machine learning pipeline\cite{IntroToML}.For a classification task, when we would obtain the results from the test dataset (an example of which is shown in \cref{tab:possible_results}) we can calculate a variety of evaluation metrics that give various insights on our final model.
 
 \begin{table}[htb]
     \centering

@@ -52,9 +52,15 @@ This refined edge map could have been part of the pre-processing of the data bef
     \label{fig:canny_edge_detection_nmnist}%
 \end{figure}
 
+\color{red} TODO: Show comparison between my frame integration technique and the spikingjelly one. \color{black}
+
 \color{red} TODO: Write about the two different frame integration methods and show diagrams. \color{black}
 
 \color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration \color{black}
+
+\subsubsection{Custom Frame Integration}
+
+\color{red} TODO: Write some experiments for this section. \color{black}
 
 \section{Two-phase Intensity Reconstruction Models}
 
@@ -89,9 +95,9 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
 
 The confusion matrices for the classification of the frame-integrated  NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9.
 
-The confusion matrices for the classification of the intensity reconstructed NMNIST dataset can be seen in \cref{fig:nmnist_recon_c_matrices}. \color{red} TODO: Write more about this. \color{black}
+The confusion matrices for the classification of the intensity reconstructed NMNIST dataset can be seen in \cref{fig:nmnist_recon_c_matrices}. It is clear that the performance of the network is worse on more challenging characters such as 6, 8 and 9. For the 3D convolutional neural network, the precision is often lower for these classes, meaning other classes are being identified as these classes (false positives). Interestingly, with the LSTM networks it is instead the recall that is lower for these challenging classes, meaning many of the samples of these classes are misclassified (false negatives). Overall the f1 measure acts as a balanced measure between precision and recall, since the data is not biased to any one class. The f1 score is superior for the 3D convolutional network and custom convolutional network, which both have similar performance on the test dataset.
 
-The drawback to the 3D convolutional network is that the number of trainiable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
+The drawback to the 3D convolutional network is that the number of trainable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
 
 \begin{figure}[htb]%
     \centering
@@ -104,6 +110,10 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
     \label{fig:nmnist_c_matrices}%
 \end{figure}
 
+\Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated NMNIST dataset in more detail. Once again the network has trouble classifying the difficult classes. We can see that the performance suffers more when compared to the networks analysing the integrated frames. Especially in the NMNIST dataset the edges are very significant for distinguishing between each class, which integrated frames excel at highlighting. The additional intensities added to the frames by E2VID seem to only hinder performance.
+
+\Cref{tab:conv3d_nmnist_recon_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_recon_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_recon_evaluation_metrics} show the performance evaluation of each of the networks on the intensity reconstructed NMNIST dataset in more detail. The patterns seen mirror the ones for the frame-integrated networks for the most part, due to the fact that motion does not play a large part in the classification process during object recognition.
+
 \begin{figure}[htb]%
     \centering
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_recon_conv3d.png}}}%
@@ -114,14 +124,6 @@ The drawback to the 3D convolutional network is that the number of trainiable pa
     \caption{Confusion matrices for intensity reconstructed NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
     \label{fig:nmnist_recon_c_matrices}%
 \end{figure}
-
-\Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated NMNIST dataset in more detail.
-
-\Cref{tab:conv3d_nmnist_recon_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_recon_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_recon_evaluation_metrics} show the performance evaluation of each of the networks on the intensity reconstructed NMNIST dataset in more detail.
-
-\color{red} TODO: Write more about the meaning of the tables. \color{black}
-
-\color{red} TODO: Make more custom convolution LSTMs \color{black}
 
 \color{red} TODO: Add spiking neural network testing. \color{black}
 

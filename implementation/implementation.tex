@@ -10,22 +10,9 @@ As described in  \cref{ssec:data_preprocessing_design}, data had to be centered 
 
 \subsubsection{Frame Integration}
 
-In order to begin analysing neuromorphic data, it was pre-processed it into a form that a NN can take as input. One such method of doing so was to segment the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}). This is an implementation of the more formal method of processing events streams to get integrated frames is given in \cref{ssec:frame_integration}. This technique was also applied to two other readily available data-sets; DVS128 Gesture and CIFAR10-DVS.
-
-\begin{figure}[htb]%
-    \centering
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_spikes_visualisation_segmented.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_segmented.png}}}%
-    \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_heatmap_segmented.png}}}%
-    \caption{A visualisation of intensity maps created by segmenting events into bins of size $ 1 \times 10^6 $ ms.}%
-    \label{fig:nmnist_spikes_to_intensity_map}%
-\end{figure}
+In order to begin analysing neuromorphic data, it was pre-processed it into a form that a NN can take as input. For most the testing an implementation of the more formal method of processing events streams to get integrated frames given in \cref{ssec:frame_integration} was implemented. This technique was also applied to another readily available data-sets, the DVS128 Gesture dataset.
 
 The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. For each instance of a gesture the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. This means that the frames are not synchronous like they would be from an frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more easily distinguishable features may be seen. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
-
-\color{red} TODO: Read over this and make sure that the information in it is not repeated from the previous paragraph. \color{black}
 
 \begin{figure}[htb]%
     \centering
@@ -40,7 +27,22 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
 
 \color{red} TODO: Add more photos of integrated frames with more and less frames \color{black}
 
-\color{red} TODO: Include image and explanations of frame integration \color{black}
+\color{red} TODO: Add pseudocode for frame integration \color{black}
+
+\subsubsection{Custom Frame-Integration}
+
+As well as this a novel integration technique was implemented, as described in the \cref{sec:end_to_end_classification_design}. The method involved segmenting the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. This way temporal information was retained to a greater degree than if each pixel simply had binary information of whether a event occurred or not in a two channel image (as was done by the spikingjelly package\cite{SpikingJelly}). It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}). Another method that aimed to preserve temporal resolution was proposed by Lo\"ic Cordone \textit{et al.}, who proposed `voxel cubes'\cite{MiniVovelCubes}. For this method there were still binary events in every channel, but there were more than two channels so that the events in each time-slice could be subdivided into each channel. When compared to this method, the temporal information can be stored in the same way with the new proposed method, while keeping data size small since it is just a one-channel image. 
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_spikes_visualisation_segmented.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_segmented.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_heatmap_segmented.png}}}%
+    \caption{A visualisation of intensity maps created by segmenting events into bins of size $ 1 \times 10^6 $ ms.}%
+    \label{fig:nmnist_spikes_to_intensity_map}%
+\end{figure}
 
 \color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
 
@@ -53,15 +55,7 @@ The models described above allow for the system to learn directly on the spiking
 
 \subsubsection{E2VID}
 
-E2VID, as described in \color{red} TODO: Reference background reading here \color{black}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had 90\% accuracy \color{red} TODO: check accuracy figure \color{black}), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this additional frames were added to videos which had fewer frames than that of the longest video in the training set. These additional frames were added by repeating the video until the desired number of frames was reached.
-
-\color{red} TODO: all of the following;
-
-\begin{itemize}
-    \item Similar to denoising network CNN more easily able to find patterns in data
-    \item gesture intensity maps equivalent to 100fps but retains high frequency information without too much noise
-    \item spikingjelly for integrating frames which is widely used approach
-\end{itemize}
+E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this additional frames were added to videos which had fewer frames than that of the longest video in the training set. These additional frames were added by repeating the video until the desired number of frames was reached.
 
 \color{black}
 
@@ -119,7 +113,7 @@ An implementation of a custom convolutional LSTM can be seen in \cref{lst:custom
 
 \subsection{Spiking Neural Network}
 
-For the basis of the spiking neural network, the same 2D convolutional neural network used in the custom convolutional LSTM network (See \cref{lst:custom_conv_2d_layers}). First an ANN was constructed and trained with traditional back-propagation. Since there were a series of frames being input to the network, the actual labels had to be repeated for each frame during the training process. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}. The neural activity of this network can be seen in \cref{fig:pre_snn_conversion}. The input to this network was a integrated frame video with each frame repeated 8 times (as described in \cref{ssec:snn_design}). The plots are shown over time, and since our network doesn't have any temporal elements (i.e. spiking neurons), the neural activity is constant for each set of repeated frames. However, since multiple frames are being supplied as part of the input, the output predictions still change over time.
+For the basis of the spiking neural network, the same 2D convolutional neural network used in the custom convolutional LSTM network (See \cref{lst:custom_conv_2d_layers}). First an ANN was constructed and trained with traditional back-propagation. Since there were a series of frames being input to the network, the actual labels had to be repeated for each frame during the training process. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}. The neural activity of this network can be seen in \cref{fig:pre_snn_conversion}. The input to this network was a integrated frame video with each frame repeated 8 times (as described in \cref{ssec:snn_design}). The plots are shown over time, and since our network doesn't have any temporal elements (i.e. spiking neurons), the neural activity is constant for each set of repeated frames. However, since multiple frames are being supplied as part of the input, the output predictions still change over time. For this exploratory work the network was trained for 20 epochs, giving an approximate accuracy of 84\%.
 
 \begin{figure}[htb]%
     \centering
@@ -128,7 +122,14 @@ For the basis of the spiking neural network, the same 2D convolutional neural ne
     \label{fig:pre_snn_conversion}%
 \end{figure}
 
-Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each frame needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 25 times \color{red} TODO: Add some graph comparisons to prove this \color{black}. Graphs showing the performance of the converted network can be seen in \color{red} TODO: add image here \color{black}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is samples for predictions.
+Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each frame needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 25 times \color{red} TODO: Add some graph comparisons to prove this \color{black}. Graphs showing the performance of the converted network can be seen in \cref{fig:post_snn_conversion}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is samples for predictions. The accuracy of the converted network fell to approximately 10\%.
+
+\begin{figure}[htb]%
+    \centering
+    \includegraphics[width=0.6\textwidth]{implementation/images/post_snn_conversion.png}
+    \caption{Graphs showing neural activity of ANN after conversion to SNN.}%
+    \label{fig:post_snn_conversion}%
+\end{figure}
 
 Once the conversion from ANN to SNN was complete, the performance of the network was incomparable to before the process. The reason for this (as outlined in \cref{ssec:snn_and_heterogeneity}) is the poor approximations that take place in the conversion process. In order to mitigate this, some network alterations were made to improve the approximations.
 
