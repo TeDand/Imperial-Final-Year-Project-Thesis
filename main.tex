@@ -52,25 +52,51 @@
 
 \lstset{style=mystyle}
 
-\title{Event Analysis for Classification of Neuropmorhic Data}
+\title{Data-driven Classification Methods for Event-driven Cameras}
 \author{Tejas Dandawate}
 % Update supervisor and other title stuff in title/title.tex
 
 \begin{document}
 \input{title/title.tex}
 
-% \begin{abstract}
-%     Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
+\begin{abstract}
+    Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
 
-%     Simultaneous localisation and mapping (SLAM) is a popular application of robotics and computer vision, in which a robot moves autonomously along an unknown trajectory. A useful application of this would be in cases such as  finding the location of natural fires, in which it is important to know both the mapping of the surrounding environment as well as the locations of both the robot and the objects of interest.
-
-%     The main aim of the project is to utilise a neuromorphic camera to carry out SLAM (moving in an unknown trajectory), mapping out the environment around the robot and finding the location it is in. \textcolor{red}{This could possibly leverage spiking neural networks to further emulate biological responses to the stimuli the camera would receive.
-%         Then, if time permits, the next step would be to carry out some object recognition to localise objects or points of interest in the local environment.}
-% \end{abstract}
+    The main aim of the project is to utilise data retrieved from neuromorphic cameras to carry out video classification. Two pipelines were devised to achieve this; one involved directly classifying event data, while the other was a two-phase network were events were first reconstructed into intensity videos before classification was done. With both pipelines, a series of networks were used for classification in order to have a fair comparison.
+    
+    Data pre-processing is also a large part of the machine learning pipeline, and as such played a part in the creation of the two pipelines. For the direct-event classification in particular, varying pre-processing methods including the classical one as well as a new novel approach were implemented and tested.
+    
+    Multiple networks were designed and implemented to be a part of both classification pipelines. The main networks for the comparison of the pipelines were convolutional and recurrent neural networks. Finally, a fully neuromorphic system using a spiking neural network was devised, allowing for the exploitation of the sparse data communication between layers. With similar performance, these networks can be utilised for low-powered devices and real-time classification in future works. 
+\end{abstract}
 
 \renewcommand{\abstractname}{Acknowledgements}
 \begin{abstract}
+    % I would firstly like to express my gratitude to my project supervisor
+    % Professor Pier-Luigi Dragotti for giving me the opportunity to work on
+    % this project, freedom to take it where I saw fit and his continuous advice,
+    % guidance and support throughout its course. I would also like to thank
+    % Xin Deng for her support and invaluable advice and help she has given
+    % me.
+    % I would like to extend my thanks Dr Guang Yang from Imperial
+    % College London and Jin Zhu from Cambridge for their collaboration
+    % and for providing the medical imaging data for this project.
+    % I would like to thank my friends for being an enormous part of my
+    % life over the past four years, for their optimism, support and for all the
+    % good times we have had. Finally, I would like to thank my parents and
+    % family for their unconditional support and encouragement, for always
+    % being there and believing in me. Without them, I would not have had
+    % the opportunity to be where I am today.
+
     Thanks mum!
+\end{abstract}
+
+\renewcommand{\abstractname}{Final Report Plagiarism Statement}
+\begin{abstract}
+    I affirm that I have submitted, or will submit, an electronic copy of my final year project report to the provided EEE link.
+
+    I affirm that I have submitted, or will submit, an identical electronic copy of my final year project to the provided Blackboard module for Plagiarism checking.
+
+    I affirm that I have provided explicit references for all the material in my Final Report that is not authored by me, but is represented as my own work.
 \end{abstract}
 
 \pagenumbering{gobble}
