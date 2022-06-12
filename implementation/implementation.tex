@@ -21,7 +21,7 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
     \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_2.png}}}%
     \qquad
     \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_3.png}}}%
-    \caption{Three contiguous intensity frames ({a}, {b} and {c}), created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
+    \caption{Three contiguous intensity frames \textbf{(a)}, \textbf{(b)} and \textbf{(c)}, created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
     \label{fig:dvs128_integrated_frames}%
 \end{figure}
 
@@ -65,11 +65,9 @@ The models used to classify the either the integrated frames or video reconstruc
 
 \subsection{3D Convolutional Neural Network}
 
-The 3D convolutional neural network in \cref{ssec:3D_conv_network} was altered to have the outputs of the hidden layer fed into a dense layer with 10 neurons to classify the correct class (0-9). Activation functions need to be present in the network to prevent all the layers from becoming equivalent to a single one \color{red} TODO: add references here \color{black} (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \cref{eq:artificial_neuron_output} in \cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular), and in this network as well, is ReLU. \color{red} TODO: add references here \color{black}. Finally, the output layer has a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the 10 classes. This means we can simply take the highest probability as the predicted class from the network.
+The 3D convolutional neural network in \cref{ssec:3D_conv_network} was altered to have the outputs of the hidden layer fed into a dense layer with 10 neurons to classify the correct class (0-9). Activation functions need to be present in the network to prevent all the layers from becoming equivalent to a single one (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \cref{eq:artificial_neuron_output} in \cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular) is ReLU, so that was the natural choice for this network as well. Finally, the output layer has a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the 10 classes. This means we can simply take the highest probability as the predicted class from the network.
 
-Hyper-parameter Tuning:
-
-In order to choose the most appropriate parameters for the system, multiple tests were run varying each of the possible hyper-parameters. The tests conducted were to determine;
+In order to choose the most appropriate parameters for the system, as well as the other systems implemented during the course of this project, multiple tests were run varying each of the possible hyper-parameters. The tests conducted were to determine;
 
 \begin{itemize}
     \item The number of hidden layers.
@@ -78,7 +76,7 @@ In order to choose the most appropriate parameters for the system, multiple test
     \item The introduction of some fully connected layers after convolutional layers.
 \end{itemize}
 
-The network in each case was trained for multiple epochs. The performance of a typical network can be seen in \cref{fig:accuracy_and_loss_per_epoch}, where the performance on the training set steadily improves as the network progresses through epochs. Accuracy is one of the metrics defined in \cref{sec:evalutaion_metrics}, and the loss for the given network is called categorical cross-entropy loss. The formula used to calculate the loss is given by: $ L = -\frac{1}{N}\sum^N_{i=1}\sum^C_{c=1}y_c^{(i)}log(\hat{y}_c^{(i)}) $, where there are $ N $ samples and $ C $ classes. $ y_c^{(i)} $ is $ 1 $ when the class is correctly predicted and $ 0 $ otherwise and $ \hat{y}_c^{(i)} $ is the predicted probability of class $ c $ for data-point $ i $.
+The network in each case was trained for multiple epochs. The performance of a typical network can be seen in \cref{fig:accuracy_and_loss_per_epoch}, where the performance on the training set steadily improves as the network progresses through epochs. Accuracy is one of the metrics defined in \cref{sec:evalutaion_metrics}, and the loss for the given network is called categorical cross-entropy loss. The formula used to calculate the loss is given by: $ L = -\frac{1}{N}\sum^N_{i=1}\sum^C_{c=1}y_c^{(i)}log(\hat{y}_c^{(i)}) $, where there are $ N $ samples and $ C $ classes. $ y_c^{(i)} $ is $ 1 $ when the class is correctly predicted and $ 0 $ otherwise and $ \hat{y}_c^{(i)} $ is the predicted probability of class $ c $ for data-point $ i $. This is the same loss function that was used in the other networks in the report as well.
 
 \begin{figure}[htb]
     \centering
@@ -122,21 +120,7 @@ For the basis of the spiking neural network, the same 2D convolutional neural ne
     \label{fig:pre_snn_conversion}%
 \end{figure}
 
-Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each 3 dimensional vector needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 30 times \color{red} TODO: Add some graph comparisons to prove this \color{black}. Graphs showing the performance of the converted network can be seen in \cref{fig:post_snn_conversion}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is sampled for predictions. The accuracy of the converted network fell to approximately 10\%.
-
-Once the conversion from ANN to SNN was complete, the performance of the network was incomparable to before the process. The reason for this (as outlined in \cref{ssec:snn_and_heterogeneity}) is the poor approximations that take place in the conversion process. In order to mitigate this, some network alterations were made to improve the approximations.
-
-\subsubsection{Synaptic Smoothing}
-
-The plots for the spiking neural network show that since the neuron function is now no-longer continuous, discrete spikes occur to propagate information throughout the network. This means that the output of the network is very noisy. Since there are so many neurons spiking at any one given time, there is no guarantee that when you sample the output at the final time-step that the correct neuron will be firing (even if it has a relatively higher firing rate). For this reason we need to apply a smoothing function to the firing neurons. Essentially the \lstinline{synapse} parameter in nengo applies a moving average filter to the network output so that the predictions are more stable. The effect of applying this filter can be seen in \cref{fig:post_synaptic_smoothing}. It was found that the performance of the system was best with smoothing=0.006.
-
-\subsubsection{Post-training Firing Rate Scaling}
-
-Neuron updates only occur when it outputs, or 'fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaces is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \cref{fig:post_firing_rate_scaling}. It is important to note, however, that if the firing rate were to theoretically be scales infinitely, the neuron functions for be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place. It was found that the best compromise for this system was to scale the firing rate by 150, which preserved the benefits of the spiking neural network and also improved accuracy back to the levels before the conversion.
-
-It is also possible to change the effective firing rates of each neuron in the network, we could also add a custom loss function that incentivises a certain firing rate during the training processes as well. The benefit of this is that it can be applied to non-linear functions other than ReLU, but since there is no such function present in this project it need not be implemented.
-
-\newpage
+Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each 3 dimensional vector needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 30 times. A graph showing the activity of neurons in the first convolutional layer of the network with high and low number of repetitions can be seen in \cref{fig:frame_repititions}. Graphs showing the performance of the converted network can be seen in \cref{fig:post_snn_conversion}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is sampled for predictions. The accuracy of the converted network fell to approximately 10\%.
 
 \begin{figure}[htb]%
     \centering
@@ -144,6 +128,20 @@ It is also possible to change the effective firing rates of each neuron in the n
     \caption{Graphs showing neural activity of ANN after conversion to SNN.}%
     \label{fig:post_snn_conversion}%
 \end{figure}
+
+Once the conversion from ANN to SNN was complete, the performance of the network was incomparable to before the process. The reason for this (as outlined in \cref{ssec:snn_and_heterogeneity}) is the poor approximations that take place in the conversion process. In order to mitigate this, some network alterations were made to improve the approximations.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/low_frame_repitition.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/high_frame_repitition.png}}}%
+    \caption{Comparison of number of spikes with less \textbf{(a)} and more \textbf{(b)} repetitions.}%
+    \label{fig:frame_repititions}%
+\end{figure}
+
+\subsubsection{Synaptic Smoothing}
+
+The plots for the spiking neural network show that since the neuron function is now no-longer continuous, discrete spikes occur to propagate information throughout the network. This means that the output of the network is very noisy. Since there are so many neurons spiking at any one given time, there is no guarantee that when you sample the output at the final time-step that the correct neuron will be firing (even if it has a relatively higher firing rate). For this reason we need to apply a smoothing function to the firing neurons. Essentially the \lstinline{synapse} parameter in nengo applies a moving average filter to the network output so that the predictions are more stable. The effect of applying this filter can be seen in \cref{fig:post_synaptic_smoothing}. It was found that the performance of the system was best with smoothing=0.006.
 
 \begin{figure}[htb]%
     \centering
@@ -155,6 +153,12 @@ It is also possible to change the effective firing rates of each neuron in the n
     \caption{Performance of spiking neural network with progressively more synaptic smoothing; \textbf{(a)} smoothing=0.002 \textbf{(b)} smoothing=0.005, and \textbf{(c)} smoothing=0.010.}%
     \label{fig:post_synaptic_smoothing}%
 \end{figure}
+
+\subsubsection{Post-training Firing Rate Scaling}
+
+Neuron updates only occur when it outputs, or 'fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaces is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \cref{fig:post_firing_rate_scaling}. It is important to note, however, that if the firing rate were to theoretically be scales infinitely, the neuron functions for be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place. It was found that the best compromise for this system was to scale the firing rate by 150, which preserved the benefits of the spiking neural network and also improved accuracy back to the levels before the conversion.
+
+It is also possible to change the effective firing rates of each neuron in the network, we could also add a custom loss function that incentivises a certain firing rate during the training processes as well. The benefit of this is that it can be applied to non-linear functions other than ReLU, but since there is no such function present in this project it need not be implemented.
 
 \begin{figure}[htb]%
     \centering
