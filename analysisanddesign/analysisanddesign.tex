@@ -51,7 +51,9 @@ Before processing it, z-score standardisation needs to take place. \Cref{eq:z_sc
 
 \section{End-to-end Event Classification Models} \label{sec:end_to_end_classification_design}
 
-For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively. A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}.
+For classifying frames directly a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any on pixel respectively during a given time-slice. There are two variations of time-slice generation, which will be referred henceforth as `synchronous' and `asynchronous' frame-integration. Synchronous frame-integration is named due to the fact that each frame stores event information of a fixed time-frame. For example, each frame could store information for a 10ms time-slice. This means the generated frames are more akin to the outputs of frame-based cameras that have a fixed frame-rate. Asynchronous frame-integration, on the other hand, involves collecting a set number of events for each frame. This means that certain frames may encode information over a longer time-span than other frames. The benefit of this method is that the amount of information per frame is constant, irrespective of when more or less motion occurs in the video. For this project the synchronous method was used, since it allows for the number of frames per sample to be constant, making it easier to input into neural networks.
+
+A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel can also be captured. A diagram showing the basic process with this custom integration method is shown in \cref{fig:frame_integration_diagram}. Once again, this process was done in the aforementioned `synchronous' manner.
 
 \begin{figure}[htb]
     \centering
@@ -60,12 +62,9 @@ For classifying frames directly a frame integration method was utilised as descr
     \label{fig:frame_integration_diagram}
 \end{figure}
 
-\color{red} TODO: Maybe write more about this and add more stuff about synchronous/asynchronous frame integration. \color{black}
-
 \section{Two-phase Intensity Reconstruction Models}
 
-In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks..
-
+In order to make use of existing highly-tested and documented computer vision techniques, intensity reconstruction models were first applied to events. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks. Each event stream was passed into the E2VID reconstruction network\cite{spikingToVideo}, allowing for each network that the data is fed into to analyse more complex visual patterns than are available from the frame-integrated event streams. The rationale behind this is that commonly used neural networks for video analysis are built to detect features from intensity frames rather than event streams. Therefore in order to make use of these specialisations each event stream needs to be converted into a more common input form.
 
 \begin{figure}[htb]
     \centering
@@ -73,8 +72,6 @@ In order to make use of existing highly-tested and documented computer vision te
     \caption{An illustration of the two-phase classification pipeline.}
     \label{fig:two_phase_network_pipeline}
 \end{figure}
-
-\color{red} TODO: Add system diagram of various networks being fed by E2VID and explain it. \color{black}
 
 \section{Classification Networks}
 
