@@ -19,52 +19,49 @@
 
 Neuromorphic data is obtained from event-based cameras that differ from traditional frame-based cameras in that they asynchronously record `events', which are categorised as large shifts in light intensity. This is a novel representation of data that has overarching benefits that are yet to be fully explored in a plethora of applications. The many purported benefits of event-based cameras have the potential to revolutionise efficient, low-power computer vision due to their efficient encoding of information. Since the cameras are asynchronous in nature they allow for low-latency feeds with very little motion blur and other similar visual artefacts. As well as this their pixel structure allows for a very high dynamic range, meaning they can be used even when bright sunlight and dark shadows are encompassed in the same scene.
 
-With the emergence of the Internet of Things (IoT), sensors have become, or at the very least will become, ubiquitous in everyday life. These devices operate using power at a premium since they need to perform adequately with a limited power supply (e.g., small battery cells etc.). This scarcity is further emphasised when attempting to do more power-intensive tasks. One such task is computer vision, which is becoming evermore prevalent as a means of human-computer interaction. Classical frame-based cameras are power intensive, and do not allow for a low active duty cycle (i.e., allowing for device sleep/idle time). The usual way in which this issue is alleviated is by making the system react to an event trigger by `waking up' to work for a short period of time. Such events may include things such as; motion, timing, acceleration, or temperature. When compared to the function of event-based cameras, where event detection in built into the system, this can be seen as a stop-gap measure.
+With the emergence of the Internet of Things (IoT), sensors have become, or at the very least will become, ubiquitous in everyday life. These devices operate using power at a premium since they need to perform adequately with a limited power supply (e.g., small battery cells etc.). This scarcity is further emphasised when attempting to do more power-intensive tasks. One such task is computer vision, which is becoming evermore prevalent as a means of human-computer interaction. Classical frame-based cameras are power intensive, and do not allow for a low active duty cycle (i.e., allowing for device sleep/idle time). The usual way in which this issue is alleviated is by making the system react to an event trigger by `waking up' to work for a short period of time. Such events may include things such as; motion, timing, acceleration, or temperature. When compared to the function of event-based cameras, where event detection in built into the system, this can be seen as a stop-gap measure. To further leverage the low power-consumption of event-based cameras, spiking neural networks could also be implemented to create a fully neuromorphic pipeline. The added benefit of such a system would be the ability to utilise the sparse data communication between spiking neurons, allowing for even greater power-efficiency for low-powered devices and real-time data analysis.
 
 The high temporal resolution and dynamic range of event-based cameras also presents further benefits when compared to frame-based cameras. These features allow for videos to be represented in a very high fidelity format that preserves more data in fast-paced and brightly lit environments. This may lead to more reliable use of the data for computer vision and even other purposes where the exact environment the camera is set up in is uncertain and unpredictable.
 
-\section{Objectives}
+\section{Problem Specification}
 
-The objectives of this project were roughly divided into two main sections; main objectives and extensions. Objectives were created so as to allow for contingencies and fallbacks at every stage.
+The problem this report tries to address is the analysis of event-based data in order to employ commonly used computer vision algorithms. This is an exploratory venture into the field, and so the subsection of classification problems was chosen. 
 
-\subsection{Main Objectives}
+Most commonly used classification models have been designed with inputs from frame-based cameras in mind. For this reason, a novel approach was designed wherein event streams are first converted into intensity videos using pre-built and trained models such as the E2VID reconstruction model\cite{spikingToVideo}, which can then be fed into pre-existing classification models. This two-phase pipeline can then be compared with classification directly on event data.
 
-% Understanding Data
-% Create Sequantial NN System
-% Create Parallel NN System
-% Classification
-% Set-up Camera
-% Test System on Camera Data
-% Experimental Setup
-% Convert System for SLAM
+% To ensure a fair comparison of the two methods, the same networks were applied to the outputs so that there were no extraneous factors effecting their performance. 
 
-\begin{itemize}
-      \item Understand structure of neuromorphic data and methods to preprocess it for inputting into an Artificial Neural Network (ANN).
-      \item Evaluate different ANN models on neuromorphic data from external datasets.
+Additionally, in the field of event analysis, a method known as frame-integration is commonly applied, which allows for the construction of frames from segments of event data. This method allows for the implementation of custom integration techniques, which could improve the performance of the direct event classification pipelines.
 
-            This allows for determining and comparing the performance of both traditional Neural Networks (NNs) as well of Spiking Neural Networks (SNNs). These networks can take two main forms:
-            \begin{itemize}
-                  \item Two networks sequentially processing data. The first would be reconstructing spiking data into an intensity video, and the second would be applying pre-existing computer vision networks to analyse the frame-based output.
-                  \item One network that takes the spiking data as input to directly carry out the intended function.
-            \end{itemize}
-            The system will initially be used to solve a classification task.
-      \item Create practical set-up to experimentally record data.
+Finally, there is growing interest in spiking neural networks, since they have sparse data communications between neurons. This means that they are more suited for efficient data transfer and fast inference than artificial neural networks. A large benefit of frame-based cameras and their data representations is the energy efficiency, lending itself to use in low-powered devices. The investigation of novel spiking neural networks would allow for a fully neuromorphic system, which could be tested in future work for low-power devices and real-time inference.
 
-            Using a neuromorphic camera, data can be experimentally captured to assess the performance of any built networks on more realistic unseen input data.
-      \item Carry out Simultaneous Localisation and Mapping (SLAM) for a robot moving in an unknown trajectory.
+\section{Requirements Capture} \label{sec:requirements_capture}
 
-            Use most efficient NN model to solve the more complex task of SLAM. The neuromorphic camera can be used to capture data from a room in the absence of large sets of labelled datasets.
-\end{itemize}
-
-\subsection{Challenges \& Contingency Plan}
+% Projects with a deliverable that serves a specific 
+% function often have an initial phase in which expected 
+% use is investigated and a brief more detailed than the 
+% specification is constructed. This would include what 
+% is necessary, what is desirable, etc in the final 
+% deliverable. The results of requirements capture 
+% determine project objectives and are used to inform 
+% project evaluation.
+% Requirements capture is important in all projects with 
+% real-world deliverables, and is often a significant 
+% amount of work in software projects. Where 
+% requirements capture is less relevant (for example in
+% an analytical ‘research-style’ project) this may be 
+% replaced by a detailed description of the project aims 
+% and objectives in the Introduction or the Background 
+% sections.
 
 \begin{itemize}
-      \item Only using existing datasets rather than practical set-up.
-
-            Since there is sufficient amounts of existing datasets for classification tasks, they can be split into training, validation, and testing sets themselves. This eliminates the need to generate more data for the testing process.
-      \item Rather than focusing on SLAM the emphasis may be on object detection/recognition or gesture recognition
-
-            The project has been segmented into individual milestones, and so even if the final milestone of a SLAM algorithm isn't achieved, it is easy to change the scope of the project to be a classification or gesture recognition network.
+      \item Load and prepare neuromorphic datasets for use in the project.
+      \item Process data and set-up pipeline for two-phase intensity reconstruction and classification.
+      \item Process data and set-up pipeline for direct event analysis.
+      \item Create various classification models to act as a basis of comparison between two classification pipelines.
+      \item Create spiking versions of classification models with similar classification accuracies.
+      \item Create evaluation plan with detailed metrics to compare both the performance of the two pipelines, as well as the individual classification models used in each.
+      \item Compare and contract findings to understand best ways to discern most appropriate event=driven analysis method.
 \end{itemize}
 
 \section{Report Structure}
@@ -86,12 +83,28 @@ A brief outline of the report is given below:
       %       This chapter presents any ethical, legal and safety considerations taken into account during the project.
 
       \item[Analysis and Design] (\Cref{chap:analysis_and_design})
+      
+      In this chapter a high level overview of the design is given. This includes the choices of hardware/software, as well as architectural diagrams and descriptions.
+
+      Additionally this chapter presents a variety of ways in which the final project was evaluated. This allows for a comparison between existing solutions as well every iteration of solution created during the project.
 
       \item[Implementation] (\Cref{chap:implementation})
 
-            This chapter outlines some initial steps taken in the implementation process.
+      This chapter outlines noteworthy aspects of the implementation process, as well as a rationale for each step of the projects creation, including any reasons it deviated from the initial design.
 
       \item[Testing and Results] (\Cref{chap:testing_and_results})
       
+      Following the evaluation plan in \cref{chap:analysis_and_design}, this chapter aims to apply the planned evaluation techniques to the performance of each of the pipelines and constituent networks. As well as this it includes reasoning for any interesting findings, acting as a basis for the overall evaluation of all implemented systems.
+
+      \item[Evaluation] (\Cref{chap:evaluation})
+      
+      This chapter includes a critical evaluation of all systems implemented in the duration of the project. As opposed to the previous chapter, where details explanations of results and comparisons between classification models are given, this one appraises both pipelines in general, commenting on the effectiveness of event-stream classification. It also acts to measure the success of the project in terms of achieving the aims outlined in \cref{sec:requirements_capture}.
+      
       \item[Conclusion and Further Work] (\Cref{chap:conclusion_and_further_work})
+      
+      This final chapter reports the overall success of the project, and outlines what has been achieved in general. As well as this the limits of the project are discussed, including further works that could act as an extension of the project to improve its effectiveness. Finally it includes a comment on the work from others in this field, including any similarities that have arisen between the work created in parallel to this project.
+      
+      \item[Appendices]
+      
+      Appendices including code-snippets, model architectures and details results tables.
 \end{description}
