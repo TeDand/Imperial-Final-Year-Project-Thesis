@@ -1,13 +1,16 @@
 \chapter{Conclusion and Further Work} \label{chap:conclusion_and_further_work}
 
-To conclude, the testing done with the two classification pipelines show that there are significant benefits to working within the neuromorphic paradigm as opposed to with classic frame-based cameras. With the same networks, performance appears to be superior when analysing event streams rather than video frames. Secondly, the two-phase intensity reconstruction pipelines show promise, being able to harness the wealth of existing networks that exist for video classification. However, the performance with the same classification networks directly on the events rather than the video reconstructions tended to have better performance, perhaps due to the loss of high-frequency data and when creating the intensity maps. This is however open to interpretation, since the models used to classify the reconstructions are relatively simple. The reconstructions do show that the benefits of event-based cameras can be retained even when working with intensity videos, as the reconstruction networks produce high fidelity outputs even when recording videos with lots of motion or high dynamic range of light intensities. This means that the reconstructed videos are often more appropriate for classification that if a video was taken with a frame-based camera.
+To conclude, the testing done with the two classification pipelines show that there are significant benefits to working within the neuromorphic paradigm as opposed to with classic frame-based cameras. With the same networks, performance appears to be superior when analysing event streams rather than video frames. Secondly, the two-phase intensity reconstruction pipelines show promise, being able to harness the wealth of existing networks that exist for video classification. However, the performance with the same classification networks directly on the events rather than the video reconstructions tended to have better performance, perhaps due to the loss of high-frequency data and when creating the intensity maps. This is however open to interpretation, since the models used to classify the reconstructions are relatively simple. The reconstructions do show that the benefits of event-based cameras can be retained even when working with intensity videos, as the reconstruction networks produce high fidelity outputs even when recording videos with lots of motion or high dynamic range of light intensities. This means that the reconstructed videos are often more appropriate for classification that if a video was taken with a frame-based camera. \color{red} TODO: Write about performance of spiking neural networks. \color{black}
+
+\section{Further Work}
 
 Having reached the end of the project, it is important to note the limitations (such as computing power and available time) that need to be acknowledged. As such, there are some key areas in which there is scope for further research and development. These include;
 
 \begin{enumerate}
     \item With a more capable setup and time to test the networks, there is the opportunity to create more intensive networks. As well as this larger batch sizes can be used for more stable training with higher RAM available.
     \item Compare the performance of the reconstructed pipeline like-for-like against a video stream from a frame-based camera. This has been omitted from this project due to time constraints and lack of available datasets.
-    \item Test the performance of the described networks and pipelines on more readily available datasets to make sure that the findings apply to other environments.
+    \item Change E2VID parameters so that resulting reconstructed video is of a higher framerate.
+    \item Test the performance of the described networks and pipelines on more readily available datasets to make sure that the findings apply to other environments. Intensity reconstructions may be more beneficial for more complex tasks.
     \item Test performance gain with custom frame integration method with all networks.
     \item Look more at the use of natural language processing techniques when working with event streams.
     \item Create more spiking neural networks, perhaps from scratch rather than converting regular ANNs. Further testing needs to be done in this area.
@@ -16,6 +19,8 @@ Having reached the end of the project, it is important to note the limitations (
     \item Implement spiking neural networks on neuromorphic hardware. This also opens up the possibility of real-time inference.
     \item Create a spiking version of the intensity reconstruction algorithms to check if they perform well.
 \end{enumerate}
+
+\section{Similar External Work}
 
 \color{red}
 \begin{itemize}
