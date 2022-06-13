@@ -8,7 +8,7 @@ The data was converted to the z-score as described in \cref{ssec:data_preprocess
 
 \section{End-to-end Event Classification Models}
 
-The benefits of the event driven camera (as described in \cref{ssec:event_camera_benefits}) were evident in the acquired results. \color{red} TODO: Add images of integrated frames here \color{black}. As opposed to tradition frame-based cameras, high frequency data is not lost when processing events. There are spikes for every event at a much more granular scale in the temporal dimension in the event camera when compared to the frame camera, meaning fast movements were captured more reliably since events are captured at the $\mu s$ scale, no longer restricted by the frame-rates of modern cameras (which often results in motion blur).
+The benefits of the event driven camera (as described in \cref{ssec:event_camera_benefits}) were evident in the acquired results. As opposed to tradition frame-based cameras, high frequency data is not lost when processing events. There are spikes for every event at a much more granular scale in the temporal dimension in the event camera when compared to the frame camera, meaning fast movements were captured more reliably since events are captured at the $\mu s$ scale, no longer restricted by the frame-rates of modern cameras (which often results in motion blur).
 
 \subsection{Frame Integration}
 
@@ -52,8 +52,6 @@ This refined edge map could have been part of the pre-processing of the data bef
     \label{fig:canny_edge_detection_nmnist}%
 \end{figure}
 
-\color{red} TODO: Write about the performance difference between synchronous and asynchronous frame integration. \color{black}
-
 \subsubsection{Custom Frame Integration}
 
 Some tests were undertaken using the custom frame integration technique on the DVS128 Gesture dataset. As you can see, information can be stored to the same, or even smaller, temporal resolution in a lower channel image. \cref{fig:frame_integration_comparison} shows the left arm clockwise hand rotation gesture represented using the two techniques. In the interest of time, for the following testing the regular frame integration technique was used, since it is adequate for the sake of comparison. It is clear that the encoding is more efficient, since only single-channelled greyscale images are required with the custom integration method, and more fine-grained temporal information is retained since the intensity of the pixels signifies the amount of events occurring in any given pixel. For example, in the figure it is possible to visually know where the position of the arm is, as well as the movement it was going through, with the custom frame frame integration even without having to create too many individual integrated frames. We can see that when 20 integrated frames were created for the NMNIST dataset with the classical method, the motion is visible in one large blur, with no clear indication of the position of the arm for example.
@@ -75,11 +73,18 @@ Most current classification networks are built to harness the features of video 
 
 \subsection{Intensity Reconstruction}
 
-The E2VID reconstruction network (as described in \cref{ssec:video_reconstruction}) was used to recreate intensity videos from events. It was evident that the reconstructions created were robust and relatively to to life. The reconstructions were not effected by adverse lighting effects or fast motions \color{red} TODO: Add image examples \color{black}. This meant that modern computer vision techniques could still be applied to event data, while still preserving the many benefits the event model presents. It was interesting to note the performance of the reconstruction model on inputs with few moving parts. Since events are only triggered when there is an intensity change on any given pixel on the sensor, only regions with motion in them showed up as events, and the nature of all the space with no motion was not easily inferable. This can clearly be seen in \cref{fig:wave_in_lightings_reconstructions}, where only parts of the scene were accurately reconstructed. This did not, however, pose much of a problem for tasks such as gesture recognition, since the motion is exactly what is being classified, however for other tasks such as object recognition it had to be ensured that there was some sort of motion of either the object or the camera for the reconstruction algorithm to be effective.
+The E2VID reconstruction network (as described in \cref{ssec:video_reconstruction}) was used to recreate intensity videos from events. It was evident that the reconstructions created were robust and relatively to to life. The reconstructions were not effected by adverse lighting effects or fast motions, which can be verified in \cref{fig:intensity_reconstructed_frames}, which shows a reconstruction of a video of a runner in a sunny environment. It is evident that even in sunny conditions the event camera is able to capture high contrast details such as buildings in the background against the sunlight. Now, modern computer vision techniques could still be applied to event data, while still preserving the many benefits the event model presents. It was interesting to note the performance of the reconstruction model on inputs with few moving parts. Since events are only triggered when there is an intensity change on any given pixel on the sensor, only regions with motion in them showed up as events, and the nature of all the space with no motion was not easily inferable. This can clearly be seen in \cref{fig:wave_in_lightings_reconstructions}, where only parts of the scene were accurately reconstructed. This did not, however, pose much of a problem for tasks such as gesture recognition, since the motion is exactly what is being classified, however for other tasks such as object recognition it had to be ensured that there was some sort of motion of either the object or the camera for the reconstruction algorithm to be effective.
 
-\color{red} TODO: Include image and explanations of NMNIST reconstructions \color{black}
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{testingandresults/images/outdoor_frames.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{testingandresults/images/outdoor_recontstructed_frames.png}}}%
+    \caption{Figure showing matching video \textbf{(a)} and reconstructed frames \textbf{(b)} from the event camera dataset\cite{EventCameraDataset}.}%
+    \label{fig:intensity_reconstructed_frames}%
+\end{figure}
 
-\Cref{fig:wave_in_lightings_reconstructions} shows that event-cameras do indeed allow for higher fidelity video capture in a wider range of lighting conditions that frame-based cameras (as explained in \cref{ssec:event_camera_benefits}). In all lighting conditions the video reconstruction was largely the same, since the events triggered were very similar in all cases. The logarithmic characteristics of the event-sensor pixels are the reason for this, since the thresholds for the triggering of events is not static. Since the reconstructions are consistent across lighting conditions, this also means that the reconstruction is more reliable, and the classification algorithm works better in adverse conditions in general \color{red} TODO: get figures and images to prove this \color{black}.
+\Cref{fig:wave_in_lightings_reconstructions} shows that event-cameras do indeed allow for higher fidelity video capture in a wider range of lighting conditions that frame-based cameras (as explained in \cref{ssec:event_camera_benefits}). In all lighting conditions the video reconstruction was largely the same, since the events triggered were very similar in all cases. The logarithmic characteristics of the event-sensor pixels are the reason for this, since the thresholds for the triggering of events is not static. Since the reconstructions are consistent across lighting conditions, this also means that the reconstruction is more reliable, and the classification algorithm works better in adverse conditions in general \color{red} TODO: get figures and images to prove this \color{black}. The E2VID reconstruction uses fixed-size event windows. This means that each input has $ n $ events, and each input therefore has an equal amount of information. This way the output data can be of a high fidelity even with large amounts of motion. For example event though the motion of the hand is very large in this video, the individual fingers and details are still clearly visible in every frame.
 
 \begin{figure}[htb]%
     \centering
@@ -96,9 +101,18 @@ The E2VID reconstruction network (as described in \cref{ssec:video_reconstructio
     \label{fig:wave_in_lightings_reconstructions}%
 \end{figure}
 
-\subsection{Classification Results}
+However, the quality of the reconstructions was not as impressive for datasets where the input is vastly different to the data E2VID was trained on (see \cref{fig:nmnist_reconstructions}). For example, with the NMNIST dataset\cite{NMNIST}, the input size was very small. This was a deliberate choice so that the format of NMNISt closely matches the format of MNIST, allowing for efficient training and testing of networks. However, the reconstruction of these samples was very rudimental, showing results similar to an edge map rather than a full reconstruction. This is one of the factors that made the two-phase pipeline less effective for this dataset as compared to the DVS128 Gesture reconstructions. This disparity could be eliminated if E2VID was re-trained on the specific data that was input, however for this project such datasets were not readily available, nor the time to train the network.
 
-\subsubsection{NMNIST Dataset}
+\begin{figure}[htb]%
+    \centering
+    \includegraphics[width=0.6\textwidth]{testingandresults/images/nmnist_reconstructions.png}
+    \caption{A figure showing three reconstructed frames from a recording of the MNIST character `6'.}%
+    \label{fig:nmnist_reconstructions}%
+\end{figure}
+
+\section{Classification Results}
+
+\subsection{NMNIST Dataset}
 
 The confusion matrices for the classification of the frame-integrated  NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9.
 
@@ -134,9 +148,9 @@ The drawback to the 3D convolutional network is that the number of trainable par
 
 \color{red} TODO: Add spiking neural network testing. \color{black}
 
-\subsubsection{DVS128 Gesture Dataset}
+\subsection{DVS128 Gesture Dataset}
 
-The confusion matrices for the classification of the frame-integrated DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5 (right arm clockwise and right arm counter-clockwise), as well as actions 6 and 7 (left arm clockwise and left arm counter-clockwise), were often misclassified as one another. The reason for this was that with length 20 frame integrated videos the fast rotational movement results in frames that look very similar in both directions. \color{red} TODO: Maybe try to get some pictures to prove this. \color{black} Other mistakes were more often made with the 3D convolutional network. For example 10 (air guitar) was quite often predicted for cases of classes 8 and 9 (air roll and air drums). 
+The confusion matrices for the classification of the frame-integrated DVS128 Gesture dataset can be seen in \cref{fig:dvs128_c_matrices}. The variance in performance between the networks is more apparent in this dataset than for the NMNIST dataset. The reason for this is that not only is object detection (of the human body) being undertaken by the system, but also action recognition across frames. It is evident that actions 4 and 5 (right arm clockwise and right arm counter-clockwise), as well as actions 6 and 7 (left arm clockwise and left arm counter-clockwise), were often misclassified as one another. The reason for this was that with length 20 frame integrated videos the fast rotational movement results in frames that look very similar in both directions \color{red} TODO: Maybe try to get some pictures to prove this \color{black}. This could be remedied by having more than 20 frames for each integrated video sequence. Other mistakes were more often made with the 3D convolutional network. For example 10 (air guitar) was quite often predicted for cases of classes 8 and 9 (air roll and air drums). 
 
 The confusion matrices for the classification of the intensity reconstructed DVS128 Gesture dataset can be seen in \cref{fig:dvs128_recon_c_matrices}. \color{red} TODO: Write more about this. \color{black}
 
