@@ -116,6 +116,8 @@ However, the quality of the reconstructions was not as impressive for datasets w
 
 The confusion matrices for the classification of the frame-integrated  NMNIST dataset can be seen in \cref{fig:nmnist_c_matrices}. In terms of precision of classification, all networks perform relatively well. However, the 3D convolutional network and the custom convolutional LSTM network were marginally more effective, achieving a higher accuracy and correctly classifying more challenging event streams. Where this is most apparent is when classifying numbers such as 3, since with the base convolutional LSTM network these were sometime misclassified as an 8 or 9.
 
+The confusion matrices for the classification of the frame-integrated  NMNIST dataset with the custom frame integration method can be seen in \cref{fig:nmnist_custom_frame_c_matrices}. \color{red} TODO: Write more about this and redo confusion matrices \color{black}.
+
 The confusion matrices for the classification of the intensity reconstructed NMNIST dataset can be seen in \cref{fig:nmnist_recon_c_matrices}. It is clear that the performance of the network is worse on more challenging characters such as 6, 8 and 9. For the 3D convolutional neural network, the precision is often lower for these classes, meaning other classes are being identified as these classes (false positives). Interestingly, with the LSTM networks it is instead the recall that is lower for these challenging classes, meaning many of the samples of these classes are misclassified (false negatives). Overall the f1 measure acts as a balanced measure between precision and recall, since the data is not biased to any one class. The f1 score is superior for the 3D convolutional network and custom convolutional network, which both have similar performance on the test dataset.
 
 The drawback to the 3D convolutional network is that the number of trainable parameters (as can be seen in \cref{ssec:conv_3d_network_design}) is much higher than the other networks, and so the training and inference times were considerably higher than the other networks as well (as can be seen in \cref{tab:network_training_times}).
@@ -131,7 +133,20 @@ The drawback to the 3D convolutional network is that the number of trainable par
     \label{fig:nmnist_c_matrices}%
 \end{figure}
 
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_frame_conv3d.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_frame_convlstm.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{testingandresults/images/c_matrix_nmnist_custom_frame_custom_convlstm.png}}}%
+    \caption{Confusion matrices for custom frame-integrated NMNIST classification with various networks; \textbf{(a)} conv3D, \textbf{(b)} convLSTM, \textbf{(c)} custom convLSTM.}%
+    \label{fig:nmnist_custom_frame_c_matrices}%
+\end{figure}
+
 \Cref{tab:conv3d_nmnist_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated NMNIST dataset in more detail. Once again the network has trouble classifying the difficult classes. We can see that the performance suffers more when compared to the networks analysing the integrated frames. Especially in the NMNIST dataset the edges are very significant for distinguishing between each class, which integrated frames excel at highlighting. The additional intensities added to the frames by E2VID seem to only hinder performance.
+
+\Cref{tab:conv3d_nmnist_custom_frame_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_custom_frame_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_custom_frame_evaluation_metrics} show the performance evaluation of each of the networks on the custom frame-integrated NMNIST dataset in more detail.
 
 \Cref{tab:conv3d_nmnist_recon_evaluation_metrics}, \cref{tab:conv_lstm_nmnist_recon_evaluation_metrics}, and \cref{tab:custom_conv_lstm_nmnist_recon_evaluation_metrics} show the performance evaluation of each of the networks on the intensity reconstructed NMNIST dataset in more detail. The patterns seen mirror the ones for the frame-integrated networks for the most part, due to the fact that motion does not play a large part in the classification process during object recognition.
 
@@ -190,11 +205,17 @@ The confusion matrices for the classification of the intensity reconstructed DVS
         \hline
         Network     & NMNIST & DVS128 Gesture \\
         \hline \hline
-        Conv3D Event Classifier          & 98.22\%   &   69.44\%    \\
+        Conv3D Frame Integration Classifier          &  98.74\%  &   69.44\%    \\
         \hline
-        Conv2D LTSM Event Classifier         & 97.48\%   &    71.53\%    \\
+        Conv2D LTSM Frame Integration Classifier         &  97.64\%  &    71.53\%    \\
         \hline
-        Custom LTSM Event Classifier         & 97.88\%  &   76.39\%     \\
+        Custom LTSM Frame Integration Classifier         &  97.70\% &   76.39\%     \\
+        \hline
+        Conv3D Custom Frame Integration Classifier          & 98.22\%   &      \\
+        \hline
+        Conv2D LTSM Custom Frame Integration Classifier         & 97.48\%   &  \\
+        \hline
+        Custom LTSM Custom Frame Integration Classifier         & 97.88\%  &        \\
         \hline
         Conv3D Reconstruction Classifier           & 86.67\%    &   63.26\%    \\
         \hline
@@ -215,15 +236,21 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
         \hline
         Network     & NMNIST & DVS128 Gesture \\
         \hline \hline
-        Conv3D Event Classifier          & 1h43m03s   &   0h34m49s    \\
+        Conv3D Frame Integration Classifier          &  0h17m20s  &   0h34m49s    \\
         \hline
-        Conv2D LTSM Event Classifier         & 1h03m09s   &    0h08m33s    \\
+        Conv2D LTSM Frame Integration Classifier         & 0h42m02s  &    0h08m33s    \\
         \hline
-        Custom LTSM Event Classifier         &  1h12m10s  &    \color{red} 1h24m19s \color{black}    \\
+        Custom LTSM Frame Integration Classifier         & 0h10m50s   &    \color{red} 1h24m19s \color{black}    \\
+        \hline
+        Conv3D Custom Frame Integration Classifier          & 1h43m03s   &       \\
+        \hline
+        Conv2D Custom LTSM Frame Integration Classifier         & 1h03m09s   &       \\
+        \hline
+        Custom LTSM Custom Frame Integration Classifier         &  1h12m10s  &        \\
         \hline
         Conv3D Reconstruction Classifier        &  0h05m02s    &    1h09m43s  \\
         \hline
-        Conv2D LTSM Reconstruction Classifier        &  0h14m28s    &      \\
+        Conv2D LTSM Reconstruction Classifier        &  0h14m28s    &   -   \\
         \hline
         Custom Conv2D LTSM Reconstruction Classifier         &  0h03m26s \color{red} why so short \color{black}  &    3h13m45s   \\
         \hline

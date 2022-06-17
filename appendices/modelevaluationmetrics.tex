@@ -6,6 +6,111 @@
         \hline
              & Precision & Recall & F1-score & Samples \\
         \hline \hline
+        0            & 1.00 & 0.99 & 0.99 & 500  \\
+        \hline
+        1            & 0.99 & 1.00 & 0.99 & 500  \\
+        \hline
+        2            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        3            & 0.98 & 1.00 & 0.99 & 500  \\
+        \hline
+        4            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        5            & 0.99 & 0.97 & 0.98 & 500  \\
+        \hline
+        6            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        7            & 0.99 & 0.97 & 0.98 & 500  \\
+        \hline
+        8            & 0.97 & 0.99 & 0.98 & 500  \\
+        \hline
+        9            & 0.98 & 0.98 & 0.98 & 500  \\
+        \hline
+        macro avg    & 0.99 & 0.99 & 0.99 & 5000 \\
+        \hline
+        weighted avg & 0.99 & 0.99 & 0.99 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of 3D convolutional network on the frame-integrated NMNIST dataset.}
+    \label{tab:conv3d_nmnist_evaluation_metrics}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
+        0            & 0.97 & 1.00 & 0.98 & 500  \\
+        \hline
+        1            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        2            & 0.99 & 0.99 & 0.99 & 500  \\
+        \hline
+        3            & 0.99 & 0.96 & 0.97 & 500  \\
+        \hline
+        4            & 0.99 & 0.95 & 0.97 & 500  \\
+        \hline
+        5            & 0.97 & 0.98 & 0.98 & 500  \\
+        \hline
+        6            & 0.99 & 0.97 & 0.98 & 500  \\
+        \hline
+        7            & 0.97 & 0.98 & 0.97 & 500  \\
+        \hline
+        8            & 0.96 & 0.97 & 0.97 & 500  \\
+        \hline
+        9            & 0.94 & 0.98 & 0.96 & 500  \\
+        \hline
+        macro avg    & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+        weighted avg & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of convolutional LSTM network on the frame-integrated NMNIST dataset.}
+    \label{tab:conv_lstm_nmnist_evaluation_metrics}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
+        0            & 0.98 & 0.99 & 0.99 & 500  \\
+        \hline
+        1            & 0.98 & 0.99 & 0.99 & 500  \\
+        \hline
+        2            & 0.99 & 0.97 & 0.98 & 500  \\
+        \hline
+        3            & 0.99 & 0.96 & 0.97 & 500  \\
+        \hline
+        4            & 0.99 & 0.98 & 0.98 & 500  \\
+        \hline
+        5            & 0.98 & 0.97 & 0.97 & 500  \\
+        \hline
+        6            & 0.98 & 0.99 & 0.98 & 500  \\
+        \hline
+        7            & 0.96 & 0.99 & 0.98 & 500  \\
+        \hline
+        8            & 0.94 & 0.97 & 0.95 & 500  \\
+        \hline
+        9            & 0.98 & 0.96 & 0.97 & 500  \\
+        \hline
+        macro avg    & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+        weighted avg & 0.98 & 0.98 & 0.98 & 5000 \\
+        \hline
+    \end{tabular}
+    \caption{A table showing classification evaluation metrics of custom convolutional LSTM network on the frame-integrated NMNIST dataset.}
+    \label{tab:custom_conv_lstm_nmnist_evaluation_metrics}
+\end{table}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c | c | c ||}
+        \hline
+             & Precision & Recall & F1-score & Samples \\
+        \hline \hline
         0            & 1.00  & 0.97  & 0.98 & 500 \\
         \hline
         1            & 0.99  & 1.00  & 0.99 & 500 \\
@@ -31,8 +136,8 @@
         weighted avg & 0.98  & 0.98  & 0.98 & 5000 \\
         \hline
     \end{tabular}
-    \caption{A table showing classification evaluation metrics of 3D convolutional network on the frame-integrated NMNIST dataset.}
-    \label{tab:conv3d_nmnist_evaluation_metrics}
+    \caption{A table showing classification evaluation metrics of 3D convolutional network on the custom frame-integrated NMNIST dataset.}
+    \label{tab:conv3d_nmnist_custom_frame_evaluation_metrics}
 \end{table}
 
 \begin{table}[htb]
@@ -66,8 +171,8 @@
         weighted avg & 0.98 & 0.97 & 0.97 & 5000 \\
         \hline
     \end{tabular}
-    \caption{A table showing classification evaluation metrics of convolutional LSTM network on the frame-integrated NMNIST dataset.}
-    \label{tab:conv_lstm_nmnist_evaluation_metrics}
+    \caption{A table showing classification evaluation metrics of convolutional LSTM network on the custom frame-integrated NMNIST dataset.}
+    \label{tab:conv_lstm_nmnist_custom_frame_evaluation_metrics}
 \end{table}
 
 \begin{table}[htb]
@@ -101,8 +206,8 @@
         weighted avg & 0.98 & 0.98 & 0.98 & 5000 \\
         \hline
     \end{tabular}
-    \caption{A table showing classification evaluation metrics of custom convolutional LSTM network on the frame-integrated NMNIST dataset.}
-    \label{tab:custom_conv_lstm_nmnist_evaluation_metrics}
+    \caption{A table showing classification evaluation metrics of custom convolutional LSTM network on the custom frame-integrated NMNIST dataset.}
+    \label{tab:custom_conv_lstm_nmnist_custom_frame_evaluation_metrics}
 \end{table}
 
 \begin{table}[htb]
