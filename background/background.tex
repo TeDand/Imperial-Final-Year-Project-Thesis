@@ -191,7 +191,7 @@ A naive approach would be take each event $ e_k = (\boldsymbol{\mathbf{x}}_k, t_
       \label{fig:spikes_to_video_rnn}
 \end{figure}
 
-\subsection{End-to-end Event Classification Network}
+\section{End-to-end Event Classification Networks}
 
 A method such as the one described in \cref{ssec:video_reconstruction} allows for the use of hugely researched and well documented computer vision algorithms for classification and other tasks while maintaining the benefits of event-based cameras. However, it may be possible to bypass the intermediate step of video reconstruction altogether, and simply create a model that simply acts as a black box and can be trained to give the required output directly from a neuromorphic input. \Cref{fig:temporal_filter} shows how a frame-based video is converted to a continuous stream of events from which snapshots of events can be taken. It should be noted that the distribution of the data from the neuromorphic camera is much more dense than the frame-based video, which means that the motion blue visible in the video should not be a problem with the new representation (as explained in \cref{ssec:event_camera_benefits}).
 

@@ -1,6 +1,6 @@
 \chapter{Analysis and Design} \label{chap:analysis_and_design}
 
-This chapter outlines overall design for the project as well as the analysis that form the basis of each decision. The design of the project is mostly guided by the requirements set out at the start of the chapter. The choice programming language and software/hardware tools, the processing of each dataset, and finally the structure of various classification pipelines are all set out before the implementation part of the report. The final part of this chapter also creates a framework for the comparison of each network, which can be found in \cref{chap:testing_and_results} and \cref{chap:evaluation}.
+This chapter outlines overall design for the project as well as the analysis that form the basis of each decision. The design of the project is mostly guided by the requirements set out at the start of the chapter. The choice programming language and software/hardware tools, the processing of each dataset, and finally the structure of various novel classification pipelines are all set out before the implementation part of the report. As well as this a new frame-integration method is proposed, as well as state-of-the-art classification networks. The final part of this chapter also creates a framework for the comparison of each network, which can be found in \cref{chap:testing_and_results} and \cref{chap:evaluation}.
 
 \section{Hardware and Software}
 
@@ -111,7 +111,7 @@ This network is an extension of the LSTM network in the previous section, adding
 
 \subsection{Spiking Neural Network} \label{ssec:snn_design}
 
-With this network the whole system, from data generation to classification, could be fully neuromorphic. Using techniques as described in \cref{ssec:snn_and_heterogeneity}, traditional ANNs could easily be converted to SNNs\cite{Ann2Snn} for classification. For the conversion process the nengo\_dl package can be used (see \cref{sssec:nengo}). In order to train the network a differentiable approximation of the spiking neurons was used. This meant that the data could be trained using back-propagation as normal. During inference, however, the actual spiking neurons could be used\cite{TrainingSnn}. Since the network is trained before the conversion from ANN to SNN, the performance of the SNN will not be comparable to the ANN due to approximation errors. These approximations can be improved by changing certain properties of the SNN and checking the performance of the inference.
+With this network the whole system, from data generation to classification, could be fully neuromorphic. Using techniques as described in \cref{ssec:snn_and_heterogeneity}, traditional ANNs could easily be converted to SNNs\cite{Ann2Snn} for classification. For the conversion process the \lstinline{nengo_dl} package can be used (see \cref{sssec:nengo}). In order to train the network a differentiable approximation of the spiking neurons was used. This meant that the data could be trained using back-propagation as normal. During inference, however, the actual spiking neurons could be used\cite{TrainingSnn}. Since the network is trained before the conversion from ANN to SNN, the performance of the SNN will not be comparable to the ANN due to approximation errors. These approximations can be improved by changing certain properties of the SNN and checking the performance of the inference.
 
 Spiking neural networks work similarly to ANNs, however there are some key differences. One major difference is in the activation of the neurons. Whereas with non-spiking artificial neurons the output is a continuous function based on the instantaneous input, spiking neurons accumulate inputs and build up to an eventual spike. This means that inputs to the neuron have to be sustained (repeated) for a certain amount of time to allow for this build-up of potential. For our network, since it is a 3D vector of frames over time, the input to the network needs to be a 4D vector. An illustration of the creation of the 3D vectors that were input into the ANN and the subsequent 4D network fed into the spiking equivalent are shown in \cref{fig:sustained_video}.
 
@@ -121,6 +121,8 @@ Spiking neural networks work similarly to ANNs, however there are some key diffe
     \caption{An illustration of how frames of a video can be repeated for input to a spiking neural network.}
     \label{fig:sustained_video}
 \end{figure}
+
+However, unlike convolutional network layers, recurrent layers such as LSTM and GRU do not have a direct conversion available to spiking networks. There is, however, a component known as Legendre Memory Unit (LMU) that are much better suited to the conversion process. Like LSTMs, LMUs have been shown to perform as well in a variety of tasks with relatively few internal parameters\cite{LMU}. \color{red} TODO: Write more about the design of this network \color{black}.
 
 \section{Evaluation Metrics} \label{sec:evalutaion_metrics}
 
