@@ -207,29 +207,52 @@ The confusion matrices for the classification of the frame-integrated  NMNIST da
 
 \section{Network Comparisons}
 
+% \begin{table}[htb]
+%     \centering
+%     \begin{tabular}{|| c | c | c ||}
+%         \hline
+%         Network     & NMNIST & DVS128 Gesture \\
+%         \hline \hline
+%         Conv3D Reconstruction Classifier           & 86.67\%    &   63.26\%    \\
+%         \hline
+%         Conv2D LTSM Reconstruction Classifier          & 79.60\%   &  -    \\
+%         \hline
+%         Custom LTSM Reconstruction Classifier         & 83.20\%  &   82.95\%   \\
+%         \hline
+%         Conv3D Frame Integration Classifier          &  98.74\%  &   69.44\%    \\
+%         \hline
+%         Conv2D LTSM Frame Integration Classifier         &  97.64\%  &    71.53\%    \\
+%         \hline
+%         Custom LTSM Frame Integration Classifier         &  97.70\% &   76.39\%     \\
+%         \hline
+%         Conv3D Custom Frame Integration Classifier          & 98.22\%   &      \\
+%         \hline
+%         Conv2D LTSM Custom Frame Integration Classifier         & 97.48\%   &  \\
+%         \hline
+%         Custom LTSM Custom Frame Integration Classifier         & 97.88\%  &        \\
+%         \hline
+%     \end{tabular}
+%     \caption{A table showing classification accuracies of various models.}
+%     \label{tab:network_performances_old}
+% \end{table}
+
 \begin{table}[htb]
     \centering
-    \begin{tabular}{|| c | c | c ||}
+    \begin{tabular}{|| c | l | c | c | c ||}
         \hline
-        Network     & NMNIST & DVS128 Gesture \\
+        \multicolumn{2}{|| c |}{Dataset} & Conv3D & ConvLSTM & Custom ConvLSTM \\
         \hline \hline
-        Conv3D Reconstruction Classifier           & 86.67\%    &   63.26\%    \\
+        \multirow{3}{*}{NMNIST} & Intensity Reconstructed & 86.67\% & 79.60\% & 83.20\%\\
+        \cline{2-5}
+         & Frame Integrated & 98.74\% & 97.64\% & 97.70\% \\
+        \cline{2-5}
+        & Custom Frame Integrated & 98.22\% & 97.48\% & 97.88\% \\
         \hline
-        Conv2D LTSM Reconstruction Classifier          & 79.60\%   &  -    \\
-        \hline
-        Custom LTSM Reconstruction Classifier         & 83.20\%  &   82.95\%   \\
-        \hline
-        Conv3D Frame Integration Classifier          &  98.74\%  &   69.44\%    \\
-        \hline
-        Conv2D LTSM Frame Integration Classifier         &  97.64\%  &    71.53\%    \\
-        \hline
-        Custom LTSM Frame Integration Classifier         &  97.70\% &   76.39\%     \\
-        \hline
-        Conv3D Custom Frame Integration Classifier          & 98.22\%   &      \\
-        \hline
-        Conv2D LTSM Custom Frame Integration Classifier         & 97.48\%   &  \\
-        \hline
-        Custom LTSM Custom Frame Integration Classifier         & 97.88\%  &        \\
+        \multirow{3}{*}{DVS128 Gesture} & Intensity Reconstructed & 63.26\% & - & 82.95\% \\
+        \cline{2-5}
+         & Frame Integrated & 69.44\% & 71.53\% & 76.39\% \\
+        \cline{2-5}
+         & Custom Frame Integrated & & & \\
         \hline
     \end{tabular}
     \caption{A table showing classification accuracies of various models.}
@@ -269,8 +292,6 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
 
 
 The training times for each of the networks on the datasets can be seen in \cref{tab:network_training_times}. It is evident that the networks with a higher capacity had higher training times. The 3D convolution network in particular had much longer training times than the other two networks, since it had many more parameters to optimise via back-propagation. It should be noted that for the networks in \color{red} red \color{black} the system encountered an Out Of Memory (OOM) error when attempting create a tensor of larger batch size. For these cases a smaller batch size was used, resulting in slightly higher training times, as well as possible skewed results.
-
-\color {red} TODO: Write about how frame integration is a more compact information store since the convLSTM couldn't even run for DVS128 reconstructions. \color{black}
 
 \subsection{3D Convolutional Networks vs Recurrent Networks}
 
