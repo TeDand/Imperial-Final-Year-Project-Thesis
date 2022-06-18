@@ -6,6 +6,18 @@ This chapter presents the final implementation of the project. The full process 
 
 As described in  \cref{ssec:data_preprocessing_design}, data had to be centered to give a z-score. In practice the standard deviation was not used to normalise the values, and instead the following operation was undertaken: $ \textbf{x} = \frac{\textbf{x} - mean_x}{max_x} $. However, during the implementation of the networks it was evident that the default Keras functions would not be ideal. The reason for this is that the dataset, as real-world data often is, were far too large to store on the RAM of a computer. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class. \color{red} TODO: Maybe put code example here. \color{black}
 
+\section{Two-phase Intensity Reconstruction Pipeline}
+
+The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data.
+
+\subsection{Reconstruction Algorithms}
+
+\subsubsection{E2VID}
+
+E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this additional frames were added to videos which had fewer frames than that of the longest video in the training set. These additional frames were added by repeating the video until the desired number of frames was reached.
+
+\color{black}
+
 \section{End-to-end Event Classification Pipeline}
 
 \subsubsection{Frame Integration}
@@ -45,19 +57,6 @@ As well as this a novel integration technique was implemented, as described in t
 \end{figure}
 
 \color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
-
-
-\section{Two-phase Intensity Reconstruction Pipeline}
-
-The models described above allow for the system to learn directly on the spiking data. Another approach that was taken was to attempt to utilise video reconstruction networks to the event data so that more classical models and architectures could be used to patterns in the data.
-
-\subsection{Reconstruction Algorithms}
-
-\subsubsection{E2VID}
-
-E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from events data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this additional frames were added to videos which had fewer frames than that of the longest video in the training set. These additional frames were added by repeating the video until the desired number of frames was reached.
-
-\color{black}
 
 \section{Classification Models}
 
