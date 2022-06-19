@@ -153,7 +153,7 @@ The plots for the spiking neural network show that since the neuron function is 
     \label{fig:post_synaptic_smoothing}%
 \end{figure}
 
-\subsubsection{Post-training Firing Rate Scaling}
+\subsubsection{Post-training Firing Rate Scaling} \label{sssec:firing_rate_scaling}
 
 Neuron updates only occur when it outputs, or 'fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaces is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \cref{fig:post_firing_rate_scaling}. It is important to note, however, that if the firing rate were to theoretically be scales infinitely, the neuron functions for be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place. It was found that the best compromise for this system was to scale the firing rate by 150, which preserved the benefits of the spiking neural network and also improved accuracy back to the levels before the conversion.
 

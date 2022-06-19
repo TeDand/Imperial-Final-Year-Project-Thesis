@@ -297,7 +297,7 @@ The full table of classification accuracies can be seen in \cref{tab:network_per
     \label{fig:training_times_and_trainable_parameters}
 \end{figure}
 
-The training times for each of the networks on the datasets can be seen in \cref{fig:training_times_and_trainable_parameters}. It is evident that the networks with a higher capacity had higher training times. The 3D convolution network in particular had much longer training times than the other two networks, since it had many more parameters to optimise via back-propagation. It should be noted that for the networks in \color{red} red \color{black} the system encountered an Out Of Memory (OOM) error when attempting create a tensor of larger batch size. For these cases a smaller batch size was used, resulting in slightly higher training times, as well as possible skewed results.
+The training times for each of the networks on the datasets can be seen in \cref{fig:training_times_and_trainable_parameters}. It is evident that the networks with a higher capacity had higher training times. The 3D convolution network in particular had much longer training times than the other two networks, since it had many more parameters to optimise via back-propagation. It should be noted that for the networks in missing classification accuracies in \cref{tab:network_performances} the system often encountered an Out Of Memory (OOM) error when attempting create a tensor of larger batch size. For these cases a smaller batch size was used, resulting in slightly higher training times, as well as possible skewed results. If even this was not sufficient, results were not taken for these cases.
 
 \subsection{3D Convolutional Networks vs Recurrent Networks}
 
@@ -305,7 +305,24 @@ The drawback to the 3D convolutional network is that the number of trainable par
 
 \subsection{Spiking Neural Networks}
 
-\color{red} TODO: Add spiking neural network testing. \color{black}
-\color{red} TODO: Write more about the meaning of the tables. \color{black}
-\color{red} TODO: Make more custom convolution LSTMs \color{black}
-\color{red} TODO: Add spiking neural network testing. \color{black}
+As mentioned in \cref{sssec:firing_rate_scaling}, there is a compromise to be made when attempting to scale neuron firing rates to get a better accuracy. When firing rates are scaled past a certain level, the network becomes equivalent to a non-spiking network. This would mean the loss of the benefits of sparse encoding the the SNN. The effect of over-scaling firing rate can be seen in \cref{fig:over_scaling_firing_rate}, where a very high firing rate results in a network very similar to a non-spiking neural network.
+
+\begin{figure}[htb]%
+    \centering
+    \subfloat[\centering]{{\includegraphics[width=0.7\textwidth]{testingandresults/images/overscaled_firing_rate.png}}}%
+    \qquad
+    \subfloat[\centering]{{\includegraphics[width=0.7\textwidth]{testingandresults/images/non_spiking_comparison.png}}}%
+    \caption{Comparison of spiking neural network with firing rate over-scaled \textbf{(a)} and a the equivalent non-spiking neural network \textbf{(b)}.}%
+    \label{fig:over_scaling_firing_rate}%
+\end{figure}
+
+The relationship between firing rates and performance can be seen in \cref{fig:spiking_perfromace_with_varying_spike_rate}, where the accuracy gets closer to the non-spiking network as the spiking rate is artificially inflated to infinity. It was found that for the conv3D network, comparable performance could be obtained while keeping the data-flow through each network quite sparse, since close to 100\% relative performance could be reached with an average neuron spiking rate of less than 1Hz for both the NMNIST and DVS128 datasets. Especially for the DVS128 dataset, with very few average neuron spikes, the network achieved good relative performance.
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{testingandresults/images/spiking_perfromace_with_varying_spike_rate.png}
+    \caption{A figure showing the performance of the spiking 3D conv network relative to its non-spiking equivalent with varying spike rates.}
+    \label{fig:spiking_perfromace_with_varying_spike_rate}
+\end{figure}
+
+\color{red} TODO: Write about difficulties with spiking LSTM and experiments with LMU network. \color{black}
