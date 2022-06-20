@@ -305,6 +305,8 @@ The drawback to the 3D convolutional network is that the number of trainable par
 
 \subsection{Spiking Neural Networks}
 
+\subsubsection{Converted 3D Convolutional Network}
+
 As mentioned in \cref{sssec:firing_rate_scaling}, there is a compromise to be made when attempting to scale neuron firing rates to get a better accuracy. When firing rates are scaled past a certain level, the network becomes equivalent to a non-spiking network. This would mean the loss of the benefits of sparse encoding the the SNN. The effect of over-scaling firing rate can be seen in \cref{fig:over_scaling_firing_rate}, where a very high firing rate results in a network very similar to a non-spiking neural network.
 
 \begin{figure}[htb]%
@@ -324,5 +326,24 @@ The relationship between firing rates and performance can be seen in \cref{fig:s
     \caption{A figure showing the performance of the spiking 3D conv network relative to its non-spiking equivalent with varying spike rates.}
     \label{fig:spiking_perfromace_with_varying_spike_rate}
 \end{figure}
+
+\subsubsection{Legendre Memory Unit Network}
+
+\begin{table}[htb]
+    \centering
+    \begin{tabular}{|| c | c | c ||}
+        \hline
+        Network     & NMNIST & DVS128 Gesture \\
+        \hline \hline
+        Non-spiking LMU        &  90.2\%    &    60\%  \\
+        \hline
+        Spiking LMU        &  60\%    &      \\
+        \hline
+    \end{tabular}
+    \caption{A table showing the performance of LMU networks on various datasets.}
+    \label{tab:lmu_performance}
+\end{table}
+
+\cref{tab:lmu_performance} shows the promise of LMUs as a recurrent module for spiking neural networks. The performance before SNN conversion is similar to LSTM networks, and could feasibly improved with convolutional elements as was done with the convLSTM layer.
 
 \color{red} TODO: Write about difficulties with spiking LSTM and experiments with LMU network. \color{black}
