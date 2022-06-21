@@ -291,13 +291,11 @@ The relationship between firing rates and performance can be seen in \cref{fig:s
         \hline \hline
         Non-spiking LMU        &  90.2\%    &    60\%  \\
         \hline
-        Spiking LMU        &  60\%    &      \\
+        Spiking LMU        &  60\%    &   40.34\%   \\
         \hline
     \end{tabular}
     \caption{A table showing the performance of LMU networks on various datasets.}
     \label{tab:lmu_performance}
 \end{table}
 
-\cref{tab:lmu_performance} shows the promise of LMUs as a recurrent module for spiking neural networks. The performance before SNN conversion is similar to LSTM networks, and could feasibly improved with convolutional elements as was done with the convLSTM layer.
-
-\color{red} TODO: Write about difficulties with spiking LSTM and experiments with LMU network. \color{black}
+\cref{tab:lmu_performance} shows the promise of LMUs as a recurrent module for spiking neural networks. The performance before SNN conversion is similar to LSTM networks for NMNIST. The performance is however lower for the DVS128 Gesture dataset, giving similar performance to the 3D convolutional network. This could feasibly be improved with convolutional elements as was done with the convLSTM layer. The performance on at least the NMNIST dataset at least shows promise, and as with the other converted networks it should be feasible to create a spiking version of the network that has similar performance. Unfortunately in the duration of this project parameters to tune the converted spiking network were not ideal, and so performance was lower than the non-spiking LMU networks. The LMU module itself, however, does show promise and is an ideal candidate for further research in this area.
