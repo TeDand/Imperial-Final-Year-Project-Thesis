@@ -6,7 +6,7 @@ This chapter presents the final implementation of the project. The full process 
 
 As described in  \cref{ssec:data_preprocessing_design}, data had to be centered to give a z-score. In practice the standard deviation was not used to normalise the values, and instead the following operation was undertaken: $ \textbf{x} = \frac{\textbf{x} - mean_x}{max_x} $. 
 
-Due to the large size of each dataset, it was evident that the default Keras functions would not be ideal. This is often the case for real-world data meaning the it was far too large to store on system RAM. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read from files into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class that could both read and pre-process the data directly. \color{red} TODO: Maybe put code example here. \color{black}
+Due to the large size of each dataset, it was evident that the default Keras functions would not be ideal. This is often the case for real-world data meaning the it was far too large to store on system RAM. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read from files into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class that could both read and pre-process the data directly.
 
 \section{Two-phase Intensity Reconstruction Pipeline}
 
@@ -16,7 +16,7 @@ An approach for event stream classification that can make use of existing networ
 
 \subsubsection{E2VID}
 
-E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from event data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this, additional frames were added to videos shorter video reconstructions. These additional frames were added by repeating the video until the desired number of frames was reached. \color{red} TODO: Maybe write more about this, and could add some images. \color{black}
+E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from event data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this, additional frames were added to videos shorter video reconstructions. These additional frames were added by repeating the video until the desired number of frames was reached.
 
 \section{End-to-end Event Classification Pipeline}
 
@@ -24,7 +24,7 @@ E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art n
 
 In order to instead analyse neuromorphic data directly, it was pre-processed into a form that a NN can take as input. Initially, an implementation of the more formal method of processing events streams to get integrated frames given in \cref{ssec:frame_integration} was implemented. This technique involved creating two-channel images, with each channel holding binary indications of whether a positive or negative event was fired that given time-frame.
 
-The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction \color{red} TODO: Show classic frame integration for NMNIST dataset \color{black}. For each data sample, the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. It is interesting to note that the frames are not synchronous like they would be from a frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more features would be easily distinguishable. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
+The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. For each data sample, the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. It is interesting to note that the frames are not synchronous like they would be from a frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more features would be easily distinguishable. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
 
 \begin{figure}[htb]%
     \centering
@@ -37,11 +37,13 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
     \label{fig:dvs128_integrated_frames}%
 \end{figure}
 
-\color{red} TODO: Add pseudocode for frame integration \color{black}
+% \color{red} TODO: Add pseudocode for frame integration \color{black}
 
 \subsubsection{Custom Frame-Integration} \label{sssec:custom_frame_integration_implementation}
 
- A novel integration technique was also implemented, as described in the \cref{sec:end_to_end_classification_design}. The method involved segmenting the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset \color{red} TODO: Show custom frame integration of DVS128 Dataset \color{black}. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. This way temporal information was retained to a greater degree than if each pixel simply had binary information of whether a event occurred or not in a two channel image (as was done by the spikingjelly package\cite{SpikingJelly} in the previous section). It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}).
+ A novel integration technique was also implemented, as described in the \cref{sec:end_to_end_classification_design}. The method involved segmenting the events into groups based on their timestamp. \Cref{fig:nmnist_spikes_to_intensity_map} shows a visualisation of intensity maps created from the NMNIST\cite{NMNIST} dataset. The set of all events was split into eight segments, where each segment included events within a range of $ 1 \times 10^6 $ ms (i.e., $ 0 \rightarrow 1 $, $ 1 \rightarrow 2 $, ..., $ 7 \rightarrow 8 $). This way the data representation shifted to somewhat get back to a set of frames that mimicked the video output usually seen from everyday cameras. \textbf{(a)} shows the segmented events visualised in three dimensions (x\_location, y\_location and timestamp). In \textbf{(b)} these events were projected onto the two dimensional plane (of x\_location and y\_location), then the plots for on events and off events are shown separately. Finally in \textbf{(c)} an intensity map was created from the projected events. Each pixel in the intensity map grid was initialised to 0, and for every on event 1 was added to the cell, and for every off event 1 was subtracted from the cell. This way temporal information was retained to a greater degree than if each pixel simply had binary information of whether a event occurred or not in a two channel image (as was done by the spikingjelly package\cite{SpikingJelly} in the previous section). It was clear that the resulting output greatly resembled the MNIST\cite{MNIST} sample recorded by the ATIS camera (As shown in \cref{fig:nmnist_spikes_visualisation} in \cref{sec:existing_datasets}).
+
+%  \color{red} TODO: Show custom frame integration of DVS128 Dataset \color{black}
 
 \begin{figure}[htb]%
     \centering
@@ -53,8 +55,6 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
     \caption{A visualisation of intensity maps created by segmenting events into bins of size $ 1 \times 10^6 $ ms.}%
     \label{fig:nmnist_spikes_to_intensity_map}%
 \end{figure}
-
-\color{red} TODO: Add stuff about possible nlp-like networks. \color{black}
 
 \section{Classification Models}
 
@@ -130,8 +130,8 @@ Once the conversion from ANN to SNN was complete, the performance of the network
 
 \begin{figure}[htb]%
     \centering
-    \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{implementation/images/low_frame_repitition.png}}}%
-    \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{implementation/images/high_frame_repitition.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.3\textwidth, height=0.25\textwidth]{implementation/images/low_frame_repitition.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.3\textwidth, height=0.25\textwidth]{implementation/images/high_frame_repitition.png}}}%
     \caption{Comparison of number of spikes with less \textbf{(a)} and more \textbf{(b)} repetitions.}%
     \label{fig:frame_repititions}%
 \end{figure}
