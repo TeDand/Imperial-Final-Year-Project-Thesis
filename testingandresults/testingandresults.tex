@@ -207,35 +207,6 @@ The confusion matrices for the classification of the frame-integrated  NMNIST da
 
 \section{Comparison of Classification Networks}
 
-% \begin{table}[htb]
-%     \centering
-%     \begin{tabular}{|| c | c | c ||}
-%         \hline
-%         Network     & NMNIST & DVS128 Gesture \\
-%         \hline \hline
-%         Conv3D Reconstruction Classifier           & 86.67\%    &   63.26\%    \\
-%         \hline
-%         Conv2D LTSM Reconstruction Classifier          & 79.60\%   &  -    \\
-%         \hline
-%         Custom LTSM Reconstruction Classifier         & 83.20\%  &   82.95\%   \\
-%         \hline
-%         Conv3D Frame Integration Classifier          &  98.74\%  &   69.44\%    \\
-%         \hline
-%         Conv2D LTSM Frame Integration Classifier         &  97.64\%  &    71.53\%    \\
-%         \hline
-%         Custom LTSM Frame Integration Classifier         &  97.70\% &   76.39\%     \\
-%         \hline
-%         Conv3D Custom Frame Integration Classifier          & 98.22\%   &      \\
-%         \hline
-%         Conv2D LTSM Custom Frame Integration Classifier         & 97.48\%   &  \\
-%         \hline
-%         Custom LTSM Custom Frame Integration Classifier         & 97.88\%  &        \\
-%         \hline
-%     \end{tabular}
-%     \caption{A table showing classification accuracies of various models.}
-%     \label{tab:network_performances_old}
-% \end{table}
-
 \begin{table}[htb]
     \centering
     \begin{tabular}{|| c | l | c | c | c ||}
@@ -259,38 +230,9 @@ The confusion matrices for the classification of the frame-integrated  NMNIST da
     \label{tab:network_performances}
 \end{table}
 
-The full table of classification accuracies can be seen in \cref{tab:network_performances}. Here, the different strengths of the various networks becomes apparent in this comparison. For the simple object classification task on the NMNIST dataset, the higher capacity 3D convolutional network outperformed the others. However, in the more complex task of gesture recognition on the DVS128 Gesture dataset it struggled. The reason for this is that though it is excellent at detecting spacial patterns in each frame, it is less able to detect the temporal patterns prevalent in the gestures. For these cases the custom convLSTM network shone, outperforming the 3D convolution network by ~20\%.
+The full table of classification accuracies can be seen in \cref{tab:network_performances}. Here, the different strengths of the various networks becomes apparent in this comparison. For the simple object classification task on the NMNIST dataset, the higher capacity (i.e., high number of trainable parameters) 3D convolutional network outperformed the others. The dataset's scale is small enough for the network to learn all possible features and get a good classification accuracy.
 
-The 3D convolutional network had the most trainable parameters, which afforded it better performance on the NMNIST dataset. The dataset's scale is small enough for the network to learn all possible features and get a good classification accuracy. For the more complex cases of gesture recognition, however, the performance of this network lagged behind the recurrent LSTM networks (especially the custom one). The reason for this is that in these cases temporal patterns are much more important, and LSTMs are ideal to learn such features. The 3D convolutional network could no longer memorise enough features to accurately classify all gestures, and even often over-fit leading to lower accuracies on the unseen testing data.
-
-% \begin{table}[htb]
-%     \centering
-%     \begin{tabular}{|| c | c | c ||}
-%         \hline
-%         Network     & NMNIST & DVS128 Gesture \\
-%         \hline \hline
-%         Conv3D Reconstruction Classifier        &  0h05m02s    &    1h09m43s  \\
-%         \hline
-%         Conv2D LTSM Reconstruction Classifier        &  0h14m28s    &   -   \\
-%         \hline
-%         Custom Conv2D LTSM Reconstruction Classifier         &  0h03m26s \color{red} why so short \color{black}  &    3h13m45s   \\
-%         \hline
-%         Conv3D Frame Integration Classifier          &  0h17m20s  &   0h34m49s    \\
-%         \hline
-%         Conv2D LTSM Frame Integration Classifier         & 0h42m02s  &    0h08m33s    \\
-%         \hline
-%         Custom LTSM Frame Integration Classifier         & 0h10m50s   &    \color{red} 1h24m19s \color{black}    \\
-%         \hline
-%         Conv3D Custom Frame Integration Classifier          & 1h43m03s   &       \\
-%         \hline
-%         Conv2D Custom LTSM Frame Integration Classifier         & 1h03m09s   &       \\
-%         \hline
-%         Custom LTSM Custom Frame Integration Classifier         &  1h12m10s  &        \\
-%         \hline
-%     \end{tabular}
-%     \caption{A table showing training times various models.}
-%     \label{tab:network_training_times}
-% \end{table}
+For the more complex cases of gesture recognition, however, the performance of this network lagged behind the recurrent LSTM networks (especially the custom LSTM network). The reason for this is that though it is excellent at detecting spacial patterns in each frame, it is less able to detect the temporal patterns prevalent in the gestures. For these cases the custom convLSTM network shone, outperforming the 3D convolution network by ~20\%. The 3D convolutional network could no longer memorise enough features to accurately classify all gestures, and even over-fit, leading to lower accuracies on the unseen testing data.
 
 \begin{figure}[htb]
     \centering
@@ -303,21 +245,23 @@ The training times for each of the networks on the datasets can be seen in \cref
 
 \section{Comparison of Event Analysis Pipelines}
 
-Interestingly, there are some discrepancies in the performances of each pipeline when they are doing simple object detection and more complex tasks such as gesture recognition. Some comments about this discrepancy are given in this section.
+Interestingly, there are some discrepancies in the performances of the two implemented pipelines when they are doing simple object detection as opposed to more complex tasks such as gesture recognition. Some comments about this discrepancy are given in this section.
 
-When comparing the two-phase video reconstruction pipeline to the direct event classification one, the results show that for the NMNIST dataset, the direct event analysis leads to superior classification accuracies. The reason for this could be the loss of some high frequency data when creating intensity reconstructions with event data. The reason for this is that the created video is of a certain frame-rate, which is much lower than the temporal resolution of events captured by event cameras (which are on the $ \mu s $ level scale). There is, however, scope to still use the reconstruction pipeline without losing too much temporal information. For this the number of events per input to the E2VID network can be reduced so that the resulting video is of a higher frame-rate. However, this would require for the network to be retrained to achieve good results on the data with fewer data-points per frame.
+When comparing the two-phase video reconstruction pipeline to the direct event classification pipeline, the results show that for the NMNIST dataset, the direct event analysis leads to superior classification accuracies. The reason for this could be the loss of some high frequency data when creating intensity reconstructions with event data. The reason for this is that the created video is of a certain frame-rate, which is much lower than the temporal resolution of events captured by event cameras (which are on the $ \mu s $ level scale). There is, however, scope to still use the reconstruction pipeline without losing too much temporal information. For this the number of events per input to the E2VID network can be reduced so that the resulting video is of a higher frame-rate. However, this would require for the network to be retrained to achieve good results on the data with fewer data-points per frame.
 
 Moreover, in the case of NMNIST, the reconstructions were not too dissimilar to the integrated frames. In both pipelines the input was similar to an edge map, and so the performance difference was less noticeable. This may be because of the small size of the dataset frames, and so for better reconstruction performance the E2VID network would have to be re-trained. Overall the performance of the two-phase pipeline was lower than working directly on the integrated frames since even though both inputs were like edge maps, the integrated frames retained far more temporal data.
 
-For the DVS128 Gesture dataset, the performance difference between the two pipelines was far smaller. In this case the reconstructions were much more realistic and well-defined, allowing for the classification networks to more easily find patterns in the videos. Unlike in NMNIST, where the direct event classification pipeline outperformed the two-phase intensity reconstruction pipeline, for gesture recognition the opposite was true. The reconstructions were of particularly good quality for the DVS128 Gesture dataset, allowing for the classification networks to gather useful patterns. The reconstructions were also similar for all lighting conditions, meaning performance was consistently strong. 
+For the DVS128 Gesture dataset, the performance difference between the two pipelines was more noticeable. In this case the reconstructions were much more realistic and well-defined, allowing for the classification networks to more easily find patterns in the videos. Unlike in NMNIST, where the direct event classification pipeline outperformed the two-phase intensity reconstruction pipeline, for gesture recognition the opposite was true. The reconstructions were of particularly good quality for the DVS128 Gesture dataset, allowing for the classification networks to gather useful patterns. The reconstructions were also similar for all lighting conditions, meaning performance was consistently strong. 
 
-Overall, for more complex tasks such as gesture recognition, video reconstruction had better performance than with more simple classification problems. It is fair to assume this trend extrapolates to more complex classification tasks, since the intensity reconstructions add more detail to frames than are available in the events they process. As well as this, when tested on the Event Camera dataset, the reconstructions were much clearer visually than the respective video frames. As well as this the more complex details from the environment were also reconstructed, meaning the there is more information held in the reconstructed frames than in the events they were generated from. This could be incredibly beneficial for more complex and fine-grained classification tasks.
+It is important to note, however, that the size of the dataset was significantly larger when passed through the reconstruction network. The size difference was in the order of 10 times larger, which may be an indication of why the performance was higher. With a higher number of integrated frames per sample the discrepancy in performance may be smaller.
+
+Overall, for more complex tasks such as gesture recognition, video reconstruction had better performance than with more simple classification problems. It is fair to assume this trend extrapolates to more complex classification tasks, since the intensity reconstructions add more detail to frames than are available in the events they process. As well as this, when tested on the Event Camera dataset, the reconstructions were much clearer visually than the respective video frames. More complex details from the environment were also reconstructed, meaning the there is more information held in the reconstructed frames than in the events they were generated from. This could be incredibly beneficial for more complex and fine-grained classification tasks.
 
 \section{Evaluation Spiking Neural Network Conversion}
 
 \subsection{Converted 3D Convolutional Network}
 
-As mentioned in \cref{sssec:firing_rate_scaling}, there is a compromise to be made when attempting to scale neuron firing rates to get a better accuracy. When firing rates are scaled past a certain level, the network becomes equivalent to a non-spiking network. This would mean the loss of the benefits of sparse encoding the the SNN. The effect of over-scaling firing rate can be seen in \cref{fig:over_scaling_firing_rate}, where a very high firing rate results in a network very similar to a non-spiking neural network.
+As mentioned in \cref{sssec:firing_rate_scaling}, there is a compromise to be made when attempting to scale neuron firing rates to get a better accuracy. When firing rates are scaled past a certain level, the network becomes equivalent to a non-spiking network. This would mean the loss of the benefits of sparse encoding the the SNN. The effect of over-scaling firing rate can be seen in \cref{fig:over_scaling_firing_rate}, where a very high firing rate resulted in a network very similar to a non-spiking neural network.
 
 \begin{figure}[htb]%
     \centering
@@ -328,7 +272,7 @@ As mentioned in \cref{sssec:firing_rate_scaling}, there is a compromise to be ma
     \label{fig:over_scaling_firing_rate}%
 \end{figure}
 
-The relationship between firing rates and performance can be seen in \cref{fig:spiking_perfromace_with_varying_spike_rate}, where the accuracy gets closer to the non-spiking network as the spiking rate is artificially inflated to infinity. It was found that for the conv3D network, comparable performance could be obtained while keeping the data-flow through each network quite sparse, since close to 100\% relative performance could be reached with an average neuron spiking rate of less than 1Hz for both the NMNIST and DVS128 datasets. Especially for the DVS128 dataset, with very few average neuron spikes, the network achieved good relative performance.
+The relationship between firing rates and performance can be seen in \cref{fig:spiking_perfromace_with_varying_spike_rate}, where the accuracy got closer to the non-spiking network as the spiking rate was artificially inflated to infinity. It was found that for the conv3D network, comparable performance could be obtained while keeping the data-flow through each network quite sparse. Close to 100\% relative performance could be reached with an average neuron spiking rate of less than 1Hz for both the NMNIST and DVS128 datasets. Especially for the DVS128 dataset, with very few average neuron spikes, the network achieved good relative performance. This is a good indication that a fully neuromorphic system is possible, allowing for efficient and low-powered classification systems.
 
 \begin{figure}[htb]
     \centering
