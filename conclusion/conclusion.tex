@@ -32,9 +32,4 @@ Having reached the end of the project, it is important to note the limitations (
 
 A method, similar to the custom frame integration proposed in \cref{sssec:custom_frame_integration_implementation}, that aimed to preserve temporal resolution was proposed by Lo\"ic Cordone \textit{et al.}, who proposed `voxel cubes'\cite{MiniVovelCubes}. For this method there were still binary events in every channel, but there were more than two channels so that the events in each time-slice could be subdivided into each channel. When compared to this method, the temporal information can be stored in the same way with the novel method proposed in this project, while keeping data size small since it is just a one-channel image. 
 
-\color{red}
-\begin{itemize}
-    \item TODO: Look at these: \url{https://arxiv.org/pdf/2205.04339.pdf} and \url{https://arxiv.org/pdf/2104.12579.pdf} COULD MEAN WORK IS NOT STATE OF THE ART UGHHHH. 
-    \item \url{https://arxiv.org/pdf/2205.04339.pdf} using channel dimension could be future work.
-\end{itemize}
-\color{black}
+More work by Lo\"ic Cordone \textit{et al.}\cite{OtherSnnWork}, shows testing with sparse SNN architectures (using surrogate training as done in this report) achieving similar performance on the DVS dataset to the networks outlined in this report. In their paper a 2D spiking convolutional neural network is compared to a 3D convolutional network, and the training and inference times are outlines to show the efficiency of spiking encoding.
