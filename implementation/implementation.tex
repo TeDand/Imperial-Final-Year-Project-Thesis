@@ -37,8 +37,6 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
     \label{fig:dvs128_integrated_frames}%
 \end{figure}
 
-\color{red} TODO: Add more photos of integrated frames with more and less frames \color{black}
-
 \color{red} TODO: Add pseudocode for frame integration \color{black}
 
 \subsubsection{Custom Frame-Integration} \label{sssec:custom_frame_integration_implementation}
@@ -47,11 +45,11 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
 
 \begin{figure}[htb]%
     \centering
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_spikes_visualisation_segmented.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.22\textwidth, height=0.7\textwidth]{implementation/images/nmnist_spikes_visualisation_segmented.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_segmented.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.37\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_segmented.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.25\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_heatmap_segmented.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.22\textwidth, height=0.7\textwidth]{implementation/images/nmnist_events_heatmap_segmented.png}}}%
     \caption{A visualisation of intensity maps created by segmenting events into bins of size $ 1 \times 10^6 $ ms.}%
     \label{fig:nmnist_spikes_to_intensity_map}%
 \end{figure}
@@ -132,8 +130,8 @@ Once the conversion from ANN to SNN was complete, the performance of the network
 
 \begin{figure}[htb]%
     \centering
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/low_frame_repitition.png}}}%
-    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/high_frame_repitition.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{implementation/images/low_frame_repitition.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.35\textwidth]{implementation/images/high_frame_repitition.png}}}%
     \caption{Comparison of number of spikes with less \textbf{(a)} and more \textbf{(b)} repetitions.}%
     \label{fig:frame_repititions}%
 \end{figure}
@@ -170,15 +168,13 @@ It is also possible to change the effective firing rates of each neuron in the n
     \label{fig:post_firing_rate_scaling}%
 \end{figure}
 
-\newpage
-
 \subsection{Spiking Legendre Memory Unit Network}
 
 As mentioned in \cref{ssec:snn_design}, there is no readily available conversion method for LSTMs or GRUs. LMUs, however, are ideal for converting into spiking nodes. An illustration of the dataflow through such a unit is shown in \cref{fig:lmu_computational_graph}.
 
 \begin{figure}[htb]%
     \centering
-    \includegraphics[width=0.6\textwidth]{implementation/images/lmu_computational_graph.png}
+    \includegraphics[width=0.5\textwidth]{implementation/images/lmu_computational_graph.png}
     \caption{An illustration of the computational dataflows through an LMU\cite{LMU}.}%
     \label{fig:lmu_computational_graph}%
 \end{figure}
