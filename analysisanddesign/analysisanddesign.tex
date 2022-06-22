@@ -152,7 +152,7 @@ The evaluation plan is as given by the typical machine learning pipeline\cite{In
 
 \subsection{Confusion matrix}
 
-Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. It should be noted that a similar confusion matrix should be created taking each class as positive, then each metric can be calculated by taking the averages (as shown in \cref{ssec:eval_metric_averaging}). For each of the cells the number of matching records are stored to calculate each of the evaluation metrics. The table includes True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
+Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. This type of table is created for each class including the True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
 
 \begin{table}[htb]
     \centering
@@ -207,7 +207,3 @@ It should be noted that a high recall may mean a lot of positive samples may be 
 This is defined as the harmonic mean of precision and recall in order to get one number as an average measure of performance.
 
 $$ F_1 = \frac{2 \cdot precision \cdot recall}{precision + recall} $$
-
-\subsection{Micro and Macro Averaging} \label{ssec:eval_metric_averaging}
-
-Macro-averaging involves taking an average on the class level. Metrics are calculated for each class and then averaged at the end. Micro-averaging involves taking an average on the item level (i.e., taking the average of each of TP, FP, TN and FN to get the averages metrics).
