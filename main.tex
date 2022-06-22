@@ -63,14 +63,6 @@
 \begin{document}
 \input{title/title.tex}
 
-\begin{abstract}
-    Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
-
-    The main aim of the project is to utilise data retrieved from neuromorphic cameras to carry out video classification. Two pipelines are devised to achieve this; one involves directly classifying event data, while the other is a two-phase network were events are first reconstructed into intensity videos before classification is done. With both pipelines, a series of networks are used for classification in order to ensure there is a fair comparison.
-    
-    Data pre-processing is also a large part of the machine learning pipeline, and as such played a part in the creation of the two pipelines. For the direct-event classification pipeline in particular, varying pre-processing methods are used. In most neuromorphic data analyses a method called `frame integration' is utilised, where events are segmented into time bins and accumulated into frames. In the classical approach, each frame has two channels depicting whether a positive of negative event occurred in each pixel during a particular time bin. In this project, the classical implementation was used as well as a new novel approach. Multiple networks were designed and implemented to be a part of both classification pipelines. The main ones  were convolutional and recurrent neural networks. Finally, a fully neuromorphic system using a spiking neural network is devised, allowing for the exploitation of the sparse data communication between layers. With similar performance, these networks can be utilised for low-powered devices and real-time classification in future works.
-\end{abstract}
-
 \renewcommand{\abstractname}{Final Report Plagiarism Statement}
 \begin{abstract}
     I affirm that I have submitted, or will submit, an electronic copy of my final year project report to the provided EEE link.
@@ -85,6 +77,15 @@
     Firstly, I would like to thank Prof. Pier Luigi Dragotti for the opportunity to undertake this project under his supervision. He gave me a lot of much needed guidance throughout the process, while still affording me the freedom to take the project where I saw fit.
 
     I would also like to extend my gratitude to my family, without whom I would not be in this position, for which I will be forever in their debt. And finally, to my friends who have been instrumental in keeping me sane through these four long years - thank you all.
+\end{abstract}
+
+\renewcommand{\abstractname}{Abstract}
+\begin{abstract}
+    Neuromorphic sensing is a novel way of encoding analogue signals, inspired by the biological processing of information in our brains. Neuromorphic sensing is based on time encoding, where rather than recording the amplitude of the input signal at predefined times, one records the time instants where the amplitude surpasses a certain trigger mark. This leads to a very efficient way of acquiring and processing signals.
+
+    The main aim of the project is to utilise data retrieved from neuromorphic cameras to carry out video classification. Two pipelines are devised to achieve this; one involves directly classifying event data, while the other is a two-phase network were events are first reconstructed into intensity videos before classification is done. With both pipelines, a series of networks are used for classification in order to ensure there is a fair comparison.
+    
+    Data pre-processing is also a large part of the machine learning pipeline, and as such played a part in the creation of the two pipelines. For the direct-event classification pipeline in particular, varying pre-processing methods are used. In most neuromorphic data analyses a method called `frame integration' is utilised, where events are segmented into time bins and accumulated into frames. In the classical approach, each frame has two channels depicting whether a positive of negative event occurred in each pixel during a particular time bin. In this project, the classical implementation was used as well as a new novel approach. Multiple networks were designed and implemented to be a part of both classification pipelines. The main ones  were convolutional and recurrent neural networks. Finally, a fully neuromorphic system using a spiking neural network is devised, allowing for the exploitation of the sparse data communication between layers. With similar performance, these networks can be utilised for low-powered devices and real-time classification in future works.
 \end{abstract}
 
 \pagenumbering{gobble}
