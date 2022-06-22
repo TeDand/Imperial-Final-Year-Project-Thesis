@@ -77,7 +77,7 @@ Overall the f1 measure acts as a balanced measure between precision and recall, 
 
 The confusion matrices for the classification of the intensity reconstructed DVS128 Gesture dataset can be seen in \cref{fig:dvs128_recon_c_matrices}. Here the findings were a little different than for the NMNIST dataset. Firstly, it is important to note that when attempting to reconstruct the videos and pass them into each of the networks, the amount of memory often became an issue. This in itself is a clear indication of a large difference between the event and frame representations. After conversion, the frame-based video was of a much larger size and density than the event streams it was created from. In other words the efficiency of encoding was much higher in the case of event streams than intensity videos. For this reason it was not even feasible to run the ConvLSTM network with this data since both the memory and time requirements were much too high.
 
-Between the purely convolutional and LSTM network there were still many interesting conclusions to be drawn. Thr performance disparity between the two was of a much larger scale than with the reconstructed NMNIST dataset. The reason for this is that the recurrent neural network was much better at recognising temporal patters as well as spatial ones in the data, which is much more important in the case of gesture recognition. For this reason the overall accuracy was much better with the LSTM network. For cases with very similar frames (such as clockwise and counter-clockwise arm rotations), the LSTM had far better precision as well.
+Between the purely convolutional and custom convLSTM network there were still many interesting conclusions to be drawn. Thr performance disparity between the two was of a much larger scale than with the reconstructed NMNIST dataset. The reason for this is that the recurrent neural network was much better at recognising temporal patters as well as spatial ones in the data, which is much more important in the case of gesture recognition. For this reason the overall accuracy was much better with the LSTM network. For cases with very similar frames (such as clockwise and counter-clockwise arm rotations), the LSTM network had far better precision, and therefore f1 score, as well.
 
 \begin{figure}[htb]%
     \centering
@@ -170,7 +170,7 @@ The confusion matrices for the classification of the frame-integrated DVS128 Ges
     \label{fig:dvs128_c_matrices}%
 \end{figure}
 
-\Cref{tab:conv3d_dvs128_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated DVS128 Gesture dataset in more detail.
+\Cref{tab:conv3d_dvs128_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_evaluation_metrics} show the performance evaluation of each of the networks on the frame-integrated DVS128 Gesture dataset in more detail. It is interesting to note that the recall of these networks was poor for the gesture recognition task. This meant that for some similar gesture classes, there were a lot of false negatives being reported. This issue, however, was less apparent in the LSTM networks, leading to an overall improved f1 score.
 
 \subsection{Custom Frame Integration}
 
@@ -187,7 +187,7 @@ Some tests were undertaken using the custom frame integration technique on the D
 
 \subsubsection{Classification Results}
 
-The confusion matrices for the classification of the frame-integrated NMNIST dataset with the custom frame integration method can be seen in \cref{fig:nmnist_custom_frame_c_matrices}. Th performance of each network on this dataset follows patterns very similar to the ones seen for the classically frame-integrated NMNIST (\cref{ssec:frame_integration_testing}). The reason for this is that both integration processes result in a similar output. The scale of the dataset and the lack of large movement means that each integration method essentially results in an edge map of the MNIST samples. The performance is therefore still impressive with each network on the custom frame-integrated NMNIST dataset, with the conv3D and custom convLSTM networks marginally outperforming the convLSTM network.
+The confusion matrices for the classification of the frame-integrated NMNIST dataset with the custom frame integration method can be seen in \cref{fig:nmnist_custom_frame_c_matrices}. The performance of each network on this dataset follows patterns very similar to the ones seen for the classically frame-integrated NMNIST (\cref{ssec:frame_integration_testing}). The reason for this is that both integration processes result in a similar output. The scale of the dataset and the lack of large movement means that each integration method essentially results in an edge map of the MNIST samples. The performance is therefore still impressive with each network on the custom frame-integrated NMNIST dataset, with the conv3D and custom convLSTM networks marginally outperforming the convLSTM network.
 
 \begin{figure}[htb]%
     \centering
@@ -217,7 +217,7 @@ The confusion matrices for the classification of the frame-integrated DVS128 Ges
     \label{fig:dvs128_custom_frame_c_matrices}%
 \end{figure}
 
-\Cref{tab:conv3d_dvs128_custom_frame_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_custom_frame_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_custom_frame_evaluation_metrics} show the performance evaluation of each of the networks on the custom frame-integrated DVS128 Gesture dataset in more detail. It should be noted that the data used for training this data was of a smaller subset of data than for the other DVS128 Gesture training. It is impressive that the network was able to achieve such a high accuracy with fewer samples to learn features from.
+\Cref{tab:conv3d_dvs128_custom_frame_evaluation_metrics}, \cref{tab:conv_lstm_dvs128_custom_frame_evaluation_metrics}, and \cref{tab:custom_conv_lstm_dvs128_custom_frame_evaluation_metrics} show the performance evaluation of each of the networks on the custom frame-integrated DVS128 Gesture dataset in more detail. It should be noted that the data used for training this data was of a smaller subset of data than for the other DVS128 Gesture training. It is impressive that the network was able to achieve such a high accuracy with fewer samples to learn features from. As well as this the recall issues faced when using classical frame integration were less apparent.
 
 \section{Comparison of Classification Networks}
 
