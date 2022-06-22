@@ -1,5 +1,46 @@
 \chapter{Classification Model Architectures}
 
+\begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network.},label={lst:conv_lstm_layers},numbers=none,float=htb]
+_________________________________________________________________
+Layer (type)                Output Shape              Param #   
+=================================================================
+conv_lstm2d_6 (ConvLSTM2D)  (None, 8, 34, 34, 64)     150016    
+                                                                
+max_pooling3d_4 (MaxPooling  (None, 8, 17, 17, 64)    0         
+3D)                                                             
+                                                                
+batch_normalization_6 (Batc  (None, 8, 17, 17, 64)    256       
+hNormalization)                                                 
+                                                                
+conv_lstm2d_7 (ConvLSTM2D)  (None, 8, 17, 17, 32)     110720    
+                                                                
+max_pooling3d_5 (MaxPooling  (None, 8, 9, 9, 32)      0         
+3D)                                                             
+                                                                
+batch_normalization_7 (Batc  (None, 8, 9, 9, 32)      128       
+hNormalization)                                                 
+                                                                
+conv_lstm2d_8 (ConvLSTM2D)  (None, 9, 9, 16)          27712     
+                                                                
+max_pooling2d_2 (MaxPooling  (None, 5, 5, 16)         0         
+2D)                                                             
+                                                                
+batch_normalization_8 (Batc  (None, 5, 5, 16)         64        
+hNormalization)                                                 
+                                                                
+flatten_2 (Flatten)         (None, 400)               0         
+                                                                
+dense_4 (Dense)             (None, 256)               102656    
+                                                                
+dense_5 (Dense)             (None, 10)                2570      
+                                                                
+=================================================================
+Total params: 394,122
+Trainable params: 393,898
+Non-trainable params: 224
+_________________________________________________________________
+\end{lstlisting}
+
 \begin{lstlisting}[language=Bash,caption={Overview of layers in 3D convolutional network},label={lst:3d_conv_layers},numbers=none,float=htb]
 _________________________________________________________________
 Layer (type)                Output Shape              Param #   
@@ -61,47 +102,6 @@ activation_2 (Activation)   (None, 10)                0
 Total params: 3,873,450
 Trainable params: 3,872,426
 Non-trainable params: 1,024
-_________________________________________________________________
-\end{lstlisting}
-
-\begin{lstlisting}[language=Bash,caption={Overview of layers in Convolutional LTSM network.},label={lst:conv_lstm_layers},numbers=none,float=htb]
-_________________________________________________________________
-Layer (type)                Output Shape              Param #   
-=================================================================
-conv_lstm2d_6 (ConvLSTM2D)  (None, 8, 34, 34, 64)     150016    
-                                                                
-max_pooling3d_4 (MaxPooling  (None, 8, 17, 17, 64)    0         
-3D)                                                             
-                                                                
-batch_normalization_6 (Batc  (None, 8, 17, 17, 64)    256       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_7 (ConvLSTM2D)  (None, 8, 17, 17, 32)     110720    
-                                                                
-max_pooling3d_5 (MaxPooling  (None, 8, 9, 9, 32)      0         
-3D)                                                             
-                                                                
-batch_normalization_7 (Batc  (None, 8, 9, 9, 32)      128       
-hNormalization)                                                 
-                                                                
-conv_lstm2d_8 (ConvLSTM2D)  (None, 9, 9, 16)          27712     
-                                                                
-max_pooling2d_2 (MaxPooling  (None, 5, 5, 16)         0         
-2D)                                                             
-                                                                
-batch_normalization_8 (Batc  (None, 5, 5, 16)         64        
-hNormalization)                                                 
-                                                                
-flatten_2 (Flatten)         (None, 400)               0         
-                                                                
-dense_4 (Dense)             (None, 256)               102656    
-                                                                
-dense_5 (Dense)             (None, 10)                2570      
-                                                                
-=================================================================
-Total params: 394,122
-Trainable params: 393,898
-Non-trainable params: 224
 _________________________________________________________________
 \end{lstlisting}
 
