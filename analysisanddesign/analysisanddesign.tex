@@ -22,7 +22,7 @@ Tensorflow\cite{Tensorflow} is the older and more widely adopted machine learnin
 
 \subsubsection{SpikingJelly}
 
-SpikingJelly\cite{SpikingJelly} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (Some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by the Multimedia Learning Group, the Institute of Digital Media (NELVT), the Peking University and Peng Cheng Laboratory, can be installed directly via the \emph{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
+SpikingJelly\cite{SpikingJelly} is an open-source deep learning framework for Spiking Neural Network (SNN) based on PyTorch. It allows for the processing of many often-used datasets in the neuromorphic community (some of which are described in \cref{sec:existing_datasets}), as well as a simple set of classes for building SNNs or converting ANNs to SNNs. The library, which was mainly co-developed by the Multimedia Learning Group, the Institute of Digital Media (NELVT), the Peking University and Peng Cheng Laboratory, can be installed directly via the \lstinline{pip} command. Using it, data can be loaded as event streams, as well as integrated frames (described in \cref{ssec:frame_integration}) of varying frame lengths or frame-rates. As well as this the package features clear documentation and tutorials to begin analysing neuromorphic data.
 
 \subsubsection{NengoDL} \label{sssec:nengo}
 
@@ -36,7 +36,7 @@ The two main web services available at this time are Google Colaboratory\cite{Go
 
 \section{Datasets}
 
-The datasets used for the evaluation of the networks in this project were NMNIST (\Cref{sssec:nmnist}), DVS128 Gesture (\Cref{sssec:dvs128_gesture}) and CIFAR10-DVS (\Cref{sssec:cifar10_dvs}), since these are the most suited for training on classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The Event Camera Dataset for SLAM (\Cref{sssec:event_camera_dataset}) is also extensive and includes side by side frames from a traditional camera, making it ideal for testing the intensity reconstruction algorithm used in the two-phase pipeline described later in this chapter.
+The datasets used for the evaluation of the networks in this project were the NMNIST and DVS128 Gesture datasets (see \cref{sssec:cifar10_dvs}), since these are the most suited to training for classification tasks. As well as this their recording conditions and topics are varied, meaning an evaluation of the system can be more robust and reliable. The Event Camera Dataset for SLAM (also in \Cref{sssec:event_camera_dataset}) is extensive and includes side by side frames from a traditional camera, making it ideal for testing the intensity reconstruction algorithm used in the two-phase pipeline described later in this chapter.
 
 \subsection{Data Pre-processing} \label{ssec:data_preprocessing_design}
 
@@ -49,7 +49,7 @@ Before processing data, z-score standardisation needs to take place. \Cref{eq:z_
 
 \section{Two-phase Intensity Reconstruction Models}
 
-In order to make use of existing highly-tested and documented computer vision techniques, an intensity reconstruction of event streams was necessary. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks. Each event stream was passed into the E2VID reconstruction network\cite{spikingToVideo}, allowing for each classifier that the data is fed into to analyse more complex visual patterns than were available from the frame-integrated event streams. The rationale behind this is that commonly used neural networks for video analysis are built to detect features from intensity frames rather than event streams. Therefore in order to make use of these specialisations, each event stream needs to be converted into a more common input form.
+In order to make use of existing highly-tested and documented computer vision techniques, an intensity reconstruction of event streams was necessary. For this reason a two-phase network (shown in \cref{fig:two_phase_network_pipeline}) was devised, wherein events are reconstructed into intensity videos before being passed into various classification networks. Each event stream was passed into the E2VID reconstruction network\cite{spikingToVideo}. The output of this networks is fed into various classification models, which can now analyse more complex visual patterns than were available from the frame-integrated event streams. The rationale behind this is that commonly used neural networks for video analysis are built to detect features from intensity frames rather than event streams. Therefore in order to make use of these specialisations, each event stream needs to be converted into a more common input form.
 
 \begin{figure}[htb]
     \centering
@@ -60,16 +60,16 @@ In order to make use of existing highly-tested and documented computer vision te
 
 \section{End-to-end Event Classification Models} \label{sec:end_to_end_classification_design}
 
-For classifying frames directly, a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any one pixel during a given time-slice. There are two variations of time-slice generation, which will be referred henceforth as `synchronous' and `asynchronous' frame-integration. Synchronous frame-integration is named due to the fact that each frame stores event information of a fixed time-frame. For example, each frame could store information for a 10ms time-slice. This means the generated frames are more akin to the outputs of frame-based cameras that have a fixed frame-rate. Asynchronous frame-integration, on the other hand, involves collecting a set number of events for each frame. The benefit of this method is that the amount of information per frame is constant, irrespective of when more or less motion occurs in the video. Another asynchronous approach is to simply divide the events into a set number of segments. Then each segment can be integrated individually. These methods mean that certain frames may encode information over a longer time-span than other frames.
+For classifying frames directly, a frame integration method was utilised as described in \cref{ssec:frame_integration}. The method described involves having two channels per created frame. Each channel stores whether a positive or negative event was fired at any one pixel during a given time-slice. There are two variations of time-slice generation, which will be referred henceforth as `synchronous' and `asynchronous' frame-integration. Synchronous frame-integration is named due to the fact that each frame stores event information of a fixed time-frame. For example, each frame could store information for a 10ms time-slice. This means the generated frames are more akin to the outputs of frame-based cameras that have a fixed frame-rate. Asynchronous frame-integration, on the other hand, involves collecting a set number of events for each frame. The benefit of this method is that the amount of information per frame is constant, irrespective of when more or less motion occurs in the video. This method means that certain frames may encode information over a longer time-span than other frames.
 
-A slight adaptation of the classical method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel over the time segment can also be captured. A diagram showing the basics of the custom integration process is shown in \cref{fig:frame_integration_diagram}.
+A slight adaptation of the classical frame integration method was also devised, in which rather than having binary information of on/off events per pixel of the frame, we could instead have a single channel value for each pixel with the sum of all event polarities for that location. This way the magnitude (or number) of events for each pixel over the time segment can also be captured. A diagram showing the basics of the custom integration process is shown in \cref{fig:frame_integration_diagram}.
 
-For classical frame integration the synchronous frame integration method was used, whereas for custom integration the second asynchronous method was used. Both these methods allow for the number of frames per sample to be constant, making it easier to input into neural networks.
+For both of the frame integration methods the synchronous frame integration method was used. This allowed for the number of frames per sample to be constant, making it easier to input into neural networks.
 
 \begin{figure}[htb]
     \centering
     \includegraphics[width=0.8\textwidth]{analysisanddesign/images/frame_integration_illustration.png}
-    \caption{An illustration of the frame integration process with custom integrating method.}
+    \caption{An illustration of the frame integration process with novel integrating method.}
     \label{fig:frame_integration_diagram}
 \end{figure}
 
@@ -79,7 +79,7 @@ Given below are the various networks used to classify either integrated frames o
 
 During the training process of each of the networks a callback function was used called\\ \lstinline{EarlyStopping}. This built-in Keras callback allows for the interrupting of network training when the validation accuracy of the network stagnates or falls. This should, in theory, prevent over-fitting to the training data. A patience value is set so that even if accuracy drops for only one epoch it is given the opportunity to rise again. This, of course, means that the training dataset needs to be split into training and validation, where the validation set is more unseen data to evaluate the performance of the networks every epoch. Finally, the most optimal weights are loaded back when the network finishes training. 
 
-As well as this, dropout (or recurrent dropout for LSTM and GRU cases) layers were used. These layers mean that during the training process certain neurons will be `turned off' and therefore not part of the back-propagation process. This should allow the resulting network to be robust since there is no over-reliance on any one neuron of the network.
+As well as this, dropout (or recurrent dropout for LSTM and GRU cases) layers were used. These layers mean that during the training process certain neurons will be `turned off' and therefore not part of the back-propagation process. This should allow the resulting networks to be robust since they should not develop an over-reliance on any one neuron.
 
 Finally, for the learning rates for each system, it is necessary to find the optimal value. If the rate is too high, the model will quickly back-propagate to the optimal value, however once it gets close to it the weights may oscillate. This is because only a small step may be needed to make it to the ideal values, but the model constantly overshoots it. On the other hand, if the learning rate is too low, then the learning process will be very slow, and reaching an optimal value may take many epochs. As well as this, for more complex functions the network may get stuck on a local minimum value for the loss. It is clear in this case that an adaptive learning rate would be the most ideal. One would like the rate to be high to start off with, and become smaller and smaller as the training process goes on. This can be done with a Keras callback function, however for the models in this project the Adam optimiser\cite{Adam} was chosen instead. This optimiser implements a function to find the best value for the learning rate itself.
 
@@ -100,7 +100,7 @@ A convolutional LSTM network as described in \cref{ssec:conv_lstm} was implement
 
 \subsection{Custom Convolutional LSTM Network}
 
-This network is an extension of the LSTM network in the previous section, adding more capacity for the model to learn spatio-temporal patterns. It involves altering the intermediate convolutional neural network that analyses each frame in the video time series. A diagram showing the pipeline of the overall network can be seen in \cref{fig:custom_conv_lstm_pipeline}. This additional capacity is helpful for deciphering more complex `actions' in a video, such as in the case of gesture recognition.
+This network is an extension of the LSTM network in the previous section, adding more capacity for the model to learn spatio-temporal patterns. It involves altering the intermediate convolutional layer that analyses each frame in the video time series, replacing it with a more complex convolutional neural network. A diagram showing the pipeline of the overall network can be seen in \cref{fig:custom_conv_lstm_pipeline}. This additional capacity is helpful for deciphering more complex `actions' in a video, such as in the case of gesture recognition.
 
 \begin{figure}[htb]
     \centering
@@ -113,7 +113,7 @@ This network is an extension of the LSTM network in the previous section, adding
 
 With this network the whole system, from data generation to classification, could be fully neuromorphic. Using techniques as described in \cref{ssec:snn_and_heterogeneity}, traditional ANNs could easily be converted to SNNs\cite{Ann2Snn} for classification. For the conversion process the \lstinline{nengo_dl} package can be used (see \cref{sssec:nengo}). In order to train the network a differentiable approximation of the spiking neurons was used. This meant that the data could be trained using back-propagation as normal. During inference, however, the actual spiking neurons could be used\cite{TrainingSnn}. Since the network is trained before the conversion from ANN to SNN, the performance of the SNN will not be comparable to the ANN due to approximation errors. These approximations can be improved by changing certain properties of the SNN and checking the performance of the inference.
 
-Spiking neural networks work similarly to ANNs, however there are some key differences. One major difference is in the activation of the neurons. Whereas with non-spiking artificial neurons the output is a continuous function based on the instantaneous input, spiking neurons accumulate inputs and build up to an eventual spike. This means that inputs to the neuron have to be sustained (repeated) for a certain amount of time to allow for this build-up of potential. For our network, since it is a 3D vector of frames over time, the input to the network needs to be a 4D vector. An illustration of the creation of the 3D vectors that were input into the ANN and the subsequent 4D network fed into the spiking equivalent are shown in \cref{fig:sustained_video}.
+Spiking neural networks work similarly to ANNs, however there are some key differences. One major difference is in the activation of the neurons. Whereas with non-spiking artificial neurons the output is a continuous function based on the instantaneous input, spiking neurons accumulate inputs and build up to an eventual spike. This means that inputs to the neuron have to be sustained (repeated) for a certain amount of time to allow for this build-up of potential. For our network, since it is a 3D tensor of frames over time, the input to the network needs to be a 4D tensor. An illustration of the creation of the 3D tensors that were input into the ANN and the subsequent 4D network fed into the spiking equivalent are shown in \cref{fig:sustained_video}.
 
 \begin{figure}[htb]
     \centering
@@ -122,7 +122,7 @@ Spiking neural networks work similarly to ANNs, however there are some key diffe
     \label{fig:sustained_video}
 \end{figure}
 
-However, unlike convolutional network layers, recurrent layers such as LSTM and GRU do not have a direct conversion available to spiking networks. There is, however, a component known as Legendre Memory Unit (LMU) that are much better suited to the conversion process. Like LSTMs, LMUs have been shown to perform well in a variety of tasks with relatively few internal parameters\cite{LMU}. This unit shows promise for creating more complex networks to analyse time-series data.
+However, unlike convolutional network layers, recurrent layers such as LSTM and GRU do not have a direct conversion available to spiking networks. There is, however, a component known as Legendre Memory Unit (LMU) that is much better suited to the conversion process. Like LSTMs, LMUs have been shown to perform well in a variety of tasks with relatively few internal parameters\cite{LMU}. This unit shows promise for creating more complex networks to analyse time-series data.
 
 \section{Evaluation Metrics} \label{sec:evalutaion_metrics}
 
@@ -152,7 +152,7 @@ The evaluation plan is as given by the typical machine learning pipeline\cite{In
 
 \subsection{Confusion matrix}
 
-Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. This type of table is created for each class including the True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
+Confusion matrices act as a visualisation of a systems performance. It shows possible true labels as well as possible predicted labels on either side, and filled in are the number of results that fit in each segment. In \cref{tab:confusion_matrix} the confusion matrix for the NMNIST dataset is shown as an example. This type of table is created for each class, and includes the True Positives (TP), False Positives (FP), True Negatives (TN) and False Negatives (FN).
 
 \begin{table}[htb]
     \centering
@@ -174,7 +174,7 @@ Confusion matrices act as a visualisation of a systems performance. It shows pos
         \cline{2-6}
                                                                          & \multicolumn{1}{| c |}{$ \vdots $} & $ \vdots $                                       & $ \vdots $ & $ \vdots $ & $ \ddots $ \\
     \end{tabular}
-    \caption{a table showing one particular confusion matrix for NMNIST dataset\cite{NMNIST} for class 1 as the positive class.}
+    \caption{A table showing one particular confusion matrix for NMNIST dataset\cite{NMNIST} for class 1 as the positive class.}
     \label{tab:confusion_matrix}
 \end{table}
 
