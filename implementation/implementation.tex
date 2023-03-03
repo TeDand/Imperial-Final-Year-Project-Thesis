@@ -6,7 +6,7 @@ This chapter presents the final implementation of the project. The full process 
 
 As described in  \cref{ssec:data_preprocessing_design}, data had to be centered to give a z-score. In practice the standard deviation was not used to normalise the values, and instead the following operation was undertaken: $ \textbf{x} = \frac{\textbf{x} - mean_x}{max_x} $. 
 
-Due to the large size of each dataset, it was evident that the default Keras functions would not be ideal. This is often the case for real-world datasets since they are far too large to store on system RAM. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read from files into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class that could both read and pre-process the data directly.
+Due to the large size of each dataset, it was evident that the default Keras functions would not be ideal. This is often the case for real-world data meaning the it was far too large to store on system RAM. This is the case even with the high-RAM run-times of Google Coloboratory. This meant that data had to be read from files into the network on a per-batch basis, making the whole process less RAM intensive. Keras has a \lstinline{Sequence} class that can be extended to create a custom data-generator class that could both read and pre-process the data directly.
 
 \section{Two-phase Intensity Reconstruction Pipeline}
 
@@ -16,7 +16,7 @@ An approach for event stream classification that can make use of existing networ
 
 \subsubsection{E2VID}
 
-E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from event data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this, additional frames were added to shorter video reconstructions. These additional frames were added by repeating the video until the desired number of frames was reached.
+E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art network based on UNET that reconstructs intensity videos from event data. Having gotten the output from the network (which on test data had an average Mean-Squared Error (MSE) of 0.05), it now needed to be processed slightly in order to work with the classification models. The main issue with the reconstruction was that the video were of varying lengths. In order to mitigate this, additional frames were added to videos shorter video reconstructions. These additional frames were added by repeating the video until the desired number of frames was reached.
 
 \section{End-to-end Event Classification Pipeline}
 
@@ -24,7 +24,7 @@ E2VID, as described in \cref{ssec:video_reconstruction}, is a state-of the art n
 
 In order to instead analyse neuromorphic data directly, it was pre-processed into a form that a NN can take as input. Initially, an implementation of the more formal method of processing events streams to get integrated frames given in \cref{ssec:frame_integration} was implemented. This technique involved creating two-channel images, with each channel holding binary indications of whether a positive or negative event respectively, was fired that given time-frame.
 
-The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. Here the two channels utilised where green for on events and blue for off events. For each data sample, the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. Since the event streams are of varying length in the time dimension, some videos are integrated to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more features would be easily distinguishable. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show visible pattern in any one frame. A benefit of having this blurring of events in the integrated frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
+The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} shows the motion of an arm moving in a clockwise direction. Here the two channels utilised where green for on events and blue for off events. For each data sample, the event stream was split into 20 frames. This made the processing of the data easy for some of the networks described later in the chapter, since the frames could be packed into 3D tensors of equal size. It is interesting to note that the frames are not synchronous like they would be from a frame-based camera, and the amount of time represented by each frame is varying. As well as this, since the event streams are of varying length in the time dimension, some videos are reconstructed to a more granular scale than others. It is apparent that in this particular sample a relatively large amount of time is being compressed into every frame, resulting in a large amount of motion being visible. With more frames being created for each sample this problem would be alleviated and more features would be easily distinguishable. However if too many frames are taken, not only are processing times greatly increased, events may be sparse and not show any visible pattern in any one frame. A benefit of having this blurring event in the intensity frames is that the direction and degree of motion can be seen in the frames, and so the networks can also pick up these patterns in their classification process.
 
 \begin{figure}[htb]%
     \centering
@@ -33,7 +33,7 @@ The integrated frames of a hand gesture in \cref{fig:dvs128_integrated_frames} s
     \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_2.png}}}%
     \qquad
     \subfloat[\centering]{{\includegraphics[width=0.25\textwidth]{implementation/images/Dvs128_integrated_frame_3.png}}}%
-    \caption{Three contiguous intensity frames \textbf{(a)}, \textbf{(b)} and \textbf{(c)}, created from the DVS128 Gesture dataset with a person moving their hand clockwise.}%
+    \caption{Three contiguous intensity frames \textbf{(a)}, \textbf{(b)} and \textbf{(c)}, created from the DVS128 Gesture dataset with a person moving their right hand clockwise.}%
     \label{fig:dvs128_integrated_frames}%
 \end{figure}
 
@@ -54,7 +54,7 @@ A novel integration technique was also implemented, as described in the \cref{se
 
 \section{Classification Models}
 
-The models used to classify both the integrated frames and video reconstructions are given below. Please note that the input shapes given below are for the NMNIST dataset, however for the other datasets different input shapes would be required (e.g., \{128, 128, 2\} for the DVS128 Gesture dataset).
+The models used to classify both the integrated frames and video reconstructions are given below. Please note that the input shapes given below are for the NMNIST dataset, however for the other datasets different input shapes would be required (e.g. \{128, 128, 2\} for the DVS128 Gesture dataset).
 
 for each network the outputs of the latter hidden layers fed into a dense layer with 10 neurons (for NMNIST) to classify the correct class (0-9). Activation functions need to be present in the networks to prevent all the layers from becoming equivalent to a single one (linear regression model). In order to learn more complex patterns activation functions are a necessary aspect of creating an artificial neuron (See \cref{eq:artificial_neuron_output} in \cref{ssec:snn_and_heterogeneity}). The most commonly used activation function in deep networks (and image recognition in particular) is ReLU, so that was the natural choice for these networks as well. This activation function is also ideal for conversion into spiking networks (see \cref{ssec:ann_to_snn_implementation}). Finally, the output layers had a sigmoid activation function. This function compresses the output smoothly between the ranges of 0 and 1. this means each of the outputs from the neurons can be interpreted as a the probability of the input being any one of the output classes. This means we can simply take the highest probability as the predicted class from the network.
 
@@ -80,23 +80,23 @@ The network in each case was trained for multiple epochs. The performance of a t
 
 It was clear, however, that these results may be misleading since they only represent the efficiency of the system when classifying values within the training data-set. However, when looking at the performance on an unseen test data-set, it is obvious that some of the features learnt do not easily translate to general trends in unseen data. This is known as over-fitting, and can be avoided by reducing the capacity of the data-set so that it does not learn information specific to the training set, or by stopping the training process earlier. For this reason the \lstinline{EarlyStopping} Keras callback function was utilised so that training would be stopped when over-fitting was detected.
 
-Model capacity is directly correlated to the number of filters, as well as the number of layers. Extra capacity allows the model to recognises more patterns in the training data, so it is important to get the optimum number for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen. An example of the effects of changing such hyper-parameters can be seen in \cref{fig:hyperparameter_tests}. It is clear from this that the performance of the network increases as more hidden layers are added, until past a certain point where over-fitting occurs more often. As well as this there is an ideal kernel size for the scale of the data as well. As for the dense layers at the end of the network, it was found that better results were achieved as a result of them since global patterns could be further identified after the data had been processed by convolution layers.
+Model capacity is directly correlated to the number of filters, as well as the number of layers, and as the model recognises more patterns in the training data, so it is important to get the optimum number for the system. The size of the kernels has an effect on the scale of the information picked up by the system. With smaller kernels more local patterns are detected, whereas with larger kernels more global effects can be seen. An example of the effects of changing such hyper-parameters can be seen in \cref{fig:hyperparameter_tests}. It is clear from this that the performance of the network increases as more hidden layers are added, until past a certain point where over-fitting more occurs more often. As well as this there is an ideal kernel size for the scale of the data as well. As for the dense layers at the end of the network, it was found that better results were achieved as a result of them since global patterns could be further identified after the data had been processed by convolution layers.
 
 \begin{figure}[htb]%
     \centering
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/layer_tests.png}}}%
     \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/kernel_tests.png}}}%
-    \caption{Graphs showing the effect on training loss and accuracy with varying hyper-parameters.}%
+    \caption{Graphs showing the effect on training loss with varying hyper-parameters.}%
     \label{fig:hyperparameter_tests}%
 \end{figure}
 
 Further testing was done with increasing kernel sizes, and with pooling layers added to the network. 
 
-An overview of the layers present in the final network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}. It features the repeating pattern of 3D convolution layers and max-pooling. The number of filters in each layer keeps increasing (from 32 to 64 and 128). The function of 3D filters is to capture patterns in the data, and as you move forward through the network these patterns get more complex. For example, if dots and lines are captured in the first layer, shapes such as triangles and squares may be captured in the second one (in the 2D case). Since the patterns are more complex, the number of possible combinations also increases. This is the reason more filters are required for later layers. The max-pooling layers scale down the image, allowing for more large scale patterns to be identified from smaller sections of the frame.
+An overview of the layers present in the final network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:3d_conv_layers}. It features the repeating pattern of 3D convolution layers and max-pooling. The number of filters in each layer keeps increasing (from 32 to 64 and 128). The function of 3D filters is to capture patterns in the data, and as you move forward through the network these patterns get more complex. For example, if dots and lines are captured in the first layer, shapes such as triangles and squares may be captured in the second one (in the 2D case). Since the patterns are more complex, the number of possible combinations also increases. This is the reason more filters are required for later layers. The max-pooling layers scale down the image, this also means that more large scale patterns can be identified from smaller sections of the frame.
 
 \subsection{Convolutional LTSM}
 
-An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}. The thought process behind the structuring of this network is similar to the one when designing the 3D convolutional network. The number of filters increases as you go further through the network. The difference this time is that 2D convolution is carried out on each contiguous frame of the video input before being passed through LTSM networks. The way this is implemented is with the convLTSM network described in \cref{ssec:conv_lstm}.
+An overview of the layers present in the network, together with the shape of their outputs and number of trainable parameters can be seen in \cref{lst:conv_lstm_layers}. The thought behind the structure of this network is similar to the one when designing the 3D convolutional network. The number of filters increases as you go further through the network. The difference this time is that 2D convolution is carried out on each contiguous frame of the video input before being passed through LTSM networks. The way this is implemented is with the convLTSM network described in \cref{ssec:conv_lstm}.
 
 \subsection{Custom Convolutional LSTM}
 
@@ -104,7 +104,7 @@ An implementation of a custom convolutional LSTM can be seen in \cref{lst:custom
 
 \subsection{Spiking Neural Network via Conversion} \label{ssec:ann_to_snn_implementation}
 
-In order to create spiking neural networks, the conversion process from \cref{ssec:snn_design} was used. First a 3D convolutional ANN was constructed and trained with traditional back-propagation. Once this training was complete, the network was converted to a spiking neural network. For this the activations of the neurons in the network was changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}. The neural activity of this network can be seen in \cref{fig:pre_snn_conversion}. The input to this network was an integrated frame video repeated multiple times to give a 4D tensor (as described in \cref{ssec:snn_design}). The plots are shown over time, and since our network doesn't have any temporal elements (i.e. spiking neurons), the neural activity is constant for the whole duration. The neuron activations are continuous, and so they each have a constant rate of neural activity. For this exploratory work the network was trained for 15 epochs, giving an approximate accuracy of 95.62\% on the frame integrated NMNIST dataset.
+In order to create spiking neural networks, the conversion process from \cref{ssec:snn_design} was used. First a 3D convolutional ANN was constructed and trained with traditional back-propagation. Once this training was complete, the network was converted to a spiking neural network. For this the activation of the neurons in the network were changed from tensorflow's \lstinline{nn.relu} to nengo's \lstinline{SpikingRectifiedLinear}. The specifics for the underlying conversion can be seen in the work done by Bodo Rueckauer \textit{et al}\cite{Ann2Snn}. The neural activity of this network can be seen in \cref{fig:pre_snn_conversion}. The input to this network was an integrated frame video repeated multiple times to give a 4D tensor (as described in \cref{ssec:snn_design}). The plots are shown over time, and since our network doesn't have any temporal elements (i.e. spiking neurons), the neural activity is constant for the whole duration. Since the neuron activations are continuous they each have a constant rate of neural activity. For this exploratory work the network was trained for 15 epochs, giving an approximate accuracy of 95.62\%.
 
 \begin{figure}[htb]%
     \centering
@@ -113,11 +113,11 @@ In order to create spiking neural networks, the conversion process from \cref{ss
     \label{fig:pre_snn_conversion}%
 \end{figure}
 
-Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each 3 dimensional vector needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 30 times. A graph showing the activity of neurons in the first convolutional layer of the network with high and low number of repetitions can be seen in \cref{fig:frame_repititions}. It is clear that without repeating the input sufficient times, the network does not fire enough spikes for efficient data transfer. Graphs showing the performance of the converted network can be seen in \cref{fig:post_snn_conversion}. Note that for this system since data it being passed into it consecutively, only the final output from the system is sampled for predictions. The accuracy of the converted network fell to approximately 10\%.
+Then the network was converted to a spiking neural network by changing the Rectified Linear (ReLU) layers to Spiking ReLU layers. As previously explained, each 3 dimensional vector needed to be sent to the network multiple times to allow for spikes to accumulate in the neural network. It was found that to achieve a good number of spikes in the network the frames had to be repeated 30 times. A graph showing the activity of neurons in the first convolutional layer of the network with high and low number of repetitions can be seen in \cref{fig:frame_repititions}. Graphs showing the performance of the converted network can be seen in \cref{fig:post_snn_conversion}. Note that for this system since data it being passed into it consecutively, the only the final output from the system is sampled for predictions. The accuracy of the converted network fell to approximately 10\%.
 
 \begin{figure}[htb]%
     \centering
-    \includegraphics[width=0.7\textwidth]{implementation/images/post_snn_conversion.png}
+    \includegraphics[width=0.6\textwidth]{implementation/images/post_snn_conversion.png}
     \caption{Graphs showing neural activity of ANN after conversion to SNN.}%
     \label{fig:post_snn_conversion}%
 \end{figure}
@@ -128,7 +128,7 @@ Once the conversion from ANN to SNN was complete, the performance of the network
     \centering
     \subfloat[\centering]{{\includegraphics[width=0.3\textwidth, height=0.25\textwidth]{implementation/images/low_frame_repitition.png}}}%
     \subfloat[\centering]{{\includegraphics[width=0.3\textwidth, height=0.25\textwidth]{implementation/images/high_frame_repitition.png}}}%
-    \caption{Comparison of number of spikes in SNN with less \textbf{(a)} and more \textbf{(b)} input  repetitions.}%
+    \caption{Comparison of number of spikes with less \textbf{(a)} and more \textbf{(b)} repetitions.}%
     \label{fig:frame_repititions}%
 \end{figure}
 
@@ -138,28 +138,28 @@ The plots for the spiking neural network show that since the neuron function is 
 
 \begin{figure}[htb]%
     \centering
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_synaptic_smoothing_1.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_synaptic_smoothing_1.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_synaptic_smoothing_2.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_synaptic_smoothing_2.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_synaptic_smoothing_3.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_synaptic_smoothing_3.png}}}%
     \caption{Performance of spiking neural network with progressively more synaptic smoothing; \textbf{(a)} smoothing=0.002 \textbf{(b)} smoothing=0.005, and \textbf{(c)} smoothing=0.010.}%
     \label{fig:post_synaptic_smoothing}%
 \end{figure}
 
 \subsubsection{Post-training Firing Rate Scaling} \label{sssec:firing_rate_scaling}
 
-Neuron updates only occur when it outputs, or `fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaced is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \cref{fig:post_firing_rate_scaling}. It is important to note, however, that if the firing rate were to theoretically be scaled infinitely, the neuron outputs would look to be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place. It was found that the best compromise for this system was to scale the firing rate by 150, which preserved the benefits of the spiking neural network and also improved accuracy back to the levels before the conversion.
+Neuron updates only occur when it outputs, or `fires' a spike. This means that the system is much more likely to update when firing rates increase. Since the only output function that has been replaced is ReLU, which is a linear function, it is feasible to multiply the inputs of the neurons by a scale factor, then divide the output by the same number to scale. Larger inputs mean the neuron is more likely to spike, yet the linearity of the function is maintained by scaling down the output. The effect of applying this filter can be seen in \cref{fig:post_firing_rate_scaling}. It is important to note, however, that if the firing rate were to theoretically be scaled infinitely, the neuron functions for be continuous, exactly replicating artificial neural networks. This may be good in terms of efficiency, but negates the point of using spiking neural networks in the first place. It was found that the best compromise for this system was to scale the firing rate by 150, which preserved the benefits of the spiking neural network and also improved accuracy back to the levels before the conversion.
 
 It is also possible to change the effective firing rates of each neuron in the network, we could also add a custom loss function that incentivises a certain firing rate during the training processes as well. The benefit of this is that it can be applied to non-linear functions other than ReLU, but since there is no such function present in this project it need not be implemented.
 
 \begin{figure}[htb]%
     \centering
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_firing_rate_scaling_1.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_firing_rate_scaling_1.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_firing_rate_scaling_2.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_firing_rate_scaling_2.png}}}%
     \qquad
-    \subfloat[\centering]{{\includegraphics[width=0.6\textwidth]{implementation/images/post_firing_rate_scaling_3.png}}}%
+    \subfloat[\centering]{{\includegraphics[width=0.4\textwidth]{implementation/images/post_firing_rate_scaling_3.png}}}%
     \caption{Performance of spiking neural network with progressively more firing rate scaling; \textbf{(a)} scaling=20 \textbf{(b)} scaling=50, and \textbf{(c)} scaling=100.}%
     \label{fig:post_firing_rate_scaling}%
 \end{figure}
@@ -170,7 +170,7 @@ As mentioned in \cref{ssec:snn_design}, there is no readily available conversion
 
 \begin{figure}[htb]%
     \centering
-    \includegraphics[width=0.4\textwidth]{implementation/images/lmu_computational_graph.png}
+    \includegraphics[width=0.5\textwidth]{implementation/images/lmu_computational_graph.png}
     \caption{An illustration of the computational dataflows through an LMU\cite{LMU}.}%
     \label{fig:lmu_computational_graph}%
 \end{figure}
